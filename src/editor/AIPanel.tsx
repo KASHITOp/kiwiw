@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PenLine, ImagePlus, Eraser } from "lucide-react";
 import { useEditor } from "../store";
 import { makeText, makeImage } from "../data/factory";
 import { magicWrite, magicImage, removeBackground, keys, type WriteMode } from "../ai/provider";
@@ -15,7 +16,7 @@ export default function AIPanel() {
 }
 
 function Badge({ live }: { live: boolean }) {
-  return live ? <span className="badge-live">live</span> : <span className="badge-mock">demo</span>;
+  return live ? <span className="badge live">live</span> : <span className="badge mock">demo</span>;
 }
 
 function MagicWrite() {
@@ -34,10 +35,10 @@ function MagicWrite() {
 
   return (
     <div className="ai-card">
-      <h5>✍️ Magic Write <Badge live={!!keys.openai} /></h5>
+      <h5><PenLine size={16} /> Magic Write <Badge live={!!keys.openai} /></h5>
       <p className="hint">Generate, rephrase, shorten or expand copy.</p>
       <div className="field"><textarea placeholder="Write about…" value={prompt} onChange={(e) => setPrompt(e.target.value)} /></div>
-      <div className="field">
+      <div className="field" style={{ marginBottom: "var(--s-3)" }}>
         <select value={mode} onChange={(e) => setMode(e.target.value as WriteMode)}>
           <option value="write">Write</option>
           <option value="rephrase">Rephrase</option>
@@ -45,15 +46,11 @@ function MagicWrite() {
           <option value="expand">Expand</option>
         </select>
       </div>
-      <button className="btn primary" style={{ width: "100%" }} onClick={run} disabled={busy}>
-        {busy ? <span className="spinner" /> : "Generate"}
-      </button>
+      <button className="btn primary block" onClick={run} disabled={busy}>{busy ? <span className="spinner" /> : "Generate"}</button>
       {out && (
         <>
           <div className="ai-out">{out}</div>
-          <button className="btn sm" style={{ width: "100%", marginTop: 8 }} onClick={() => add(makeText({ text: out, fontSize: 32, w: 600, h: 200 }))}>
-            + Add to canvas
-          </button>
+          <button className="btn sm block" style={{ marginTop: "var(--s-2)" }} onClick={() => add(makeText({ text: out, fontSize: 32, w: 600, h: 200 }))}>Add to canvas</button>
         </>
       )}
     </div>
@@ -75,16 +72,14 @@ function MagicImage() {
 
   return (
     <div className="ai-card">
-      <h5>🎨 Magic Media <Badge live={!!keys.openai} /></h5>
+      <h5><ImagePlus size={16} /> Magic Media <Badge live={!!keys.openai} /></h5>
       <p className="hint">Generate an image from a text prompt.</p>
-      <div className="field"><textarea placeholder="A kiwi bird as a mascot, flat style…" value={prompt} onChange={(e) => setPrompt(e.target.value)} /></div>
-      <button className="btn primary" style={{ width: "100%" }} onClick={run} disabled={busy}>
-        {busy ? <span className="spinner" /> : "Generate image"}
-      </button>
+      <div className="field"><textarea placeholder="A kiwi bird mascot, flat style…" value={prompt} onChange={(e) => setPrompt(e.target.value)} /></div>
+      <button className="btn primary block" onClick={run} disabled={busy}>{busy ? <span className="spinner" /> : "Generate image"}</button>
       {src && (
         <>
-          <img src={src} style={{ width: "100%", borderRadius: 8, marginTop: 10 }} />
-          <button className="btn sm" style={{ width: "100%", marginTop: 8 }} onClick={() => add(makeImage(src))}>+ Add to canvas</button>
+          <img src={src} style={{ width: "100%", borderRadius: "var(--r-sm)", marginTop: "var(--s-3)" }} />
+          <button className="btn sm block" style={{ marginTop: "var(--s-2)" }} onClick={() => add(makeImage(src))}>Add to canvas</button>
         </>
       )}
     </div>
@@ -109,11 +104,9 @@ function MagicBgRemove() {
 
   return (
     <div className="ai-card">
-      <h5>🪄 Background Remover <Badge live={!!keys.removebg} /></h5>
+      <h5><Eraser size={16} /> Background Remover <Badge live={!!keys.removebg} /></h5>
       <p className="hint">{isImage ? "Remove the background of the selected image." : "Select an image on the canvas first."}</p>
-      <button className="btn primary" style={{ width: "100%" }} onClick={run} disabled={!isImage || busy}>
-        {busy ? <span className="spinner" /> : "Remove background"}
-      </button>
+      <button className="btn primary block" onClick={run} disabled={!isImage || busy}>{busy ? <span className="spinner" /> : "Remove background"}</button>
     </div>
   );
 }

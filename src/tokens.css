@@ -1,0 +1,71 @@
+/* ============================================================
+   Kiwiw design tokens — the single source of truth.
+   4px spacing scale · 3 radii · one neutral gray ramp ·
+   ONE accent (lime) · Inter type scale.
+   ============================================================ */
+:root {
+  /* spacing — 4px scale */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-10: 40px;
+  --s-12: 48px;
+  --s-16: 64px;
+
+  /* radii — three steps */
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 16px;
+  --r-full: 999px;
+
+  /* neutral gray ramp (dark UI) */
+  --g-0: #0b0d10;   /* app background, deepest */
+  --g-1: #101317;   /* panels */
+  --g-2: #171b21;   /* inputs, raised surfaces */
+  --g-3: #1e232b;   /* hover surface */
+  --g-4: #272d37;   /* pressed / strong surface */
+
+  --text: #e8ebf0;  /* primary text */
+  --muted: #949cab;  /* secondary text */
+  --faint: #5c6675;  /* tertiary / disabled */
+
+  /* ONE accent */
+  --accent: #8ed64a;
+  --accent-strong: #7bc62d;
+  --accent-ink: #0b1406;
+  --accent-soft: rgba(142, 214, 74, 0.14);
+  --accent-ring: rgba(142, 214, 74, 0.45);
+
+  /* borders — 1px low-opacity white, consistent everywhere */
+  --border: rgba(255, 255, 255, 0.08);
+  --border-2: rgba(255, 255, 255, 0.14);
+  --hairline: 1px solid var(--border);
+
+  /* shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-pop: 0 12px 40px rgba(0, 0, 0, 0.5);
+
+  /* type scale (Inter) */
+  --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --t-xs: 11px;
+  --t-sm: 12px;
+  --t-13: 13px;
+  --t-base: 14px;
+  --t-lg: 16px;
+  --t-xl: 20px;
+  --t-2xl: 28px;
+  --t-3xl: 40px;
+
+  /* motion */
+  --tr: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* layout metrics */
+  --rail-w: 60px;
+  --panel-w: 300px;
+  --topbar-h: 52px;
+}

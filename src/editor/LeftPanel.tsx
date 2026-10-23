@@ -1,29 +1,31 @@
 import { useRef, useState } from "react";
+import { LayoutTemplate, Shapes, Type, Image as ImageIcon, Upload, Sparkles, Square, Circle, Triangle, Minus } from "lucide-react";
 import { useEditor } from "../store";
 import { makeText, makeShape, makeImage } from "../data/factory";
 import { TEMPLATES } from "../data/templates";
+import Thumb from "./Thumb";
 import AIPanel from "./AIPanel";
 import AssetPanel from "./AssetPanel";
 
-type Tab = "templates" | "text" | "elements" | "uploads" | "photos" | "ai";
+type Tab = "templates" | "elements" | "text" | "photos" | "uploads" | "ai";
+
+const TABS: { id: Tab; icon: React.ReactNode; label: string }[] = [
+  { id: "templates", icon: <LayoutTemplate size={20} />, label: "Design" },
+  { id: "elements", icon: <Shapes size={20} />, label: "Shapes" },
+  { id: "text", icon: <Type size={20} />, label: "Text" },
+  { id: "photos", icon: <ImageIcon size={20} />, label: "Photos" },
+  { id: "uploads", icon: <Upload size={20} />, label: "Upload" },
+  { id: "ai", icon: <Sparkles size={20} />, label: "Magic" },
+];
 
 export default function LeftPanel() {
   const [tab, setTab] = useState<Tab>("templates");
-  const tabs: { id: Tab; icon: string; label: string }[] = [
-    { id: "templates", icon: "📐", label: "Design" },
-    { id: "elements", icon: "◆", label: "Shapes" },
-    { id: "text", icon: "🆃", label: "Text" },
-    { id: "photos", icon: "🖼", label: "Photos" },
-    { id: "uploads", icon: "⬆", label: "Upload" },
-    { id: "ai", icon: "✨", label: "Magic" },
-  ];
-
   return (
     <>
       <div className="rail">
-        {tabs.map((t) => (
+        {TABS.map((t) => (
           <button key={t.id} className={tab === t.id ? "active" : ""} onClick={() => setTab(t.id)}>
-            <span className="em">{t.icon}</span>
+            {t.icon}
             {t.label}
           </button>
         ))}
@@ -47,7 +49,8 @@ function TemplatesTab() {
       <h4>Templates</h4>
       <div className="tpl-grid">
         {TEMPLATES.map((t) => (
-          <div key={t.id} className="tpl" style={{ background: t.thumbBg, aspectRatio: `${t.doc.width}/${t.doc.height}` }} onClick={() => loadDoc(t.doc)}>
+          <div key={t.id} className="tpl" onClick={() => loadDoc(t.doc)} title={t.name}>
+            <Thumb doc={t.doc} />
             <div className="tpl-label">{t.name}</div>
           </div>
         ))}
@@ -59,17 +62,17 @@ function TemplatesTab() {
 function ShapesTab() {
   const add = useEditor((s) => s.addElement);
   const shapes = [
-    { k: "rect" as const, label: "▭ Rectangle" },
-    { k: "ellipse" as const, label: "⬤ Circle" },
-    { k: "triangle" as const, label: "▲ Triangle" },
-    { k: "line" as const, label: "▬ Line" },
+    { k: "rect" as const, label: "Rectangle", icon: <Square size={18} /> },
+    { k: "ellipse" as const, label: "Circle", icon: <Circle size={18} /> },
+    { k: "triangle" as const, label: "Triangle", icon: <Triangle size={18} /> },
+    { k: "line" as const, label: "Line", icon: <Minus size={18} /> },
   ];
   return (
     <>
       <h4>Shapes</h4>
       {shapes.map((s) => (
-        <button key={s.k} className="btn" style={{ width: "100%", marginBottom: 8, justifyContent: "flex-start" }} onClick={() => add(makeShape(s.k))}>
-          {s.label}
+        <button key={s.k} className="btn block" style={{ justifyContent: "flex-start", marginBottom: "var(--s-2)" }} onClick={() => add(makeShape(s.k))}>
+          {s.icon} {s.label}
         </button>
       ))}
     </>
@@ -79,9 +82,9 @@ function ShapesTab() {
 function TextTab() {
   const add = useEditor((s) => s.addElement);
   const presets = [
-    { label: "Add a heading", size: 72, weight: 800 },
-    { label: "Add a subheading", size: 42, weight: 600 },
-    { label: "Add body text", size: 24, weight: 400 },
+    { label: "Add a heading", size: 72, weight: 800, preview: 20 },
+    { label: "Add a subheading", size: 42, weight: 600, preview: 16 },
+    { label: "Add body text", size: 24, weight: 400, preview: 14 },
   ];
   return (
     <>
@@ -89,8 +92,8 @@ function TextTab() {
       {presets.map((p) => (
         <button
           key={p.label}
-          className="btn"
-          style={{ width: "100%", marginBottom: 8, fontSize: Math.min(p.size / 3, 18), fontWeight: p.weight, justifyContent: "flex-start" }}
+          className="btn text-preset"
+          style={{ fontSize: p.preview, fontWeight: p.weight }}
           onClick={() => add(makeText({ text: p.label.replace("Add a ", "").replace("Add ", ""), fontSize: p.size, fontWeight: p.weight }))}
         >
           {p.label}
@@ -106,10 +109,9 @@ function UploadTab() {
   const [imgs, setImgs] = useState<string[]>([]);
 
   const onFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files ?? []);
-    files.forEach((f) => {
+    Array.from(e.target.files ?? []).forEach((f) => {
       const r = new FileReader();
-      r.onload = () => { const src = r.result as string; setImgs((p) => [src, ...p]); };
+      r.onload = () => setImgs((p) => [r.result as string, ...p]);
       r.readAsDataURL(f);
     });
   };
@@ -117,7 +119,9 @@ function UploadTab() {
   return (
     <>
       <h4>Uploads</h4>
-      <button className="btn primary" style={{ width: "100%", marginBottom: 12 }} onClick={() => ref.current?.click()}>⬆ Upload image</button>
+      <button className="btn primary block" style={{ marginBottom: "var(--s-3)" }} onClick={() => ref.current?.click()}>
+        <Upload size={16} /> Upload image
+      </button>
       <input ref={ref} type="file" accept="image/*" multiple hidden onChange={onFile} />
       <div className="asset-grid">
         {imgs.map((src, i) => (

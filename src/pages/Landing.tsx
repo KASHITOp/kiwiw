@@ -1,16 +1,18 @@
 import { Link, useNavigate } from "react-router-dom";
+import { Leaf, MousePointer2, LayoutTemplate, ImageIcon, PenLine, Sparkles, Eraser, Scaling, Download, ArrowRight } from "lucide-react";
 import { useEditor } from "../store";
 import { TEMPLATES } from "../data/templates";
+import Thumb from "../editor/Thumb";
 
 const FEATURES = [
-  { ico: "🖱️", title: "Drag-and-drop editor", text: "Add, scale, rotate and layer text, shapes and images on an infinite canvas — no design skills needed." },
-  { ico: "📐", title: "Template library", text: "Start from ready-made, fully-editable templates for social, docs, slides and more. Built to scale to thousands." },
-  { ico: "🖼️", title: "Stock & uploads", text: "Drop in your own images or search a built-in photo library powered by free, licensed stock." },
-  { ico: "✍️", title: "Magic Write", text: "Generate, rephrase, shorten or expand copy with AI — straight into your design." },
-  { ico: "🎨", title: "Magic Media", text: "Turn a text prompt into original imagery and graphics in seconds." },
-  { ico: "🪄", title: "Background remover", text: "One click to knock out an image background and make it pop." },
-  { ico: "🎚️", title: "Magic Resize", text: "Reflow a design to a new size and platform without starting over." },
-  { ico: "📤", title: "Export anywhere", text: "Download crisp PNGs at 2× or save your project as JSON to keep editing." },
+  { icon: <MousePointer2 size={20} />, title: "Drag-and-drop editor", text: "Add, scale, rotate and layer text, shapes and images on a free canvas — no design skills needed." },
+  { icon: <LayoutTemplate size={20} />, title: "Template library", text: "Start from ready-made, fully-editable templates for social, docs, slides and more." },
+  { icon: <ImageIcon size={20} />, title: "Stock & uploads", text: "Drop in your own images or search a built-in photo library of free, licensed stock." },
+  { icon: <PenLine size={20} />, title: "Magic Write", text: "Generate, rephrase, shorten or expand copy with AI — straight into your design." },
+  { icon: <Sparkles size={20} />, title: "Magic Media", text: "Turn a text prompt into original imagery and graphics in seconds." },
+  { icon: <Eraser size={20} />, title: "Background remover", text: "One click to knock out an image background and make it pop." },
+  { icon: <Scaling size={20} />, title: "Smart resize", text: "Reflow a design to a new size and platform without starting over." },
+  { icon: <Download size={20} />, title: "Export anywhere", text: "Download crisp PNGs at 2× or save your project as JSON to keep editing." },
 ];
 
 export default function Landing() {
@@ -23,18 +25,20 @@ export default function Landing() {
   return (
     <div>
       <nav className="nav">
-        <div className="brand"><span className="dot">🥝</span> Kiwiw</div>
+        <div className="brand" style={{ fontSize: "var(--t-xl)" }}>
+          <span className="logo" style={{ width: 32, height: 32 }}><Leaf size={18} /></span> Kiwiw
+        </div>
         <div className="nav-links">
           <a href="#features">Features</a>
           <a href="#templates">Templates</a>
           <a href="#magic">Magic Studio</a>
         </div>
-        <Link to="/editor" className="btn primary sm">Open editor →</Link>
+        <Link to="/editor" className="btn primary sm">Open editor <ArrowRight size={15} /></Link>
       </nav>
 
       <header className="hero">
-        <div className="pill">✨ Design anything, the fresh way</div>
-        <h1>Create stunning designs with <span className="grad">Kiwiw</span></h1>
+        <div className="pill"><Sparkles size={14} /> Design anything, the fresh way</div>
+        <h1>Create stunning designs<br />with Kiwiw</h1>
         <p>A drag-and-drop design studio with templates, stock photos and an AI Magic Studio — all in your browser.</p>
         <div className="hero-cta">
           <button className="btn primary" onClick={startBlank}>Start designing — free</button>
@@ -44,20 +48,7 @@ export default function Landing() {
 
       <div className="preview-wrap">
         <div className="preview">
-          <div className="mock" style={{ display: "grid", gridTemplateColumns: "64px 1fr 260px", height: 420, background: "var(--panel)" }}>
-            <div style={{ background: "var(--panel-2)", borderRight: "1px solid var(--line)" }} />
-            <div style={{ display: "grid", placeItems: "center", background: "#0b0d11" }}>
-              <div style={{ width: 300, height: 300, borderRadius: 14, background: "linear-gradient(135deg,#7bc62d,#38bdf8)", display: "grid", placeItems: "center", color: "#07140a", fontWeight: 800, fontSize: 40, boxShadow: "var(--shadow)" }}>
-                Kiwiw
-              </div>
-            </div>
-            <div style={{ background: "var(--panel-2)", borderLeft: "1px solid var(--line)", padding: 16 }}>
-              <div style={{ height: 14, width: "60%", background: "var(--line)", borderRadius: 6, marginBottom: 12 }} />
-              <div style={{ height: 36, background: "var(--line)", borderRadius: 8, marginBottom: 10 }} />
-              <div style={{ height: 36, background: "var(--line)", borderRadius: 8, marginBottom: 10 }} />
-              <div style={{ height: 80, background: "linear-gradient(135deg,#8b5cf6,#38bdf8)", borderRadius: 8 }} />
-            </div>
-          </div>
+          <img src="/editor-hero.jpg" alt="The Kiwiw editor with a design open" />
         </div>
       </div>
 
@@ -67,7 +58,7 @@ export default function Landing() {
         <div className="feature-grid">
           {FEATURES.map((f) => (
             <div key={f.title} className="card">
-              <div className="ico">{f.ico}</div>
+              <div className="ico">{f.icon}</div>
               <h3>{f.title}</h3>
               <p>{f.text}</p>
             </div>
@@ -78,9 +69,10 @@ export default function Landing() {
       <section id="templates" className="section">
         <h2>Start from a template</h2>
         <p className="sub">Every template is fully editable. Click one to open it in the editor.</p>
-        <div className="tpl-grid">
+        <div className="land-tpl-grid">
           {TEMPLATES.map((t, i) => (
-            <div key={t.id} className="tpl" style={{ background: t.thumbBg, aspectRatio: `${t.doc.width}/${t.doc.height}` }} onClick={() => openTemplate(i)}>
+            <div key={t.id} className="tpl" onClick={() => openTemplate(i)} title={t.name}>
+              <Thumb doc={t.doc} />
               <div className="tpl-label">{t.name} · {t.category}</div>
             </div>
           ))}
@@ -88,8 +80,8 @@ export default function Landing() {
       </section>
 
       <section id="magic" className="cta-band">
-        <h2>Meet the Magic Studio ✨</h2>
-        <p className="sub" style={{ marginBottom: 26 }}>Write copy, generate images and clean up photos with AI — right inside the canvas.</p>
+        <h2>Meet the Magic Studio</h2>
+        <p className="sub" style={{ marginBottom: "var(--s-6)" }}>Write copy, generate images and clean up photos with AI — right inside the canvas.</p>
         <button className="btn primary" onClick={startBlank}>Try it now</button>
       </section>
 

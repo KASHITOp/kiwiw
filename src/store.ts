@@ -29,6 +29,7 @@ interface EditorState {
   removeElement: (id: string) => void;
   duplicateElement: (id: string) => void;
   reorder: (id: string, dir: "front" | "back" | "forward" | "backward") => void;
+  setLayerOrder: (panelIds: string[]) => void;
   select: (id: string | null) => void;
   setBackground: (color: string) => void;
   setZoom: (zoom: number) => void;
@@ -98,6 +99,18 @@ export const useEditor = create<EditorState>((set, get) => ({
     copy.x = src.x + 24;
     copy.y = src.y + 24;
     set((s) => ({ doc: { ...s.doc, elements: [...s.doc.elements, copy] }, selectedId: copy.id }));
+  },
+
+  setLayerOrder: (panelIds) => {
+    get().commit();
+    set((s) => {
+      const byId = new Map(s.doc.elements.map((e) => [e.id, e]));
+      // panelIds are front-first (as shown in the layers panel); the document
+      // stores back-first, so reverse to get render order.
+      const next = panelIds.slice().reverse().map((id) => byId.get(id)).filter(Boolean) as Element[];
+      if (next.length !== s.doc.elements.length) return s;
+      return { doc: { ...s.doc, elements: next } };
+    });
   },
 
   reorder: (id, dir) => {

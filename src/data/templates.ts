@@ -41,11 +41,11 @@ export const TEMPLATES: Template[] = [
     doc: {
       width: 1080, height: 1080, background: "#fff7ed",
       elements: [
-        shape({ x: 0, y: 0, w: 1080, h: 300, fill: "#fb7185", radius: 0 }),
-        text({ x: 90, y: 90, w: 900, h: 120, text: "MEGA SALE", fontSize: 110, color: "#ffffff", fontWeight: 800, align: "center" }),
-        text({ x: 90, y: 440, w: 900, h: 300, text: "50% OFF", fontSize: 220, color: "#f59e0b", fontWeight: 800, align: "center" }),
-        shape({ shape: "rect", x: 360, y: 820, w: 360, h: 110, fill: "#1d2b12", radius: 55 }),
-        text({ x: 360, y: 848, w: 360, h: 60, text: "Shop now", fontSize: 40, color: "#ffffff", fontWeight: 700, align: "center" }),
+        shape({ x: 0, y: 0, w: 1080, h: 240, fill: "#fb7185", radius: 0 }),
+        text({ x: 90, y: 78, w: 900, h: 96, text: "MEGA SALE", fontSize: 92, color: "#ffffff", fontWeight: 800, align: "center" }),
+        text({ x: 90, y: 400, w: 900, h: 300, text: "50% OFF", fontSize: 190, color: "#f59e0b", fontWeight: 800, align: "center" }),
+        shape({ shape: "rect", x: 390, y: 840, w: 300, h: 96, fill: "#1d2b12", radius: 48 }),
+        text({ x: 390, y: 864, w: 300, h: 48, text: "Shop now", fontSize: 36, color: "#ffffff", fontWeight: 700, align: "center" }),
       ],
     },
   },
@@ -92,7 +92,7 @@ export const TEMPLATES: Template[] = [
       width: 1280, height: 720, background: "#111827",
       elements: [
         shape({ x: 0, y: 0, w: 640, h: 720, fill: "#7bc62d", radius: 0, opacity: 0.15 }),
-        text({ x: 60, y: 150, w: 760, h: 420, text: "I BUILT\nMY OWN\nCANVA", fontSize: 150, color: "#ffffff", fontWeight: 800, lineHeight: 1.0 }),
+        text({ x: 60, y: 130, w: 760, h: 470, text: "I BUILT\nMY OWN\nEDITOR", fontSize: 148, color: "#ffffff", fontWeight: 800, lineHeight: 1.02 }),
         shape({ shape: "rect", x: 60, y: 600, w: 300, h: 70, fill: "#ef4444", radius: 12 }),
         text({ x: 60, y: 616, w: 300, h: 50, text: "WATCH NOW", fontSize: 34, color: "#ffffff", fontWeight: 800, align: "center" }),
       ],
@@ -136,8 +136,8 @@ export const TEMPLATES: Template[] = [
       width: 1080, height: 1350, background: "#0f1115",
       elements: [
         shape({ shape: "triangle", x: 100, y: 120, w: 880, h: 500, fill: "#8b5cf6", opacity: 0.5 }),
-        text({ x: 90, y: 720, w: 900, h: 220, text: "DESIGN\nMEETUP", fontSize: 150, color: "#ffffff", fontWeight: 800, lineHeight: 0.95 }),
-        text({ x: 92, y: 1010, w: 900, h: 60, text: "Fri · 7 PM · Online", fontSize: 40, color: "#7bc62d", fontWeight: 600 }),
+        text({ x: 90, y: 700, w: 900, h: 320, text: "DESIGN\nMEETUP", fontSize: 150, color: "#ffffff", fontWeight: 800, lineHeight: 0.98 }),
+        text({ x: 92, y: 1060, w: 900, h: 60, text: "Fri · 7 PM · Online", fontSize: 40, color: "#7bc62d", fontWeight: 600 }),
       ],
     },
   },

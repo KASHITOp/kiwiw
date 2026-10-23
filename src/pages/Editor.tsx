@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { toPng } from "html-to-image";
+import { Undo2, Redo2, Minus, Plus, Maximize2, Download, Braces, Leaf } from "lucide-react";
 import { useEditor } from "../store";
 import Canvas from "../editor/Canvas";
 import LeftPanel from "../editor/LeftPanel";
@@ -12,16 +13,15 @@ const SIZES = [
   { label: "Story 1080×1920", w: 1080, h: 1920 },
   { label: "Slide 1280×720", w: 1280, h: 720 },
   { label: "Poster 1080×1350", w: 1080, h: 1350 },
-  { label: "A4 210×297", w: 794, h: 1123 },
+  { label: "A4 794×1123", w: 794, h: 1123 },
 ];
 
 export default function Editor() {
   const { zoom, setZoom, undo, redo, newDoc, doc, selectedId, removeElement, duplicateElement } = useEditor();
 
-  // fit the canvas on first load
-  useEffect(() => { setZoom(fitZoom(doc.width, doc.height)); /* eslint-disable-next-line */ }, []);
+  // Fit + center whenever the page dimensions change (initial load, template open, resize).
+  useEffect(() => { setZoom(fitZoom(doc.width, doc.height)); /* eslint-disable-next-line */ }, [doc.width, doc.height]);
 
-  // keyboard shortcuts
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName;
@@ -39,7 +39,7 @@ export default function Editor() {
   const exportPng = async () => {
     const node = document.getElementById("kiwiw-canvas");
     if (!node) return;
-    const prevTransform = node.style.transform;
+    const prev = node.style.transform;
     node.style.transform = "scale(1)";
     useEditor.getState().select(null);
     await new Promise((r) => setTimeout(r, 60));
@@ -52,7 +52,7 @@ export default function Editor() {
     } catch (e) {
       alert("Export failed: " + (e as Error).message);
     } finally {
-      node.style.transform = prevTransform;
+      node.style.transform = prev;
     }
   };
 
@@ -67,15 +67,15 @@ export default function Editor() {
   return (
     <div className="editor">
       <div className="topbar">
-        <Link to="/" className="brand" style={{ fontSize: 18 }}>
-          <span className="dot">🥝</span> Kiwiw
+        <Link to="/" className="brand" style={{ fontSize: "var(--t-base)" }}>
+          <span className="logo"><Leaf size={16} /></span> Kiwiw
         </Link>
-        <span style={{ color: "var(--line)" }}>|</span>
-        <button className="btn sm ghost" title="Undo (Ctrl+Z)" onClick={undo}>↩ Undo</button>
-        <button className="btn sm ghost" title="Redo (Ctrl+Y)" onClick={redo}>↪ Redo</button>
+        <span className="sep" />
+        <button className="icon-btn" title="Undo (Ctrl+Z)" onClick={undo}><Undo2 size={18} /></button>
+        <button className="icon-btn" title="Redo (Ctrl+Y)" onClick={redo}><Redo2 size={18} /></button>
         <select
           className="btn sm"
-          style={{ paddingRight: 8 }}
+          style={{ width: "auto", paddingRight: "var(--s-6)" }}
           onChange={(e) => { const s = SIZES[+e.target.value]; if (s) newDoc(s.w, s.h); }}
           value=""
         >
@@ -85,14 +85,14 @@ export default function Editor() {
 
         <div className="spacer" />
 
-        <button className="btn sm ghost" onClick={() => setZoom(zoom - 0.1)}>−</button>
-        <span style={{ width: 48, textAlign: "center", fontSize: 13 }}>{Math.round(zoom * 100)}%</span>
-        <button className="btn sm ghost" onClick={() => setZoom(zoom + 0.1)}>+</button>
-        <button className="btn sm ghost" onClick={() => setZoom(fitZoom(doc.width, doc.height))}>Fit</button>
+        <button className="icon-btn" title="Zoom out" onClick={() => setZoom(zoom - 0.1)}><Minus size={18} /></button>
+        <span className="zoom">{Math.round(zoom * 100)}%</span>
+        <button className="icon-btn" title="Zoom in" onClick={() => setZoom(zoom + 0.1)}><Plus size={18} /></button>
+        <button className="icon-btn" title="Fit to screen" onClick={() => setZoom(fitZoom(doc.width, doc.height))}><Maximize2 size={18} /></button>
 
-        <span style={{ color: "var(--line)" }}>|</span>
-        <button className="btn sm" onClick={exportJson}>Save .json</button>
-        <button className="btn primary sm" onClick={exportPng}>⬇ Export PNG</button>
+        <span className="sep" />
+        <button className="btn sm" onClick={exportJson}><Braces size={16} /> Save</button>
+        <button className="btn primary sm" onClick={exportPng}><Download size={16} /> Export PNG</button>
       </div>
 
       <div className="editor-body">
@@ -100,7 +100,6 @@ export default function Editor() {
         <Canvas />
         <div className="side right">
           <PropertiesPanel />
-          <div style={{ height: 1, background: "var(--line)", margin: "18px 0" }} />
           <LayersPanel />
         </div>
       </div>
@@ -109,7 +108,7 @@ export default function Editor() {
 }
 
 function fitZoom(w: number, h: number) {
-  const availW = window.innerWidth - 64 - 280 - 300 - 80;
-  const availH = window.innerHeight - 54 - 80;
+  const availW = window.innerWidth - 60 - 300 - 300 - 100;
+  const availH = window.innerHeight - 52 - 100;
   return Math.max(0.1, Math.min(1, Math.min(availW / w, availH / h)));
 }

@@ -39,7 +39,7 @@ export default function AssetPanel() {
 
   return (
     <>
-      <h4>Photos {PEXELS ? <span className="badge-live">Pexels</span> : <span className="badge-mock">demo</span>}</h4>
+      <h4>Photos {PEXELS ? <span className="badge live">Pexels</span> : <span className="badge mock">demo</span>}</h4>
       <div className="field">
         <input
           type="text"
