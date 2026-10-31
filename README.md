@@ -8,6 +8,15 @@ Drag-and-drop editing, templates, stock photos, and an AI **Magic Studio** —
 all in the browser. Inspired by the category (Canva, Figma, Adobe Express);
 every line is written from scratch, nothing copied.
 
+**[▶ Live demo](https://kiwiw.vercel.app)** · [Report a bug](https://github.com/KASHITOp/kiwiw/issues)
+
+![React](https://img.shields.io/badge/React-19-61dafb?logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-8-646cff?logo=vite&logoColor=white)
+![License: MIT](https://img.shields.io/badge/license-MIT-7bc62d)
+
+![Kiwiw editor](docs/screenshot-editor.jpg)
+
 </div>
 
 ---
@@ -15,31 +24,30 @@ every line is written from scratch, nothing copied.
 ## What is Kiwiw?
 
 Kiwiw is a web app for making graphics — social posts, slides, resumes, posters,
-thumbnails and more. You start from a template or a blank canvas, drop in text,
+thumbnails and more. Start from a template or a blank canvas, drop in text,
 shapes and images, arrange them freely, and export a finished design. An AI
 Magic Studio helps you write copy, generate images and clean up photos.
 
-It's a learning-first, build-it-yourself take on the design-tool category — a
-real, extensible codebase you own.
+Everything runs client-side, and the AI features work in **demo mode with no API
+keys** — add your own keys to go live.
 
 ## Screenshots
 
-> _Placeholders — drop real images into `docs/` and update these links._
-
-| Landing | Editor |
+| Landing | Template picker |
 | --- | --- |
-| ![Landing page](docs/screenshot-landing.png) | ![Editor](docs/screenshot-editor.png) |
+| ![Landing](docs/screenshot-landing.jpg) | ![Templates](docs/screenshot-templates.jpg) |
 
-| Templates | Magic Studio |
+| Editor with a selected element | Exported PNG |
 | --- | --- |
-| ![Templates](docs/screenshot-templates.png) | ![Magic Studio](docs/screenshot-magic.png) |
+| ![Editor](docs/screenshot-editor.jpg) | ![Exported design](docs/screenshot-export.png) |
 
 ## Features
 
 **Editor**
 - Add text, shapes (rectangle / circle / triangle / line) and images
 - Drag to move, 8-handle resize, free rotate
-- Layers panel — reorder, show/hide, lock, delete
+- Layers panel — reorder (drag), show/hide, lock, delete, live thumbnails
+- Floating contextual toolbar on the selected element
 - Properties panel — position, size, rotation, opacity, font, color, fills, radius
 - Undo / redo (`Ctrl+Z` / `Ctrl+Y`), duplicate (`Ctrl+D`), delete
 - Zoom + Fit, document resize presets
@@ -56,8 +64,7 @@ real, extensible codebase you own.
 - 🎨 **Magic Media** — turn a text prompt into an image
 - 🪄 **Background Remover** — knock out an image background
 
-Every AI feature runs in **demo mode** with no key, and goes **live** the moment
-you add an API key.
+Every AI feature runs in **demo mode** with no key, and goes **live** when you add an API key.
 
 ## Tech stack
 
@@ -65,8 +72,8 @@ you add an API key.
 - **Vite** (dev server + build)
 - **Zustand** for state (with an undo/redo history stack)
 - **React Router** for landing / editor routes
-- **html-to-image** for PNG export
-- Plain CSS design system (no UI framework) — custom Kiwiw theme
+- **lucide-react** icons · **html-to-image** PNG export · **@fontsource/inter**
+- A design-token-driven custom CSS system (no UI framework)
 
 ## Run it
 
@@ -75,14 +82,7 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:5173.
-
-Build for production:
-
-```bash
-npm run build
-npm run preview
-```
+Open http://localhost:5173. Build for production with `npm run build`.
 
 ## Going live (API keys)
 
@@ -103,22 +103,17 @@ Copy `.env.example` to `.env` and fill in whichever you want:
 ```
 src/
   pages/        Landing.tsx, Editor.tsx
-  editor/       Canvas, LeftPanel, PropertiesPanel, LayersPanel, AIPanel, AssetPanel
+  editor/       Canvas, LeftPanel, PropertiesPanel, LayersPanel, FloatingToolbar,
+                AIPanel, AssetPanel, Thumb, ElementContent
   data/         factory.ts (element defaults), templates.ts (seed templates)
   ai/           provider.ts (AI layer: real calls + mock fallbacks)
   store.ts      Zustand store with undo/redo history
-  types.ts      document & element model
+  tokens.css    design tokens · styles.css design system
 ```
-
-## Roadmap
-
-Magic Resize (reflow to new sizes), multi-page documents, brand kit, snapping &
-alignment guides, keyboard nudging, real-time collaboration, a richer template
-library.
 
 ## License
 
-[MIT](LICENSE) — free to use, modify and distribute.
+[MIT](LICENSE). Third-party dependency licenses are listed in [LICENSES.md](LICENSES.md).
 
 ---
 
