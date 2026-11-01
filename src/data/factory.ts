@@ -1,12 +1,13 @@
 import type { Element, ShapeKind, TextElement, ShapeElement, ImageElement } from "../types";
 
+// Kiwi palette first (DESIGN.md 02), then two warm extras for user designs.
 export const PALETTE = [
-  "#1d2b12", "#7bc62d", "#5fa31b", "#38bdf8", "#8b5cf6",
-  "#fb7185", "#f59e0b", "#ffffff", "#0f1115", "#f1f5f9",
+  "#0B0D08", "#17140D", "#8A6A44", "#6CB022", "#8BD630",
+  "#D8F27A", "#F2F5E6", "#ffffff", "#fb7185", "#f59e0b",
 ];
 
 export const FONTS = [
-  "Inter", "Georgia", "Poppins", "Playfair Display",
+  "Inter", "Bricolage Grotesque Variable", "JetBrains Mono", "Georgia", "Poppins", "Playfair Display",
   "Courier New", "Arial", "Impact", "Comic Sans MS",
 ];
 
@@ -15,7 +16,7 @@ export function makeText(partial: Partial<TextElement> = {}): Omit<Element, "id"
     type: "text",
     x: 120, y: 120, w: 420, h: 90, rotation: 0, opacity: 1,
     text: "Your text here",
-    fontSize: 54, fontFamily: "Inter", color: "#1d2b12", fontWeight: 700,
+    fontSize: 54, fontFamily: "Inter", color: "#0B0D08", fontWeight: 700,
     align: "left", lineHeight: 1.2, letterSpacing: 0,
     ...partial,
   } as Omit<TextElement, "id">;
@@ -25,7 +26,7 @@ export function makeShape(shape: ShapeKind, partial: Partial<ShapeElement> = {})
   return {
     type: "shape",
     x: 200, y: 200, w: 260, h: 260, rotation: 0, opacity: 1,
-    shape, fill: "#7bc62d", stroke: "#1d2b12", strokeWidth: 0, radius: 16,
+    shape, fill: "#8BD630", stroke: "#0B0D08", strokeWidth: 0, radius: 16,
     ...partial,
   } as Omit<ShapeElement, "id">;
 }

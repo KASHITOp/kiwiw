@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { toPng } from "html-to-image";
-import { Undo2, Redo2, Minus, Plus, Maximize2, Download, Braces, Leaf } from "lucide-react";
+import { Undo2, Redo2, Minus, Plus, Maximize2, Download, Braces } from "lucide-react";
+import KiwiLogo from "../brand/KiwiLogo";
 import { useEditor } from "../store";
 import Canvas from "../editor/Canvas";
 import LeftPanel from "../editor/LeftPanel";
@@ -67,8 +68,8 @@ export default function Editor() {
   return (
     <div className="editor">
       <div className="topbar">
-        <Link to="/" className="brand" style={{ fontSize: "var(--t-base)" }}>
-          <span className="logo"><Leaf size={16} /></span> Kiwiw
+        <Link to="/" className="brand">
+          <KiwiLogo size={26} /> Kiwiw
         </Link>
         <span className="sep" />
         <button className="icon-btn" title="Undo (Ctrl+Z)" onClick={undo}><Undo2 size={18} /></button>

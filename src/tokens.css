@@ -1,7 +1,8 @@
 /* ============================================================
-   Kiwiw design tokens — the single source of truth.
-   4px spacing scale · 3 radii · one neutral gray ramp ·
-   ONE accent (lime) · Inter type scale.
+   Kiwiw editor tokens. Values follow DESIGN.md (sections 02, 03, 07):
+   4px spacing scale · 3 radii · ink-tinted gray ramp ·
+   ONE accent (kiwi) · Inter UI, JetBrains Mono for numbers/labels,
+   Bricolage for the wordmark only.
    ============================================================ */
 :root {
   /* spacing — 4px scale */
@@ -22,23 +23,23 @@
   --r-lg: 16px;
   --r-full: 999px;
 
-  /* neutral gray ramp (dark UI) */
-  --g-0: #0b0d10;   /* app background, deepest */
-  --g-1: #101317;   /* panels */
-  --g-2: #171b21;   /* inputs, raised surfaces */
-  --g-3: #1e232b;   /* hover surface */
-  --g-4: #272d37;   /* pressed / strong surface */
+  /* ink-tinted gray ramp (dark UI) */
+  --g-0: #0B0D08;   /* --ink: app background, canvas surround */
+  --g-1: #11140D;   /* panels */
+  --g-2: #171B12;   /* inputs, raised surfaces (--ink-2 family) */
+  --g-3: #1F2419;   /* hover surface */
+  --g-4: #282E21;   /* pressed / strong surface */
 
-  --text: #e8ebf0;  /* primary text */
-  --muted: #949cab;  /* secondary text */
-  --faint: #5c6675;  /* tertiary / disabled */
+  --text: #F2F5E6;  /* --paper */
+  --muted: #9AA28A;  /* --mute */
+  --faint: #6B7360;  /* --dim */
 
-  /* ONE accent */
-  --accent: #8ed64a;
-  --accent-strong: #7bc62d;
-  --accent-ink: #0b1406;
-  --accent-soft: rgba(142, 214, 74, 0.14);
-  --accent-ring: rgba(142, 214, 74, 0.45);
+  /* ONE accent: kiwi, hovering to flesh */
+  --accent: #8BD630;
+  --accent-strong: #D8F27A;
+  --accent-ink: #0B0D08;
+  --accent-soft: rgba(139, 214, 48, 0.14);
+  --accent-ring: rgba(139, 214, 48, 0.45);
 
   /* borders — 1px low-opacity white, consistent everywhere */
   --border: rgba(255, 255, 255, 0.08);
@@ -52,6 +53,8 @@
 
   /* type scale (Inter) */
   --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Bricolage Grotesque Variable", "Bricolage Grotesque", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
   --t-xs: 11px;
   --t-sm: 12px;
   --t-13: 13px;

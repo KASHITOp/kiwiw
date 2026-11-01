@@ -1,21 +1,22 @@
 <div align="center">
 
-# 🥝 Kiwiw
+# Kiwiw
 
-### An original, browser-based design studio.
+### Plain idea in. Juicy design out.
 
-Drag-and-drop editing, templates, stock photos, and an AI **Magic Studio** —
-all in the browser. Inspired by the category (Canva, Figma, Adobe Express);
-every line is written from scratch, nothing copied.
+A browser design studio built around one idea: a kiwi is dull brown fuzz on the
+outside and electric green inside. Drag-and-drop editing, real templates and an
+AI **Magic Studio**, all client-side. Inspired by the category (Canva, Figma,
+Adobe Express); every line is written from scratch.
 
 **[▶ Live demo](https://kiwiw.vercel.app)** · [Report a bug](https://github.com/KASHITOp/kiwiw/issues)
 
 ![React](https://img.shields.io/badge/React-19-61dafb?logo=react&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?logo=typescript&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-8-646cff?logo=vite&logoColor=white)
-![License: MIT](https://img.shields.io/badge/license-MIT-7bc62d)
+![License: MIT](https://img.shields.io/badge/license-MIT-8BD630)
 
-![Kiwiw editor](docs/screenshot-editor.jpg)
+![Kiwiw landing: a kiwi cut in half next to a live mini-editor](docs/screenshot-landing.png)
 
 </div>
 
@@ -33,13 +34,26 @@ keys** — add your own keys to go live.
 
 ## Screenshots
 
-| Landing | Template picker |
+| Landing hero (scroll splits the kiwi) | Template picker |
 | --- | --- |
-| ![Landing](docs/screenshot-landing.jpg) | ![Templates](docs/screenshot-templates.jpg) |
+| ![Landing](docs/screenshot-landing.png) | ![Templates](docs/screenshot-templates.jpg) |
 
 | Editor with a selected element | Exported PNG |
 | --- | --- |
-| ![Editor](docs/screenshot-editor.jpg) | ![Exported design](docs/screenshot-export.png) |
+| ![Editor](docs/screenshot-editor.png) | ![Exported design](docs/screenshot-export.png) |
+
+The link-preview card below is itself a Kiwiw template ("Share Card"), exported
+with the editor's own PNG pipeline and served as the site's `og:image`.
+
+![Share card](public/og.png)
+
+## Design system
+
+Every visual decision lives in **[DESIGN.md](DESIGN.md)**: palette, the three
+type roles (Bricolage Grotesque, Inter, JetBrains Mono), the cut and seed
+motifs, labels and grain, components, motion rules and a strict list of don'ts.
+The hero's scroll scene, the template marquee and the three Magic demos are all
+built to it.
 
 ## Features
 
@@ -60,9 +74,10 @@ keys** — add your own keys to go live.
 - Upload your own images
 
 **Magic Studio (AI)**
-- ✍️ **Magic Write** — generate, rephrase, shorten or expand copy
-- 🎨 **Magic Media** — turn a text prompt into an image
-- 🪄 **Background Remover** — knock out an image background
+- **Magic Write**: generate, rephrase, shorten or expand copy
+- **Magic Media**: turn a text prompt into an image
+- **Background Remover**: knock out an image background
+- **Magic Resize**: in the oven (shown as a concept demo on the landing page)
 
 Every AI feature runs in **demo mode** with no key, and goes **live** when you add an API key.
 
