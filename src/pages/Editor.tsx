@@ -17,6 +17,7 @@ import { squeezeKiwis, useKonami } from "../personality/useKonami";
 import CheatSheet from "../editor/CheatSheet";
 import { listDesigns, useAutosave } from "../editor/autosave";
 import type { Element } from "../types";
+import { useMedia } from "../landing/useMedia";
 
 let clipboard: Element[] = [];
 const onSaveFail = () => toast("Autosave is full (big uploads?). Hit Save to keep a copy.");
@@ -36,6 +37,7 @@ export default function Editor() {
   const { zoom, setZoom, undo, redo, newDoc, doc } = useEditor();
   const [roasting, setRoasting] = useState(false);
   const [cheat, setCheat] = useState(false);
+  const phone = useMedia("(max-width: 759px)");
   useKonami(onKonami);
 
   // Fit + center whenever the page dimensions change (initial load, template open, resize).
@@ -122,6 +124,16 @@ export default function Editor() {
     a.click();
     toast("Saved as JSON. Future you says thanks.");
   };
+
+  if (phone) return (
+    <div className="phone-gate">
+      <KiwiLogo size={56} />
+      <h1>This editor needs elbow room.</h1>
+      <p>Dragging tiny handles on a phone is a crime we won't let you commit. Open Kiwiw on a laptop, or juice a line right here instead.</p>
+      <Link to="/" className="btn primary">Juice something on the landing page →</Link>
+      <span>Your designs autosave, so they'll be waiting on the big screen.</span>
+    </div>
+  );
 
   return (
     <div className="editor">

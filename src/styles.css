@@ -345,3 +345,8 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
 .lyr .lyr-actions { display: none; }
 .lyr:hover .lyr-actions, .lyr:focus-within .lyr-actions { display: flex; }
 .lyr-actions .icon-btn { width: 24px; height: 24px; }
+
+.phone-gate { min-height: 100%; display: grid; place-content: center; justify-items: start; gap: var(--s-4); padding: var(--s-6) var(--s-4); background: var(--g-0); }
+.phone-gate h1 { margin: 0; font-family: "Instrument Serif", serif; font-weight: 400; font-size: 44px; line-height: 1; letter-spacing: -0.01em; }
+.phone-gate p { margin: 0; color: var(--muted); line-height: 1.5; max-width: 34ch; }
+.phone-gate span { font-family: var(--font-mono); font-size: var(--t-xs); color: var(--faint); text-transform: uppercase; letter-spacing: 0.08em; }
