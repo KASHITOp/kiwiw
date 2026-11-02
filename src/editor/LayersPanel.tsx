@@ -4,6 +4,7 @@ import { useEditor } from "../store";
 import type { Element, KiwiwDoc } from "../types";
 import Thumb from "./Thumb";
 import { humanName } from "./names";
+import { contrast } from "../personality/roast";
 
 const typeIcon = (el: Element) =>
   el.type === "text" ? <Type size={14} /> : el.type === "image" ? <ImageIcon size={14} /> : el.type === "sticker" ? <Sparkles size={14} /> : <Square size={14} />;
@@ -11,7 +12,9 @@ const typeIcon = (el: Element) =>
 // a 1-element document, on the page colour, so the thumbnail shows just this
 // layer as it really looks. Very wide layers (lines of text) are cropped to
 // 2:1 from their aligned edge so the thumbnail stays legible.
-const miniDoc = (el: Element, bg: string): KiwiwDoc => {
+const miniDoc = (el: Element, page: string): KiwiwDoc => {
+  // light text on a light page (it usually sits on a sticker) would vanish: flip the backdrop
+  const bg = el.type === "text" && contrast(el.color, page) < 1.6 ? (contrast(el.color, "#0B0D08") > contrast(el.color, "#FFFFFF") ? "#0B0D08" : "#FFFFFF") : page;
   const w = Math.max(1, el.w), h = Math.max(1, el.h);
   const W = Math.min(w, h * 2.2), H = Math.min(h, w * 2.2);
   const align = el.type === "text" ? el.align : "center";
