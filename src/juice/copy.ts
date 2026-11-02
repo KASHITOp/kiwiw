@@ -18,7 +18,6 @@ const low = (s: string) => s.toLowerCase();
 
 export function writeCopy(style: StyleKey, idea: Idea, seed: number): JuiceCopy {
   const h = idea.headline;
-  const when = idea.when || "THIS WEEK";
   switch (style) {
     case "block":
       return {
