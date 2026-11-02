@@ -1,14 +1,18 @@
 import { useState } from "react";
-import { Type, Square, Image as ImageIcon, Eye, EyeOff, Lock, Unlock, ArrowUp, ArrowDown, Trash2, GripVertical } from "lucide-react";
+import { Type, Square, Image as ImageIcon, Sparkles, Eye, EyeOff, Lock, Unlock, ArrowUp, ArrowDown, Trash2, GripVertical } from "lucide-react";
 import { useEditor } from "../store";
+import { STICKER_MAP } from "../stickers/library";
 import type { Element, KiwiwDoc } from "../types";
 import Thumb from "./Thumb";
 
 const typeIcon = (el: Element) =>
-  el.type === "text" ? <Type size={14} /> : el.type === "image" ? <ImageIcon size={14} /> : <Square size={14} />;
+  el.type === "text" ? <Type size={14} /> : el.type === "image" ? <ImageIcon size={14} /> : el.type === "sticker" ? <Sparkles size={14} /> : <Square size={14} />;
 
 const defaultName = (el: Element) =>
-  el.type === "text" ? (el.text.trim().slice(0, 22) || "Text") : el.type === "image" ? "Image" : el.shape;
+  el.type === "text" ? (el.text.replace(/\s+/g, " ").trim().slice(0, 22) || "Text")
+    : el.type === "image" ? "Image"
+    : el.type === "sticker" ? (STICKER_MAP[el.kind]?.name ?? "Sticker")
+    : el.shape;
 
 // a 1-element document so the thumbnail shows just this layer's content
 const miniDoc = (el: Element): KiwiwDoc => ({

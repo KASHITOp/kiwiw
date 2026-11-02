@@ -1,6 +1,6 @@
 // Core data model for Kiwiw documents.
 
-export type ElementType = "text" | "shape" | "image";
+export type ElementType = "text" | "shape" | "image" | "sticker";
 
 export interface ElementBase {
   id: string;
@@ -28,6 +28,15 @@ export interface TextElement extends ElementBase {
   align: "left" | "center" | "right";
   lineHeight: number;
   letterSpacing: number;
+  /** Text effects (DESIGN.md §12). All optional. */
+  uppercase?: boolean;
+  outline?: { color: string; width: number } | null;
+  shadow?: { color: string; x: number; y: number } | null;
+  highlight?: { color: string } | null;
+  /** −100 (frown) … 100 (smile); 0 = straight. */
+  curve?: number;
+  /** Role hint used by Juice It, the Vibe slider and Roast. */
+  role?: "headline" | "sub" | "body" | "label" | "cta";
 }
 
 export type ShapeKind = "rect" | "ellipse" | "line" | "triangle";
@@ -48,7 +57,17 @@ export interface ImageElement extends ElementBase {
   fit: "cover" | "contain";
 }
 
-export type Element = TextElement | ShapeElement | ImageElement;
+export interface StickerElement extends ElementBase {
+  type: "sticker";
+  /** Key into the sticker library (src/stickers). */
+  kind: string;
+  fill: string;
+  accent: string;
+  ink: string;
+  flipX?: boolean;
+}
+
+export type Element = TextElement | ShapeElement | ImageElement | StickerElement;
 
 export interface KiwiwDoc {
   width: number;
@@ -63,4 +82,11 @@ export interface Template {
   category: string;
   thumbBg: string;
   doc: KiwiwDoc;
+  /** One-line joke shown on hover. */
+  description?: string;
+  /** Style direction from REFERENCES.md. */
+  style?: string;
+  /** Format label, e.g. "Instagram post". */
+  format?: string;
+  tags?: string[];
 }

@@ -163,3 +163,55 @@ Motion explains the cut. It never decorates.
 - **No straight or curved cuts,** and never more than one cut per screen.
 - **No text on the crack** or over the seed ring; annotate beside it.
 - **No layout that leaks the fold** at the verified viewports, and no horizontal scroll at 390px.
+
+The Don'ts above govern **Kiwiw's own chrome** (landing, editor UI). Template
+*content* follows the six directions in `REFERENCES.md`, which may use their own
+palettes (hot pink, marigold, peacock…). The gradient ban applies everywhere.
+
+---
+
+## 10 — Content type kit (what users design with)
+
+The brand UI stays on three faces (section 03). Designs get a bigger kit, all
+Google Fonts self-hosted via Fontsource so PNG export embeds them.
+
+| Group (picker label) | Faces | Use for |
+| --- | --- | --- |
+| Display · loud | Bricolage Grotesque, Anton, Archivo Black, Unbounded, Syne, Rubik Mono One | Headlines that need to be read from across a chai stall. |
+| Serif · fancy | Instrument Serif, Fraunces, DM Serif Display | Editorial headlines, one italic word. |
+| Hand · human | Caveat, Permanent Marker, Gochi Hand | Notes, scribbles, meme captions. |
+| Desi · apna | Baloo 2, Mukta, Tiro Devanagari Hindi | Hindi + Hinglish, Devanagari that actually renders. |
+| Mono · nerdy | JetBrains Mono, Space Mono | Labels, prices, timestamps. |
+| Clean · plain | Inter | Body copy. |
+
+- The picker previews every face **in itself** and snaps weight to the nearest real weight the face ships (no faux bold).
+- A design may use **three families max** before Roast My Design complains.
+
+---
+
+## 11 — Stickers
+
+All stickers are Kiwiw's own SVG, drawn or generated from seeded geometry.
+
+| Rule | Value |
+| --- | --- |
+| Colour slots | Every sticker exposes at most three: `fill`, `accent`, `ink`. Users recolour any of them. |
+| Line weight | Ink outlines at 3–4% of the sticker's short side; hand-drawn strokes use round caps and joins. |
+| Hand feel | Wobble comes from seeded jitter, so a sticker looks hand-drawn but renders identically every time. |
+| Fills | Flat colour. The only textures are halftone dots and grain, and those are stickers themselves. |
+| Categories | Basic shapes, Blobs, Bursts, Badges, Scribbles, Arrows, Tape & paper, Bubbles, Lines, Texture, Kiwi, Desi. |
+| Search | By name, category and tags. |
+
+Never: clip-art realism, gradients inside stickers, trademarked characters.
+
+---
+
+## 12 — Text effects
+
+| Effect | Spec |
+| --- | --- |
+| Outline | `-webkit-text-stroke`, painted behind the fill (`paint-order: stroke fill`), 1–24px. |
+| Hard shadow | Zero-blur `text-shadow`, offset only. Blurred shadows don't exist here. |
+| Highlight | A flat colour block behind each line (`box-decoration-break: clone`), marker-style padding. |
+| Curve | Text set on an SVG arc, −100 (frown) to +100 (smile); single line. |
+| Case | Sentence or ALL CAPS, as a toggle, never baked into the copy. |

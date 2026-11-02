@@ -1,6 +1,8 @@
 import { useEditor } from "../store";
-import { FONTS } from "../data/factory";
+import { nearestWeight } from "../fonts/kit";
+import { STICKER_MAP } from "../stickers/library";
 import { AlignLeft, AlignCenter, AlignRight, ArrowUp, ArrowDown, Copy, Trash2 } from "lucide-react";
+import FontPicker from "./FontPicker";
 
 const ICON = 16;
 
@@ -21,14 +23,12 @@ export default function FloatingToolbar() {
     <div className="float-toolbar" style={{ left: cx, top, transform: "translateX(-50%)" }} onPointerDown={(e) => e.stopPropagation()}>
       {el.type === "text" && (
         <>
-          <select value={el.fontFamily} onChange={(e) => up({ fontFamily: e.target.value })} title="Font">
-            {FONTS.map((f) => <option key={f} value={f}>{f}</option>)}
-          </select>
+          <FontPicker compact value={el.fontFamily} onChange={(family) => up({ fontFamily: family, fontWeight: nearestWeight(family, el.fontWeight) })} />
           <input type="number" value={Math.round(el.fontSize)} onChange={(e) => up({ fontSize: +e.target.value })} title="Font size" />
           <ColorChip value={el.color} onChange={(c) => up({ color: c })} />
           <span className="sep" />
           <button className={"icon-btn" + (el.align === "left" ? " on" : "")} title="Align left" onClick={() => up({ align: "left" })}><AlignLeft size={ICON} /></button>
-          <button className={"icon-btn" + (el.align === "center" ? " on" : "")} title="Align center" onClick={() => up({ align: "center" })}><AlignCenter size={ICON} /></button>
+          <button className={"icon-btn" + (el.align === "center" ? " on" : "")} title="Align centre" onClick={() => up({ align: "center" })}><AlignCenter size={ICON} /></button>
           <button className={"icon-btn" + (el.align === "right" ? " on" : "")} title="Align right" onClick={() => up({ align: "right" })}><AlignRight size={ICON} /></button>
           <span className="sep" />
         </>
@@ -39,18 +39,26 @@ export default function FloatingToolbar() {
           <span className="sep" />
         </>
       )}
+      {el.type === "sticker" && (
+        <>
+          {STICKER_MAP[el.kind]?.uses.map((slot) => (
+            <ColorChip key={slot} value={el[slot]} onChange={(c) => up({ [slot]: c } as Partial<typeof el>)} title={slot} />
+          ))}
+          {!!STICKER_MAP[el.kind]?.uses.length && <span className="sep" />}
+        </>
+      )}
 
       <button className="icon-btn" title="Bring forward" onClick={() => reorder(el.id, "forward")}><ArrowUp size={ICON} /></button>
       <button className="icon-btn" title="Send backward" onClick={() => reorder(el.id, "backward")}><ArrowDown size={ICON} /></button>
-      <button className="icon-btn" title="Duplicate" onClick={() => duplicateElement(el.id)}><Copy size={ICON} /></button>
-      <button className="icon-btn" title="Delete" onClick={() => removeElement(el.id)}><Trash2 size={ICON} /></button>
+      <button className="icon-btn" title="Duplicate (Ctrl+D)" onClick={() => duplicateElement(el.id)}><Copy size={ICON} /></button>
+      <button className="icon-btn" title="Delete. It had a good run." onClick={() => removeElement(el.id)}><Trash2 size={ICON} /></button>
     </div>
   );
 }
 
-function ColorChip({ value, onChange }: { value: string; onChange: (c: string) => void }) {
+function ColorChip({ value, onChange, title = "Color" }: { value: string; onChange: (c: string) => void; title?: string }) {
   return (
-    <label className="mini-chip" style={{ background: value, position: "relative", cursor: "pointer", display: "inline-block" }} title="Color">
+    <label className="mini-chip" style={{ background: value, position: "relative", cursor: "pointer", display: "inline-block" }} title={title}>
       <input type="color" value={value} onChange={(e) => onChange(e.target.value)} style={{ position: "absolute", inset: 0, opacity: 0, cursor: "pointer", width: "100%", height: "100%" }} />
     </label>
   );
