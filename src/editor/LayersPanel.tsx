@@ -43,7 +43,7 @@ export default function LayersPanel() {
   return (
     <>
       <h4 className="sub-h">Layers</h4>
-      {layers.length === 0 && <div className="empty">No layers yet.<br />Add something from the left.</div>}
+      {layers.length === 0 && <div className="empty">No layers yet. It's lonely in here.<br />Add something from the left.</div>}
       {layers.map((el) => (
         <div
           key={el.id}

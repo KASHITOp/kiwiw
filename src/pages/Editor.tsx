@@ -1,13 +1,22 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toPng } from "html-to-image";
-import { Undo2, Redo2, Minus, Plus, Maximize2, Download, Braces } from "lucide-react";
+import { Undo2, Redo2, Minus, Plus, Maximize2, Download, Braces, Flame } from "lucide-react";
 import KiwiLogo from "../brand/KiwiLogo";
 import { useEditor } from "../store";
 import Canvas from "../editor/Canvas";
 import LeftPanel from "../editor/LeftPanel";
 import PropertiesPanel from "../editor/PropertiesPanel";
 import LayersPanel from "../editor/LayersPanel";
+import VibeBar from "../editor/VibeBar";
+import RoastPanel from "../editor/RoastPanel";
+import Toaster from "../personality/Toaster";
+import KiwiMascot from "../personality/KiwiMascot";
+import { react, toast, oops } from "../personality/bus";
+import { squeezeKiwis, useKonami } from "../personality/useKonami";
+
+const EXPORT_LINES = ["Exported. It's juicy.", "Exported. Go post it before you overthink it.", "Exported. Fresh off the vine.", "Exported. The kiwi is proud of you."];
+const onKonami = () => { squeezeKiwis(); react("squeeze", "↑↑↓↓←→←→BA. I felt that. In my seeds."); };
 
 const SIZES = [
   { label: "Square 1080", w: 1080, h: 1080 },
@@ -19,6 +28,8 @@ const SIZES = [
 
 export default function Editor() {
   const { zoom, setZoom, undo, redo, newDoc, doc, selectedId, removeElement, duplicateElement } = useEditor();
+  const [roasting, setRoasting] = useState(false);
+  useKonami(onKonami);
 
   // Fit + center whenever the page dimensions change (initial load, template open, resize).
   useEffect(() => { setZoom(fitZoom(doc.width, doc.height)); /* eslint-disable-next-line */ }, [doc.width, doc.height]);
@@ -50,8 +61,10 @@ export default function Editor() {
       a.href = url;
       a.download = "kiwiw-design.png";
       a.click();
+      toast(EXPORT_LINES[Math.floor(Math.random() * EXPORT_LINES.length)]);
+      react("proud");
     } catch (e) {
-      alert("Export failed: " + (e as Error).message);
+      oops("Export", e);
     } finally {
       node.style.transform = prev;
     }
@@ -63,6 +76,7 @@ export default function Editor() {
     a.href = URL.createObjectURL(blob);
     a.download = "kiwiw-design.json";
     a.click();
+    toast("Saved as JSON. Future you says thanks.");
   };
 
   return (
@@ -72,8 +86,8 @@ export default function Editor() {
           <KiwiLogo size={26} /> Kiwiw
         </Link>
         <span className="sep" />
-        <button className="icon-btn" title="Undo (Ctrl+Z)" onClick={undo}><Undo2 size={18} /></button>
-        <button className="icon-btn" title="Redo (Ctrl+Y)" onClick={redo}><Redo2 size={18} /></button>
+        <button className="icon-btn" title="Undo (Ctrl+Z). Tiny time travel." onClick={undo}><Undo2 size={18} /></button>
+        <button className="icon-btn" title="Redo (Ctrl+Y). Un-undo." onClick={redo}><Redo2 size={18} /></button>
         <select
           className="btn sm"
           style={{ width: "auto", paddingRight: "var(--s-6)" }}
@@ -85,14 +99,19 @@ export default function Editor() {
         </select>
 
         <div className="spacer" />
+        <VibeBar />
+        <button className={"btn sm roast-btn" + (roasting ? " on" : "")} onClick={() => setRoasting((r) => !r)} title="Roast my design. Honest feedback, one-click fixes." disabled={!doc.elements.length}>
+          <Flame size={16} /> Roast
+        </button>
+        <div className="spacer" />
 
         <button className="icon-btn" title="Zoom out" onClick={() => setZoom(zoom - 0.1)}><Minus size={18} /></button>
         <span className="zoom">{Math.round(zoom * 100)}%</span>
         <button className="icon-btn" title="Zoom in" onClick={() => setZoom(zoom + 0.1)}><Plus size={18} /></button>
-        <button className="icon-btn" title="Fit to screen" onClick={() => setZoom(fitZoom(doc.width, doc.height))}><Maximize2 size={18} /></button>
+        <button className="icon-btn" title="Fit to screen. Find your page again." onClick={() => setZoom(fitZoom(doc.width, doc.height))}><Maximize2 size={18} /></button>
 
         <span className="sep" />
-        <button className="btn sm" onClick={exportJson}><Braces size={16} /> Save</button>
+        <button className="btn sm" onClick={exportJson} title="Download the design as JSON"><Braces size={16} /> Save</button>
         <button className="btn primary sm" onClick={exportPng}><Download size={16} /> Export PNG</button>
       </div>
 
@@ -103,7 +122,10 @@ export default function Editor() {
           <PropertiesPanel />
           <LayersPanel />
         </div>
+        {roasting && <RoastPanel onClose={() => setRoasting(false)} />}
+        <KiwiMascot />
       </div>
+      <Toaster />
     </div>
   );
 }

@@ -23,6 +23,8 @@ interface EditorState {
 
   // mutations
   loadDoc: (doc: KiwiwDoc) => void;
+  /** Swap the whole doc, keeping selection; pass record=true to checkpoint first. */
+  replaceDoc: (doc: KiwiwDoc, record?: boolean) => void;
   newDoc: (width: number, height: number) => void;
   addElement: (el: Omit<Element, "id">) => void;
   updateElement: (id: string, patch: Partial<Element>, record?: boolean) => void;
@@ -48,6 +50,11 @@ export const useEditor = create<EditorState>((set, get) => ({
 
   loadDoc: (doc) =>
     set({ doc: clone(doc), selectedId: null, history: { past: [], future: [] } }),
+
+  replaceDoc: (doc, record = false) => {
+    if (record) get().commit();
+    set((s) => ({ doc, selectedId: doc.elements.some((e) => e.id === s.selectedId) ? s.selectedId : null }));
+  },
 
   newDoc: (width, height) =>
     set({

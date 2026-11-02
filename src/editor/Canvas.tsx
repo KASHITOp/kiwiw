@@ -79,6 +79,12 @@ export default function Canvas() {
     <div className="stage" onPointerDown={() => select(null)}>
       <div style={{ width: doc.width * zoom, height: doc.height * zoom, margin: 40, flex: "none", position: "relative" }}>
       <FloatingToolbar />
+      {!doc.elements.length && (
+        <div className="canvas-empty" aria-hidden="true">
+          <b>A blank page is just a poster with stage fright.</b>
+          <span>Pick a template, or Juice It one boring line.</span>
+        </div>
+      )}
       <div
         ref={canvasRef}
         className="canvas"

@@ -216,3 +216,21 @@ Never: clip-art realism, gradients inside stickers, trademarked characters.
 | Highlight | A flat colour block behind each line (`box-decoration-break: clone`), marker-style padding. |
 | Curve | Text set on an SVG arc, −100 (frown) to +100 (smile); single line. |
 | Case | Sentence or ALL CAPS, as a toggle, never baked into the copy. |
+
+---
+
+## 13 — Personality
+
+Funny, never confusing. The joke rides along with the instruction; it never replaces it.
+
+| Surface | Rule | Example |
+| --- | --- | --- |
+| Microcopy | Say what happened first, then the aside. ≤ 12 words. | "Exported. It's juicy." |
+| Errors | What broke, what to do, then a light line. Never blame the user. | "Export tripped over a seed. Try again?" |
+| Empty states | Invite one specific action. | "A blank page is just a poster with stage fright." |
+| Roast My Design | Roast the design, never the person. Every roast names the problem plainly and offers a one-click **Fix it**. | "Everything is centred. Bold choice. By which we mean default." |
+| Vibe slider | One axis, Corporate ⇄ Unhinged, in five steps: Corporate, Polished, Neutral, Spicy, Unhinged. It changes copy tone, font choice, sticker density and rotation chaos. Neutral is always the original. | — |
+| Mascot | A happy kiwi in the editor corner. It reacts only to real events (comic-energy fonts, roast results, exports, the Konami code) and never blocks anything. | "Comic Sans energy detected." |
+| Easter eggs | Konami code squeezes the kiwi; the seed counter; the mascot. No more. | — |
+
+Toasts: bottom-centre, ink pill, 2.6s, one at a time, `aria-live="polite"`.

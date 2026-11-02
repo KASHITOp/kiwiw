@@ -3,6 +3,7 @@ import { PenLine, ImagePlus, Eraser } from "lucide-react";
 import { useEditor } from "../store";
 import { makeText, makeImage } from "../data/factory";
 import { magicWrite, magicImage, removeBackground, keys, type WriteMode } from "../ai/provider";
+import { oops } from "../personality/bus";
 
 export default function AIPanel() {
   return (
@@ -29,7 +30,7 @@ function MagicWrite() {
   const run = async () => {
     setBusy(true); setOut("");
     try { setOut(await magicWrite(prompt, mode)); }
-    catch (e) { setOut("Error: " + (e as Error).message); }
+    catch (e) { setOut(""); oops("Magic Write", e); }
     finally { setBusy(false); }
   };
 
@@ -66,7 +67,7 @@ function MagicImage() {
   const run = async () => {
     setBusy(true); setSrc("");
     try { setSrc(await magicImage(prompt)); }
-    catch (e) { alert("Error: " + (e as Error).message); }
+    catch (e) { oops("Magic Media", e); }
     finally { setBusy(false); }
   };
 
@@ -98,7 +99,7 @@ function MagicBgRemove() {
     try {
       const out = await removeBackground((el as { src: string }).src);
       updateElement(el!.id, { src: out });
-    } catch (e) { alert("Error: " + (e as Error).message); }
+    } catch (e) { oops("Background remover", e); }
     finally { setBusy(false); }
   };
 
