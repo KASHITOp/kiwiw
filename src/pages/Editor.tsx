@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toPng } from "html-to-image";
-import { Undo2, Redo2, Minus, Plus, Maximize2, Download, Braces, Flame, Keyboard } from "lucide-react";
+import { Undo2, Redo2, Download, Braces, Flame, Keyboard } from "lucide-react";
+import { fitZoom } from "../editor/zoom";
 import KiwiLogo from "../brand/KiwiLogo";
 import { useEditor } from "../store";
 import Canvas from "../editor/Canvas";
@@ -34,7 +35,7 @@ const SIZES = [
 ];
 
 export default function Editor() {
-  const { zoom, setZoom, undo, redo, newDoc, doc } = useEditor();
+  const { setZoom, undo, redo, newDoc, doc } = useEditor();
   const [roasting, setRoasting] = useState(false);
   const [cheat, setCheat] = useState(false);
   const phone = useMedia("(max-width: 759px)");
@@ -162,11 +163,6 @@ export default function Editor() {
         <div className="spacer" />
 
         <button className="icon-btn" title="Shortcuts (?)" onClick={() => setCheat(true)}><Keyboard size={18} /></button>
-        <button className="icon-btn" title="Zoom out" onClick={() => setZoom(zoom - 0.1)}><Minus size={18} /></button>
-        <span className="zoom">{Math.round(zoom * 100)}%</span>
-        <button className="icon-btn" title="Zoom in" onClick={() => setZoom(zoom + 0.1)}><Plus size={18} /></button>
-        <button className="icon-btn" title="Fit to screen. Find your page again." onClick={() => setZoom(fitZoom(doc.width, doc.height))}><Maximize2 size={18} /></button>
-
         <span className="sep" />
         <button className="btn sm" onClick={exportJson} title="Download the design as JSON"><Braces size={16} /> Save</button>
         <button className="btn primary sm" onClick={exportPng}><Download size={16} /> Export PNG</button>
@@ -186,12 +182,4 @@ export default function Editor() {
       <Toaster />
     </div>
   );
-}
-
-/** Fit the page inside the stage that's actually on screen (panels may be collapsed). */
-export function fitZoom(w: number, h: number) {
-  const st = document.querySelector(".stage") as HTMLElement | null;
-  const availW = (st?.clientWidth ?? window.innerWidth - 56 - 320 - 300) - 96;
-  const availH = (st?.clientHeight ?? window.innerHeight - 52) - 120; // room for the zoom pill
-  return Math.max(0.1, Math.min(1, Math.min(availW / w, availH / h)));
 }

@@ -4,6 +4,8 @@ import type { Element } from "../types";
 import ElementContent from "./ElementContent";
 import FloatingToolbar from "./FloatingToolbar";
 import { snap, unionBox, type Box, type Guide } from "./snap";
+import { Minus, Plus, Maximize2 } from "lucide-react";
+import { fitZoom } from "./zoom";
 
 type Handle = "nw" | "n" | "ne" | "e" | "se" | "s" | "sw" | "w";
 const HANDLES: Handle[] = ["nw", "n", "ne", "e", "se", "s", "sw", "w"];
@@ -31,7 +33,7 @@ interface Drag {
 }
 
 export default function Canvas() {
-  const { doc, zoom, selectedId, selectedIds, select, selectMany, updateElement, updateMany, commit } = useEditor();
+  const { doc, zoom, setZoom, selectedId, selectedIds, select, selectMany, updateElement, updateMany, commit } = useEditor();
   const canvasRef = useRef<HTMLDivElement>(null);
   const drag = useRef<Drag | null>(null);
   const [guides, setGuides] = useState<Guide[]>([]);
@@ -142,7 +144,7 @@ export default function Canvas() {
 
   return (
     <div className="stage" onPointerDown={startMarquee}>
-      <div style={{ width: doc.width * zoom, height: doc.height * zoom, margin: 40, flex: "none", position: "relative" }}>
+      <div className="sheet" style={{ width: doc.width * zoom, height: doc.height * zoom }}>
       <FloatingToolbar />
       {!doc.elements.length && (
         <div className="canvas-empty" aria-hidden="true">
@@ -253,6 +255,16 @@ export default function Canvas() {
             );
           })()}
       </div>
+      </div>
+      {/* zoom pill (DESIGN.md §15): bottom-centre, clear of the mascot */}
+      <div className="zoom-pill" onPointerDown={(e) => e.stopPropagation()}>
+        <button onClick={() => setZoom(zoom / 1.2)} title="Zoom out" aria-label="Zoom out"><Minus size={15} /></button>
+        <button className="zp-pct" onClick={() => setZoom(1)} title="Reset to 100%">{Math.round(zoom * 100)}%</button>
+        <button onClick={() => setZoom(zoom * 1.2)} title="Zoom in" aria-label="Zoom in"><Plus size={15} /></button>
+        <span className="zp-sep" />
+        <button onClick={() => setZoom(fitZoom(doc.width, doc.height))} title="Fit to screen. Find your page again." aria-label="Fit to screen"><Maximize2 size={14} /></button>
+        <span className="zp-sep" />
+        <span className="zp-size">{doc.width} × {doc.height}</span>
       </div>
     </div>
   );
