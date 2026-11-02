@@ -43,7 +43,8 @@ export function useAutosave(onFail: () => void) {
     let t: ReturnType<typeof setTimeout> | undefined;
     let failed = false;
     const unsub = useEditor.subscribe((s, prev) => {
-      if (s.doc === prev.doc && s.designId === prev.designId) return;
+      // only real edits count: opening a template (new designId) is not a design yet (DESIGN.md §15)
+      if (s.doc === prev.doc || s.designId !== prev.designId) return;
       clearTimeout(t);
       t = setTimeout(() => {
         const { doc, designId } = useEditor.getState();

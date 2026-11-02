@@ -7,8 +7,7 @@ import { TEXT_PRESETS, placeText, makeSticker, type TextPreset } from "../data/p
 import { STICKER_CATEGORIES, searchStickers, type StickerCategory } from "../stickers/library";
 import StickerArt from "../stickers/StickerArt";
 import ElementContent from "./ElementContent";
-import Thumb from "./Thumb";
-import { removeDesign, useDesigns } from "./autosave";
+import TemplatesTab from "./TemplatesTab";
 import AIPanel from "./AIPanel";
 import AssetPanel from "./AssetPanel";
 import JuicePanel from "../juice/JuicePanel";
@@ -130,57 +129,6 @@ const match = (q: string, ...hay: (string | undefined)[]) => {
 
 function NoMatch({ q, tryThis }: { q: string; tryThis: string }) {
   return <div className="empty">Nothing matches "{q}". Try {tryThis}. Or don't, we're a panel, not a cop.</div>;
-}
-
-function MyDesigns({ q }: { q: string }) {
-  const loadDoc = useEditor((s) => s.loadDoc);
-  const current = useEditor((s) => s.designId);
-  const list = useDesigns().filter((d) => match(q, d.name));
-  if (!list.length) return null;
-  return (
-    <>
-      <h4>My designs <span className="count">{list.length}</span></h4>
-      <div className="tpl-grid mine">
-        {list.map((d) => (
-          <div key={d.id} className={"tpl" + (d.id === current ? " current" : "")} onClick={() => loadDoc(d.doc, d.id)} title={`${d.name} · ${ago(d.updated)}`}>
-            <Thumb doc={d.doc} />
-            <div className="tpl-label"><b>{d.name}</b><span>{d.id === current ? "Editing now" : ago(d.updated)}</span></div>
-            <button className="mine-x" title="Delete this design. It had a good run." onClick={(e) => { e.stopPropagation(); removeDesign(d.id); }}><X size={12} /></button>
-          </div>
-        ))}
-      </div>
-      <h4 className="sub-h">Templates</h4>
-    </>
-  );
-}
-
-function ago(t: number) {
-  const m = Math.round((Date.now() - t) / 60000);
-  return m < 1 ? "Just now" : m < 60 ? `${m} min ago` : m < 1440 ? `${Math.round(m / 60)} h ago` : `${Math.round(m / 1440)} d ago`;
-}
-
-function TemplatesTab({ q }: { q: string }) {
-  const loadDoc = useEditor((s) => s.loadDoc);
-  const mine = useDesigns().length > 0;
-  const list = TEMPLATES.filter((t) => match(q, t.name, t.description, t.category, t.style, ...(t.tags ?? [])));
-  return (
-    <>
-      <MyDesigns q={q} />
-      {!mine && <h4>Templates</h4>}
-      {!list.length && <NoMatch q={q} tryThis={'"poster", "desi" or "resume"'} />}
-      <div className="tpl-grid">
-        {list.map((t) => (
-          <div key={t.id} className="tpl" onClick={() => loadDoc(t.doc)} title={t.description ? `${t.name}: ${t.description}` : t.name}>
-            <Thumb doc={t.doc} />
-            <div className="tpl-label">
-              <b>{t.name}</b>
-              {t.description && <span>{t.description}</span>}
-            </div>
-          </div>
-        ))}
-      </div>
-    </>
-  );
 }
 
 /* ---------------- Text presets ---------------- */
