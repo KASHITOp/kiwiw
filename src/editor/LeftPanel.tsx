@@ -1,5 +1,5 @@
-import { useMemo, useRef, useState } from "react";
-import { LayoutTemplate, Shapes, Type, Image as ImageIcon, Upload, Sparkles, Search, Citrus } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { LayoutTemplate, Shapes, Type, Image as ImageIcon, Upload, Sparkles, Search, Citrus, X } from "lucide-react";
 import { useEditor } from "../store";
 import { makeShape, makeImage } from "../data/factory";
 import { TEMPLATES } from "../data/templates";
@@ -8,6 +8,7 @@ import { STICKER_CATEGORIES, searchStickers, type StickerCategory } from "../sti
 import StickerArt from "../stickers/StickerArt";
 import ElementContent from "./ElementContent";
 import Thumb from "./Thumb";
+import { removeDesign, useDesigns } from "./autosave";
 import AIPanel from "./AIPanel";
 import AssetPanel from "./AssetPanel";
 import JuicePanel from "../juice/JuicePanel";
@@ -27,6 +28,12 @@ const TABS: { id: Tab; icon: React.ReactNode; label: string }[] = [
 
 export default function LeftPanel() {
   const [tab, setTab] = useState<Tab>("templates");
+  // "/" jumps to sticker search (DESIGN.md §14)
+  useEffect(() => {
+    const go = () => { setTab("elements"); setTimeout(() => document.getElementById("sticker-search")?.focus(), 30); };
+    window.addEventListener("kiwiw:search", go);
+    return () => window.removeEventListener("kiwiw:search", go);
+  }, []);
   return (
     <>
       <div className="rail">
@@ -50,11 +57,40 @@ export default function LeftPanel() {
   );
 }
 
-function TemplatesTab() {
+function MyDesigns() {
   const loadDoc = useEditor((s) => s.loadDoc);
+  const current = useEditor((s) => s.designId);
+  const list = useDesigns();
+  if (!list.length) return null;
   return (
     <>
-      <h4>Templates</h4>
+      <h4>My designs <span className="count">{list.length}</span></h4>
+      <div className="tpl-grid mine">
+        {list.map((d) => (
+          <div key={d.id} className={"tpl" + (d.id === current ? " current" : "")} onClick={() => loadDoc(d.doc, d.id)} title={`${d.name} · ${ago(d.updated)}`}>
+            <Thumb doc={d.doc} />
+            <div className="tpl-label"><b>{d.name}</b><span>{d.id === current ? "Editing now" : ago(d.updated)}</span></div>
+            <button className="mine-x" title="Delete this design. It had a good run." onClick={(e) => { e.stopPropagation(); removeDesign(d.id); }}><X size={12} /></button>
+          </div>
+        ))}
+      </div>
+      <h4 className="sub-h">Templates</h4>
+    </>
+  );
+}
+
+function ago(t: number) {
+  const m = Math.round((Date.now() - t) / 60000);
+  return m < 1 ? "Just now" : m < 60 ? `${m} min ago` : m < 1440 ? `${Math.round(m / 60)} h ago` : `${Math.round(m / 1440)} d ago`;
+}
+
+function TemplatesTab() {
+  const loadDoc = useEditor((s) => s.loadDoc);
+  const mine = useDesigns().length > 0;
+  return (
+    <>
+      <MyDesigns />
+      {!mine && <h4>Templates</h4>}
       <div className="tpl-grid">
         {TEMPLATES.map((t) => (
           <div key={t.id} className="tpl" onClick={() => loadDoc(t.doc)} title={t.description ? `${t.name}: ${t.description}` : t.name}>

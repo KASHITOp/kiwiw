@@ -14,6 +14,8 @@ export interface ElementBase {
   locked?: boolean;
   hidden?: boolean;
   name?: string;
+  /** Elements sharing a groupId select and move together. */
+  groupId?: string;
 }
 
 export interface TextElement extends ElementBase {

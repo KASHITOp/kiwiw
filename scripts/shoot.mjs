@@ -29,6 +29,21 @@ for (const s of spec) {
     if (st.press) await page.keyboard.press(st.press);
     if (st.type) await page.keyboard.type(st.type);
     if (st.wait) await page.waitForTimeout(st.wait);
+    // mouse: [["move", x, y, steps?], ["down"], ["up"]], with optional "shift"/"alt" held
+    if (st.mouse) for (const [op, x, y, n] of st.mouse) {
+      if (op === "move") await page.mouse.move(x, y, { steps: n ?? 1 });
+      else if (op === "down") await page.mouse.down();
+      else if (op === "up") await page.mouse.up();
+      else if (op === "keydown") await page.keyboard.down(x);
+      else if (op === "keyup") await page.keyboard.up(x);
+    }
+    if (st.dragTo) { // drag an element's centre by dx,dy without releasing
+      const b = await page.locator(st.dragTo.selector).first().boundingBox();
+      const x = b.x + b.width / 2, y = b.y + b.height / 2;
+      await page.mouse.move(x, y); await page.mouse.down();
+      await page.mouse.move(x + st.dragTo.dx, y + st.dragTo.dy, { steps: 12 });
+      if (st.dragTo.release) await page.mouse.up();
+    }
   }
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(s.settle ?? 250);

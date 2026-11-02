@@ -315,3 +315,33 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
 @media (prefers-reduced-motion: reduce) {
   .mascot-btn, .toast, .mascot-say, .roast, .kiwi-squeeze .brand svg, .kiwi-squeeze .hero-kiwi { animation: none !important; }
 }
+
+/* ---------- Editor mechanics (DESIGN.md §14) ---------- */
+.multi-box { position: absolute; border: 0 dashed var(--accent); border-style: dashed; pointer-events: none; z-index: 9; }
+.marquee { position: absolute; background: rgba(139, 214, 48, 0.12); border: 0 dashed var(--accent); border-style: dashed; pointer-events: none; z-index: 11; }
+.guides { position: absolute; inset: 0; pointer-events: none; z-index: 12; overflow: visible; }
+.side h4 .count { color: var(--faint); margin-left: 4px; }
+.tpl-grid.mine { margin-bottom: var(--s-2); }
+.tpl-grid.mine .tpl { position: relative; }
+.tpl-grid.mine .tpl.current { outline: 2px solid var(--accent); outline-offset: 2px; }
+.mine-x { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; display: grid; place-items: center; border-radius: 50%; border: 0; background: rgba(11, 13, 8, 0.8); color: var(--text); opacity: 0; transition: opacity var(--tr); }
+.tpl:hover .mine-x, .mine-x:focus-visible { opacity: 1; }
+.mine-x:hover { background: #FF3B1F; }
+
+.cheat-scrim { position: fixed; inset: 0; z-index: 80; background: rgba(5, 6, 4, 0.6); display: grid; place-items: center; padding: var(--s-4); animation: fade-in 0.15s both; }
+@keyframes fade-in { from { opacity: 0; } }
+.cheat { width: min(620px, 100%); max-height: 90vh; overflow: auto; background: var(--g-1); border: 1px solid var(--border-2); border-radius: var(--r-lg); box-shadow: var(--shadow-md); animation: toast-in 0.3s cubic-bezier(.2, 1.3, .4, 1) both; }
+.cheat header { display: flex; align-items: flex-start; justify-content: space-between; padding: var(--s-4) var(--s-5); border-bottom: 1px solid var(--border); }
+.cheat header b { display: block; font-family: "Instrument Serif", serif; font-weight: 400; font-size: 28px; line-height: 1.1; }
+.cheat header span { font-size: var(--t-13); color: var(--muted); }
+.cheat dl { margin: 0; padding: var(--s-4) var(--s-5); display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-2) var(--s-6); }
+.cheat dl div { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); padding: 6px 0; border-bottom: 1px dashed var(--border); }
+.cheat dt { display: flex; gap: 4px; flex: none; }
+.cheat dd { margin: 0; font-size: var(--t-13); color: var(--muted); text-align: right; }
+.cheat kbd { font-family: var(--font-mono); font-size: 11px; min-width: 22px; text-align: center; padding: 3px 6px; border-radius: 5px; background: var(--g-3); border: 1px solid var(--border-2); border-bottom-width: 2px; color: var(--text); }
+.cheat footer { padding: var(--s-3) var(--s-5) var(--s-4); font-size: var(--t-13); color: #FF3FA4; }
+@media (max-width: 560px) { .cheat dl { grid-template-columns: 1fr; } }
+/* layer rows: the name gets the room; actions show on hover/selection */
+.lyr .lyr-actions { display: none; }
+.lyr:hover .lyr-actions, .lyr:focus-within .lyr-actions { display: flex; }
+.lyr-actions .icon-btn { width: 24px; height: 24px; }

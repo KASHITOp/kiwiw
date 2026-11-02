@@ -234,3 +234,15 @@ Funny, never confusing. The joke rides along with the instruction; it never repl
 | Easter eggs | Konami code squeezes the kiwi; the seed counter; the mascot. No more. | — |
 
 Toasts: bottom-centre, ink pill, 2.6s, one at a time, `aria-live="polite"`.
+
+## 14 — Editor mechanics
+
+The canvas should feel like it wants to help.
+
+| Mechanic | Rule |
+| --- | --- |
+| Snapping | Drag snaps to page edges and centre and to other elements' edges and centres within **6 screen px**. Edge/centre guides are **pink `#FF3D9A`**, 1 screen px. Equal-spacing guides are **lime `#D8F27A`** with a small gap marker on both sides. Hold **Alt** to drag freely. |
+| Multi-select | Shift-click toggles. Dragging on empty canvas draws a marquee (kiwi-tint fill, dashed kiwi border). Multiple selection shows one dashed bounding box; resize handles only for a single element. |
+| Groups | Ctrl+G groups the selection; clicking any member selects the whole group. Ctrl+Shift+G ungroups. |
+| Shortcuts | Ctrl+D duplicate · arrows nudge 1px (Shift 10px) · Delete · Ctrl+G / Ctrl+Shift+G · Ctrl+C / Ctrl+V · Ctrl+Z / Ctrl+Y · Ctrl+A · Esc · `/` search stickers · `?` cheat sheet. |
+| Autosave | Every change saves to localStorage after 600ms idle. "My designs" in the Design tab lists up to 24, newest first. Opening /editor with nothing loaded restores the last design. |

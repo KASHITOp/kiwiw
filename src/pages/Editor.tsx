@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toPng } from "html-to-image";
-import { Undo2, Redo2, Minus, Plus, Maximize2, Download, Braces, Flame } from "lucide-react";
+import { Undo2, Redo2, Minus, Plus, Maximize2, Download, Braces, Flame, Keyboard } from "lucide-react";
 import KiwiLogo from "../brand/KiwiLogo";
 import { useEditor } from "../store";
 import Canvas from "../editor/Canvas";
@@ -14,6 +14,12 @@ import Toaster from "../personality/Toaster";
 import KiwiMascot from "../personality/KiwiMascot";
 import { react, toast, oops } from "../personality/bus";
 import { squeezeKiwis, useKonami } from "../personality/useKonami";
+import CheatSheet from "../editor/CheatSheet";
+import { listDesigns, useAutosave } from "../editor/autosave";
+import type { Element } from "../types";
+
+let clipboard: Element[] = [];
+const onSaveFail = () => toast("Autosave is full (big uploads?). Hit Save to keep a copy.");
 
 const EXPORT_LINES = ["Exported. It's juicy.", "Exported. Go post it before you overthink it.", "Exported. Fresh off the vine.", "Exported. The kiwi is proud of you."];
 const onKonami = () => { squeezeKiwis(); react("squeeze", "↑↑↓↓←→←→BA. I felt that. In my seeds."); };
@@ -27,26 +33,64 @@ const SIZES = [
 ];
 
 export default function Editor() {
-  const { zoom, setZoom, undo, redo, newDoc, doc, selectedId, removeElement, duplicateElement } = useEditor();
+  const { zoom, setZoom, undo, redo, newDoc, doc } = useEditor();
   const [roasting, setRoasting] = useState(false);
+  const [cheat, setCheat] = useState(false);
   useKonami(onKonami);
 
   // Fit + center whenever the page dimensions change (initial load, template open, resize).
   useEffect(() => { setZoom(fitZoom(doc.width, doc.height)); /* eslint-disable-next-line */ }, [doc.width, doc.height]);
 
+  // Opening /editor with nothing loaded brings back the last design.
+  useEffect(() => {
+    const st = useEditor.getState();
+    if (st.doc.elements.length || st.history.past.length) return;
+    const last = listDesigns()[0];
+    if (last) { st.loadDoc(last.doc, last.id); toast("Welcome back. Your design waited for you."); }
+  }, []);
+  useAutosave(onSaveFail);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      const tag = (e.target as HTMLElement)?.tagName;
-      if (tag === "INPUT" || tag === "TEXTAREA") return;
+      const t = e.target as HTMLElement;
+      if (t?.tagName === "INPUT" || t?.tagName === "TEXTAREA" || t?.tagName === "SELECT" || t?.isContentEditable) return;
+      const st = useEditor.getState();
       const mod = e.ctrlKey || e.metaKey;
-      if (mod && e.key.toLowerCase() === "z" && !e.shiftKey) { e.preventDefault(); undo(); }
-      else if (mod && (e.key.toLowerCase() === "y" || (e.key.toLowerCase() === "z" && e.shiftKey))) { e.preventDefault(); redo(); }
-      else if (mod && e.key.toLowerCase() === "d" && selectedId) { e.preventDefault(); duplicateElement(selectedId); }
-      else if ((e.key === "Delete" || e.key === "Backspace") && selectedId) { e.preventDefault(); removeElement(selectedId); }
+      const k = e.key.toLowerCase();
+      const has = st.selectedIds.length > 0;
+      if (mod && k === "z" && !e.shiftKey) { e.preventDefault(); st.undo(); }
+      else if (mod && (k === "y" || (k === "z" && e.shiftKey))) { e.preventDefault(); st.redo(); }
+      else if (mod && k === "d") { e.preventDefault(); if (has) st.duplicateSelected(); }
+      else if (mod && k === "a") { e.preventDefault(); st.selectMany(st.doc.elements.filter((x) => !x.hidden && !x.locked).map((x) => x.id)); }
+      else if (mod && k === "g" && e.shiftKey) { e.preventDefault(); if (has) { st.ungroup(); toast("Ungrouped. Creative differences."); } }
+      else if (mod && k === "g") { e.preventDefault(); if (st.selectedIds.length > 1) { st.group(); toast("Grouped. They're a band now."); } }
+      else if (mod && k === "c") {
+        if (!has) return;
+        clipboard = st.doc.elements.filter((x) => st.selectedIds.includes(x.id)).map((x) => JSON.parse(JSON.stringify(x)));
+        toast(clipboard.length > 1 ? `Copied ${clipboard.length} things.` : "Copied.");
+      }
+      else if (mod && k === "x") {
+        if (!has) return;
+        clipboard = st.doc.elements.filter((x) => st.selectedIds.includes(x.id)).map((x) => JSON.parse(JSON.stringify(x)));
+        st.removeSelected();
+      }
+      else if (mod && k === "v") { if (clipboard.length) { e.preventDefault(); st.pasteElements(clipboard); } }
+      else if ((e.key === "Delete" || e.key === "Backspace") && has) { e.preventDefault(); st.removeSelected(); }
+      else if (e.key.startsWith("Arrow") && has) {
+        e.preventDefault();
+        const step = e.shiftKey ? 10 : 1;
+        const dx = e.key === "ArrowLeft" ? -step : e.key === "ArrowRight" ? step : 0;
+        const dy = e.key === "ArrowUp" ? -step : e.key === "ArrowDown" ? step : 0;
+        const patches = Object.fromEntries(st.doc.elements.filter((x) => st.selectedIds.includes(x.id) && !x.locked).map((x) => [x.id, { x: x.x + dx, y: x.y + dy }]));
+        st.updateMany(patches, !e.repeat);
+      }
+      else if (e.key === "Escape") { st.select(null); setCheat(false); }
+      else if (e.key === "/") { e.preventDefault(); window.dispatchEvent(new Event("kiwiw:search")); }
+      else if (e.key === "?") { e.preventDefault(); setCheat((c) => !c); }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [undo, redo, selectedId, removeElement, duplicateElement]);
+  }, []);
 
   const exportPng = async () => {
     const node = document.getElementById("kiwiw-canvas");
@@ -105,6 +149,7 @@ export default function Editor() {
         </button>
         <div className="spacer" />
 
+        <button className="icon-btn" title="Shortcuts (?)" onClick={() => setCheat(true)}><Keyboard size={18} /></button>
         <button className="icon-btn" title="Zoom out" onClick={() => setZoom(zoom - 0.1)}><Minus size={18} /></button>
         <span className="zoom">{Math.round(zoom * 100)}%</span>
         <button className="icon-btn" title="Zoom in" onClick={() => setZoom(zoom + 0.1)}><Plus size={18} /></button>
@@ -125,6 +170,7 @@ export default function Editor() {
         {roasting && <RoastPanel onClose={() => setRoasting(false)} />}
         <KiwiMascot />
       </div>
+      {cheat && <CheatSheet onClose={() => setCheat(false)} />}
       <Toaster />
     </div>
   );

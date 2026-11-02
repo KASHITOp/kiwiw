@@ -23,7 +23,7 @@ const miniDoc = (el: Element): KiwiwDoc => ({
 });
 
 export default function LayersPanel() {
-  const { doc, selectedId, select, updateElement, removeElement, reorder, setLayerOrder } = useEditor();
+  const { doc, selectedIds, select, updateElement, removeElement, reorder, setLayerOrder } = useEditor();
   const [dragId, setDragId] = useState<string | null>(null);
   const [overId, setOverId] = useState<string | null>(null);
 
@@ -47,8 +47,8 @@ export default function LayersPanel() {
       {layers.map((el) => (
         <div
           key={el.id}
-          className={"lyr" + (el.id === selectedId ? " active" : "") + (overId === el.id ? " dragover" : "")}
-          onClick={() => select(el.id)}
+          className={"lyr" + (selectedIds.includes(el.id) ? " active" : "") + (overId === el.id ? " dragover" : "")}
+          onClick={(e) => select(el.id, e.shiftKey)}
           draggable
           onDragStart={() => setDragId(el.id)}
           onDragOver={(e) => { e.preventDefault(); setOverId(el.id); }}

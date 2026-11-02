@@ -7,9 +7,9 @@ import FontPicker from "./FontPicker";
 const ICON = 16;
 
 export default function FloatingToolbar() {
-  const { doc, selectedId, zoom, updateElement, removeElement, duplicateElement, reorder } = useEditor();
+  const { doc, selectedId, selectedIds, zoom, updateElement, removeElement, duplicateElement, reorder } = useEditor();
   const el = doc.elements.find((e) => e.id === selectedId);
-  if (!el || el.hidden || el.locked) return null;
+  if (!el || el.hidden || el.locked || selectedIds.length > 1) return null;
 
   // position above the element (in unscaled wrapper pixels)
   const cx = (el.x + el.w / 2) * zoom;
