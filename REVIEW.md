@@ -1,10 +1,10 @@
 # Kiwiw `juice-v2` — overnight REVIEW
 
 Branch: `juice-v2` (main and production untouched).
-Preview: **https://kiwiw-3aas6jdey-kartavyaas-projects.vercel.app**
+Preview: **https://kiwiw-6bd5aoheq-kartavyaas-projects.vercel.app**
 (Vercel protects previews on the hobby plan, so log in to Vercel to view it. Production at kiwiw.vercel.app is unchanged.)
 
-> Status: draft written after Phase 3 so a hand-off exists even if the night runs short. Updated at the end.
+> Status: all six phases done and committed (one commit per phase). Typecheck and build pass. Zero console errors at 1366×768, 1920×1080 and 390px.
 
 ## What got built
 
@@ -48,11 +48,60 @@ One input, six posters, no API key. The parser splits the line into headline, da
 
 ![Landing hero](docs/review/landing-hero.png)
 
+### Phase 4 · Personality
+- **Vibe slider** in the top bar: Corporate · Polished · Neutral · Spicy · Unhinged. It rewrites the headline and sub line with prewritten tone lines ("Utsav: A Strategic Update", "UTSAV OR PERISH", "Per My Last Email: …"), swaps the headline font, refits the copy with real font metrics, straightens or tilts everything, and fades or adds chaos stickers. **Neutral is always the untouched original.** Double-click the slider to snap back.
+- **Roast My Design**: 9 rules (too many fonts, low contrast, cramped margins, everything centred, microscopic text, no hierarchy, wall of text, lost elements, colour overload). Each roast has a one-click **Fix it**, plus **Fix all**, a 0–100 score and a verdict ("Freshly squeezed" down to "Kiwi-adjacent"). With an OpenAI key, "Extra crispy (AI)" adds a bonus roast.
+- **Microcopy**: toasts for export ("Exported. It's juicy."), save, copy and group; errors say what broke, then the joke ("Export tripped over a seed. Try again?"); empty canvas ("A blank page is just a poster with stage fright."); empty layers; tooltips.
+- **Easter eggs**: ↑↑↓↓←→←→BA squeezes every kiwi (landing hero, logo, mascot). The kiwi mascot in the editor corner reacts to Comic-Sans-energy fonts ("Comic Sans energy detected. Respect."), vibe changes, roasts and exports. Click it for the seed counter, which has milestones at 1, 10, 25, 50 and 100.
+
+| Roast | Vibe: Unhinged | Vibe: Corporate |
+| --- | --- | --- |
+| ![Roast](docs/review/roast.png) | ![Unhinged](docs/review/vibe-unhinged.png) | ![Corporate](docs/review/vibe-corporate.png) |
+
+### Phase 5 · Editor mechanics
+- **Smart snapping** to page and element edges and centres (pink `#FF3D9A` guides) and **equal spacing** (lime `#D8F27A` guides with gap ticks), within 6 screen px. Alt drags freely; Shift-rotate snaps to 15°.
+- **Multi-select**: shift-click, marquee drag on empty canvas, dashed group box, everything moves together. **Groups** with Ctrl+G / Ctrl+Shift+G.
+- **Shortcuts**: Ctrl+D, arrows (Shift = 10px), Delete, Ctrl+G, Ctrl+C/X/V, Ctrl+Z/Y, Ctrl+A, Esc, `/` jumps to sticker search, `?` opens a cheat sheet.
+- **Autosave** to localStorage 600ms after every change; **My designs** grid at the top of the Design tab (thumbnails, "Editing now", delete). Opening /editor empty restores your last design ("Welcome back. Your design waited for you.").
+
+| Snapping guide while dragging | Marquee → group → nudge |
+| --- | --- |
+| ![Guides](docs/review/editor-guides.png) | ![Multi](docs/review/multi-select.png) |
+
+| Cheat sheet | My designs + restore |
+| --- | --- |
+| ![Cheat sheet](docs/review/cheat-sheet.png) | ![My designs](docs/review/my-designs.png) |
+
+### Phase 6 · Verification
+- `tsc` clean, `npm run build` exit 0.
+- Headless Chrome against the production build: landing, Juice It overlay and editor (with Vibe + Roast open) at 1366×768, 1920×1080 and 390px. **0 console errors, 0 warnings.**
+- Preview deployed (no `--prod`). Production at kiwiw.vercel.app is unchanged; main is untouched.
+
+| Phone: Juice It | Phone: editor gate |
+| --- | --- |
+| ![Juice 390](docs/review/juice-390.png) | ![Phone gate](docs/review/phone-gate.png) |
+
 ## Bold calls I made while you slept
 - **No stock photos in templates.** Every image is drawn or typographic. That keeps them original and export-safe; Pexels is still available in the editor's Photos tab.
 - **Magic Resize stays "in the oven"** on the landing, because the editor still can't do it.
 - **Template order interleaves the six directions**, so no two neighbouring tiles share a style.
 - **The hero's mini-editor became Juice It**, because Juice It is the better demo, and the seed animation now flies into its live poster.
+- **The editor refuses phones.** Under 760px it shows "This editor needs elbow room." and points to Juice It, which works fine on a phone. That's better than a broken canvas in someone's LinkedIn feed.
+- **Vibe edits are throwaway until you touch something.** Edit the design while on Spicy and that edit becomes the new Neutral. That's simpler than a merge, and Ctrl+Z still walks back through it.
+- **Full-page textures (grain, halftone) are click-through.** They sat on top and ate every drag. Select them from Layers.
+- **The Konami toast says "No refunds."** instead of promising seeds it doesn't give.
 
-## Still to come tonight
-Phase 4 (Vibe slider, Roast My Design, microcopy, easter eggs), Phase 5 (snapping, shortcuts, autosave, multi-select), then final verification.
+## Unfinished / rough edges
+- Vibe uses one headline and one sub line per design. Templates that split a headline over two text boxes (BASE / MENT) only rewrite the first half, which is funny on Unhinged ("BASE OR PERISH / MENT") but not intentional.
+- Snapping and the marquee use unrotated boxes, so rotated elements snap by their pre-rotation bounds.
+- Resize handles only appear for a single element; there's no group resize yet.
+- Autosave lives in localStorage. Big uploaded photos can fill it; when they do, a toast tells you to hit Save.
+- The AI bonus roast and AI Juice copy are untested without a key (the code paths are there, gated on `VITE_OPENAI_API_KEY`).
+- The Vercel preview is behind Vercel login (hobby plan protection).
+
+## Top 5 next ideas
+1. **Record mode**: one button that plays a scripted demo (type a line → Juice → pick → Unhinged → Roast → Fix all → Export) at a steady pace, made for the LinkedIn screen recording.
+2. **Vibe for Juice It**: drag the slider in the Juice overlay and watch all six posters change at once.
+3. **Roast leaderboard / share card**: export the roast score card as an image ("My poster scored 34. Kiwi-adjacent.").
+4. **Magic Resize for real**: reflow one design to post, story and banner using the same `fitText` + layout roles Juice It already uses.
+5. **Brand kit from a photo**: pick a palette and font pair from an uploaded image, then apply it to any template in one click.
