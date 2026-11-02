@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react";
-import { LayoutTemplate, Shapes, Type, Image as ImageIcon, Upload, Sparkles, Search } from "lucide-react";
+import { LayoutTemplate, Shapes, Type, Image as ImageIcon, Upload, Sparkles, Search, Citrus } from "lucide-react";
 import { useEditor } from "../store";
 import { makeShape, makeImage } from "../data/factory";
 import { TEMPLATES } from "../data/templates";
@@ -10,11 +10,13 @@ import ElementContent from "./ElementContent";
 import Thumb from "./Thumb";
 import AIPanel from "./AIPanel";
 import AssetPanel from "./AssetPanel";
+import JuicePanel from "../juice/JuicePanel";
 import type { Element, ShapeKind } from "../types";
 
-type Tab = "templates" | "elements" | "text" | "photos" | "uploads" | "ai";
+type Tab = "juice" | "templates" | "elements" | "text" | "photos" | "uploads" | "ai";
 
 const TABS: { id: Tab; icon: React.ReactNode; label: string }[] = [
+  { id: "juice", icon: <Citrus size={20} />, label: "Juice" },
   { id: "templates", icon: <LayoutTemplate size={20} />, label: "Design" },
   { id: "text", icon: <Type size={20} />, label: "Text" },
   { id: "elements", icon: <Shapes size={20} />, label: "Stickers" },
@@ -36,6 +38,7 @@ export default function LeftPanel() {
         ))}
       </div>
       <div className="side">
+        {tab === "juice" && <JuicePanel />}
         {tab === "templates" && <TemplatesTab />}
         {tab === "elements" && <StickersTab />}
         {tab === "text" && <TextTab />}

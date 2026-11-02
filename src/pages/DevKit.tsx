@@ -11,10 +11,12 @@ import { TEMPLATES } from "../data/templates";
 import ElementContent from "../editor/ElementContent";
 import Thumb from "../editor/Thumb";
 import type { Element, KiwiwDoc } from "../types";
+import { useEffect, useState } from "react";
+import { juiceWithAI, type JuiceResult } from "../juice";
 
 function DocRender({ doc }: { doc: KiwiwDoc }) {
   return (
-    <div id="tpl-native" style={{ position: "relative", width: doc.width, height: doc.height, background: doc.background, overflow: "hidden" }}>
+    <div className="tpl-native" id="tpl-native" style={{ position: "relative", width: doc.width, height: doc.height, background: doc.background, overflow: "hidden" }}>
       {doc.elements.map((el) => el.hidden ? null : (
         <div key={el.id} className="el" style={{ left: el.x, top: el.y, width: el.w, height: el.h, opacity: el.opacity, transform: `rotate(${el.rotation}deg)` }}>
           <ElementContent el={el} />
@@ -24,11 +26,25 @@ function DocRender({ doc }: { doc: KiwiwDoc }) {
   );
 }
 
+/** Waits for the measured fonts, exactly like the real Juice It flow. */
+function JuiceView({ text, variant }: { text: string; variant: number }) {
+  const [results, setResults] = useState<JuiceResult[] | null>(null);
+  useEffect(() => { juiceWithAI(text, variant).then((r) => setResults(r.results)); }, [text, variant]);
+  if (!results) return null;
+  return (
+    <div id="juice-ready" style={{ display: "flex", flexWrap: "wrap", gap: 40, padding: 40, background: "#0B0D08" }}>
+      {results.map((r) => <div key={r.style} data-juice={r.style}><DocRender doc={r.doc} /></div>)}
+    </div>
+  );
+}
+
 const wrap: React.CSSProperties = { background: "#0B0D08", color: "#F2F5E6", fontFamily: "Inter", padding: 32, minHeight: "100vh" };
 const h2: React.CSSProperties = { fontFamily: "JetBrains Mono", fontSize: 13, letterSpacing: "0.1em", color: "#D8F27A", margin: "32px 0 16px" };
 
 export default function DevKit() {
   const params = new URLSearchParams(location.search);
+  const juiced = params.get("juice");
+  if (juiced !== null) return <JuiceView text={juiced} variant={Number(params.get("v") ?? 0)} />;
   const one = params.get("tpl");
   if (one) {
     const t = TEMPLATES.find((x) => x.id === one);

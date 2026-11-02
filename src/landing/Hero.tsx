@@ -4,7 +4,7 @@ import KiwiSlice from "../brand/KiwiSlice";
 import KiwiLogo from "../brand/KiwiLogo";
 import { rng } from "../brand/kiwi";
 import { useEditor } from "../store";
-import HeroEditor from "./HeroEditor";
+import JuiceCard from "./JuiceCard";
 import { useMedia } from "./useMedia";
 
 const SEEDS = 72;
@@ -152,7 +152,7 @@ export default function Hero() {
             </div>
           </div>
 
-          <div className="hero-card"><HeroEditor posterRef={posterRef} full={full} /></div>
+          <div className="hero-card"><JuiceCard posterRef={posterRef} full={full} /></div>
 
           <div className="hero-kiwi" ref={kiwiRef} onPointerMove={fine ? onKiwiMove : undefined} onPointerLeave={onKiwiLeave}>
             <div className="half" ref={leftRef}><KiwiSlice half="left" /></div>

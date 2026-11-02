@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useInView } from "./useInView";
 import { useMedia } from "./useMedia";
-import { PHOTO_SRC } from "./HeroEditor";
+import { PHOTO_SRC } from "./photo";
 
 /* ---------------- 03.1 Magic Write: copy types itself out ---------------- */
 const LINES = ["BAKE SALE, SAT.", "CRUMBS BY NOON.", "COME HUNGRY.", "SWEET DEALS INSIDE."];

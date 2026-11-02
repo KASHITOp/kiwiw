@@ -148,6 +148,7 @@ Motion explains the cut. It never decorates.
 | Performance | Scroll-linked and looping motion animates `transform` and `opacity` only, on composited layers. Never re-render an SVG per frame. The one exception: the Magic Resize demo morphs a ≤ 240px box's width/height, because a resize *is* the point. |
 | Demos | Loop only while on screen (IntersectionObserver); each loop ≤ 6s; hover pauses. |
 | Marquee | Constant speed, pauses on hover and focus. |
+| Juice reveal | A kiwi fades in and splits (1.5s), then six posters fly out of the cut to their slots: 780ms each, staggered 80ms, starting at 8% scale with a spin that settles. Thumbnails measure layout size, never transformed size. |
 | Reduced motion | `prefers-reduced-motion: reduce` → no pinning, no flight, no marquee scroll; everything sits in its finished state. |
 
 ---
