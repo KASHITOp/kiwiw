@@ -5,6 +5,7 @@ import { PALETTE, makeText, makeShape } from "../data/factory";
 import { fontDef, nearestWeight } from "../fonts/kit";
 import { STICKER_MAP, type ColorSlot } from "../stickers/library";
 import { humanName } from "./names";
+import FxPanel, { PageBackgrounds } from "./FxPanel";
 import type { TextElement, ShapeElement, ImageElement, StickerElement } from "../types";
 import FontPicker from "./FontPicker";
 
@@ -38,6 +39,7 @@ export default function PropertiesPanel() {
       {el.type === "shape" && <ShapeProps el={el} up={up} />}
       {el.type === "image" && <ImageProps el={el} up={up} />}
       {el.type === "sticker" && <StickerProps el={el} up={up} />}
+      <FxPanel el={el} />
     </>
   );
 }
@@ -63,6 +65,7 @@ function EmptyState() {
       <button className="quick-action" onClick={() => addElement(makeShape("ellipse"))}>
         <span className="qi"><Circle size={16} /></span> Add a circle
       </button>
+      <PageBackgrounds />
       <Tip />
     </>
   );

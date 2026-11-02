@@ -1,23 +1,36 @@
 import { useId } from "react";
 import type { Element, TextElement } from "../types";
 import StickerArt from "../stickers/StickerArt";
+import { cutoutFilter, Framed, FxImage, GlossyText, GrainDefs, textBase, WaveText } from "../effects/render";
 
 // Shared element renderer — used by the live canvas and by thumbnails,
-// so a template preview looks exactly like the real thing.
+// so a template preview looks exactly like the real thing. The effects engine
+// (DESIGN.md §16) wraps the content: frame, then grain + cutout as filters.
 export default function ElementContent({ el }: { el: Element }) {
-  if (el.type === "text") return el.curve ? <CurvedText el={el} /> : <TextContent el={el} />;
+  const gid = "g" + useId().replace(/[^a-zA-Z0-9]/g, "");
+  const inner = <Content el={el} />;
+  const grain = el.grain ?? 0;
+  if (!el.frame && !el.cutout && grain <= 0) return inner;
+  const filter = [grain > 0 ? `url(#${gid})` : "", cutoutFilter(el.cutout)].filter(Boolean).join(" ");
+  return (
+    <div style={{ position: "relative", width: "100%", height: "100%", filter: filter || undefined }}>
+      {grain > 0 && <GrainDefs id={gid} amount={grain} />}
+      {el.frame ? <Framed f={el.frame} w={el.w} h={el.h} id={el.id}>{inner}</Framed> : inner}
+    </div>
+  );
+}
+
+function Content({ el }: { el: Element }) {
+  if (el.type === "text") {
+    if (el.curve) return <CurvedText el={el} />;
+    if (el.glossy) return <GlossyText el={el} style={textStyle(el)} />;
+    if (el.wave) return <WaveText el={el} style={textStyle(el)} />;
+    return <TextContent el={el} />;
+  }
   if (el.type === "sticker") {
     return <StickerArt kind={el.kind} fill={el.fill} accent={el.accent} ink={el.ink} flipX={el.flipX} />;
   }
-  if (el.type === "image") {
-    return (
-      <img
-        src={el.src}
-        draggable={false}
-        style={{ width: "100%", height: "100%", objectFit: el.fit, borderRadius: el.radius, display: "block" }}
-      />
-    );
-  }
+  if (el.type === "image") return <FxImage el={el} />;
   // shape
   const common: React.CSSProperties = {
     width: "100%",
@@ -44,30 +57,23 @@ function effectStyle(el: TextElement): React.CSSProperties {
   return s;
 }
 
+function textStyle(el: TextElement): React.CSSProperties {
+  return {
+    width: "100%",
+    height: "100%",
+    ...textBase(el),
+    color: el.color,
+    textDecoration: el.underline ? "underline" : "none",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    ...effectStyle(el),
+  };
+}
+
 function TextContent({ el }: { el: TextElement }) {
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        fontSize: el.fontSize,
-        fontFamily: el.fontFamily,
-        color: el.color,
-        fontWeight: el.fontWeight,
-        fontStyle: el.italic ? "italic" : "normal",
-        textDecoration: el.underline ? "underline" : "none",
-        textTransform: el.uppercase ? "uppercase" : "none",
-        textAlign: el.align,
-        lineHeight: el.lineHeight,
-        letterSpacing: el.letterSpacing,
-        whiteSpace: "pre-wrap",
-        wordBreak: "break-word",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        ...effectStyle(el),
-      }}
-    >
+    <div style={textStyle(el)}>
       {/* block wrapper keeps the highlight span inline, so it breaks per line */}
       <div>
         {el.highlight ? (

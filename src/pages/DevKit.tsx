@@ -13,6 +13,44 @@ import Thumb from "../editor/Thumb";
 import type { Element, KiwiwDoc } from "../types";
 import { useEffect, useState } from "react";
 import { juiceWithAI, type JuiceResult } from "../juice";
+import { FX_PRESETS } from "../effects/presets";
+import { makeSticker } from "../data/presets";
+
+/** ?view=fx: every effect on a sample photo / headline, plus the backgrounds. */
+function FxView() {
+  const photo = { id: "ph", type: "image", src: "/photos/chai-37186989.jpg", x: 0, y: 0, w: 300, h: 380, rotation: 0, opacity: 1, radius: 0, fit: "cover" } as Element;
+  const head = { id: "tx", type: "text", text: "NO बुरी नज़र", x: 0, y: 0, w: 300, h: 160, rotation: 0, opacity: 1, fontSize: 64, fontFamily: "Anton", fontWeight: 400, color: "#B3122E", align: "center", lineHeight: 1, letterSpacing: 0 } as Element;
+  const sample = (g: string) => (g === "Type" || g === "Devanagari" ? head : photo);
+  return (
+    <div id="fx-ready" style={{ ...wrap, background: "#F2E8D5", color: "#111" }}>
+      {(["Image", "Frames", "Finish", "Type", "Devanagari"] as const).map((g) => (
+        <section key={g}>
+          <div style={{ ...h2, color: "#B3122E" }}>{g.toUpperCase()}</div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 28 }}>
+            {FX_PRESETS.filter((p) => p.group === g).map((p) => {
+              const base = sample(g);
+              const el = { ...base, id: p.id, ...p.apply(base) } as Element;
+              return (
+                <figure key={p.id} style={{ margin: 0 }}>
+                  <div style={{ position: "relative", width: el.w, height: el.h }}><div className="el" style={{ left: 0, top: 0, width: el.w, height: el.h }}><ElementContent el={el} /></div></div>
+                  <figcaption style={{ fontFamily: "JetBrains Mono", fontSize: 12, marginTop: 8 }}>{p.label}</figcaption>
+                </figure>
+              );
+            })}
+          </div>
+        </section>
+      ))}
+      <div style={{ ...h2, color: "#B3122E" }}>BACKGROUNDS</div>
+      <div style={{ display: "flex", gap: 20 }}>
+        {["bg-checker", "bg-swirl", "bg-halftone", "bg-sunburst", "bg-pixel"].map((k) => (
+          <div key={k} style={{ position: "relative", width: 240, height: 300 }}>
+            <div className="el" style={{ left: 0, top: 0, width: 240, height: 300 }}><ElementContent el={{ ...makeSticker(k, 240, 300), id: k, x: 0, y: 0, w: 240, h: 300 } as Element} /></div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function DocRender({ doc }: { doc: KiwiwDoc }) {
   return (
@@ -50,6 +88,7 @@ export default function DevKit() {
     const t = TEMPLATES.find((x) => x.id === one);
     return t ? <DocRender doc={t.doc} /> : <div style={wrap}>No template "{one}"</div>;
   }
+  if (params.get("view") === "fx") return <FxView />;
   if (params.get("view") === "templates") {
     return (
       <div style={wrap}>

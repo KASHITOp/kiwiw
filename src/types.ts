@@ -18,6 +18,31 @@ export interface ElementBase {
   userNamed?: boolean;
   /** Elements sharing a groupId select and move together. */
   groupId?: string;
+  /** Effects engine (DESIGN.md §16), any element type. */
+  frame?: FrameFx | null;
+  cutout?: { color: string; width: number } | null;
+  /** 0–1 paper grain, clipped to the element's own pixels. */
+  grain?: number;
+}
+
+export type FrameKind = "stamp" | "torn" | "polaroid" | "window" | "truck" | "evileye";
+
+export interface FrameFx {
+  kind: FrameKind;
+  /** Paper / bar / border colour, depending on the frame. */
+  color?: string;
+  /** Secondary colour (window body, stamp hairline). */
+  accent?: string;
+  /** Window title or polaroid caption. */
+  title?: string;
+}
+
+/** Image effects (DESIGN.md §16). Processed on a canvas and cached. */
+export interface ImageFx {
+  halftone?: { dot: number; ink?: string; paper?: string | null } | null;
+  duotone?: { dark: string; light: string } | null;
+  posterize?: number | null;
+  bw?: boolean;
 }
 
 export interface TextElement extends ElementBase {
@@ -39,6 +64,10 @@ export interface TextElement extends ElementBase {
   highlight?: { color: string } | null;
   /** −100 (frown) … 100 (smile); 0 = straight. */
   curve?: number;
+  /** Wave warp, −100…100 (% of a third of the font size). */
+  wave?: number;
+  /** Glossy bubble fill: vertical gradient with an ink outline layer. */
+  glossy?: { from: string; to: string; ink: string } | null;
   /** Role hint used by Juice It, the Vibe slider and Roast. */
   role?: "headline" | "sub" | "body" | "label" | "cta";
 }
@@ -59,6 +88,9 @@ export interface ImageElement extends ElementBase {
   src: string;
   radius: number;
   fit: "cover" | "contain";
+  fx?: ImageFx;
+  /** Focal point for cover crops, 0–1 (default centre). */
+  focus?: { x: number; y: number };
 }
 
 export interface StickerElement extends ElementBase {

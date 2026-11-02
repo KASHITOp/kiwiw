@@ -22,7 +22,7 @@ export default function StickerArt({ kind, fill, accent, ink, flipX, fit }: Prop
       preserveAspectRatio={def.stretch && !fit ? "none" : "xMidYMid meet"}
       width="100%"
       height="100%"
-      style={{ display: "block", overflow: "visible", transform: flipX ? "scaleX(-1)" : undefined }}
+      style={{ display: "block", overflow: def.category === "Backgrounds" ? "hidden" : "visible", transform: flipX ? "scaleX(-1)" : undefined }}
       aria-hidden="true"
     >
       <def.Art c={c} uid={uid} />

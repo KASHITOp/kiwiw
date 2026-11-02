@@ -26,6 +26,14 @@ import "@fontsource/space-mono/700.css";
 import "@fontsource/space-mono/400-italic.css";
 import "@fontsource/jetbrains-mono/700.css";
 import "@fontsource/jetbrains-mono/800.css";
+import "@fontsource/rozha-one/400.css";
+import "@fontsource/yatra-one/400.css";
+import "@fontsource/khand/500.css";
+import "@fontsource/khand/600.css";
+import "@fontsource/khand/700.css";
+import "@fontsource/press-start-2p/400.css";
+import "@fontsource/shrikhand/400.css";
+import "@fontsource/bagel-fat-one/400.css";
 
 export type FontGroup = "Display" | "Serif" | "Hand" | "Desi" | "Mono" | "Clean";
 
@@ -59,6 +67,9 @@ export const FONT_KIT: FontDef[] = [
   { family: "Unbounded Variable", label: "Unbounded", group: "Display", weights: range(200, 900), defaultWeight: 800, sample: "Space Age" },
   { family: "Syne Variable", label: "Syne", group: "Display", weights: range(400, 800), defaultWeight: 800, sample: "Gallery Night" },
   { family: "Rubik Mono One", label: "Rubik Mono One", group: "Display", weights: [400], defaultWeight: 400, sample: "ARCADE" },
+  { family: "Bagel Fat One", label: "Bagel Fat One", group: "Display", weights: [400], defaultWeight: 400, sample: "Glossy Bloom" },
+  { family: "Shrikhand", label: "Shrikhand", group: "Display", weights: [400], defaultWeight: 400, sample: "Groovy, baby" },
+  { family: "Press Start 2P", label: "Press Start 2P", group: "Display", weights: [400], defaultWeight: 400, sample: "LEVEL 01" },
   { family: "Instrument Serif", label: "Instrument Serif", group: "Serif", weights: [400], defaultWeight: 400, italic: true, sample: "A quiet headline" },
   { family: "Fraunces Variable", label: "Fraunces", group: "Serif", weights: range(100, 900), defaultWeight: 400, italic: true, sample: "Fancy, but fun" },
   { family: "DM Serif Display", label: "DM Serif Display", group: "Serif", weights: [400], defaultWeight: 400, italic: true, sample: "The Sunday Issue" },
@@ -67,6 +78,9 @@ export const FONT_KIT: FontDef[] = [
   { family: "Gochi Hand", label: "Gochi Hand", group: "Hand", weights: [400], defaultWeight: 400, sample: "lol ok", comicEnergy: true },
   { family: "Baloo 2 Variable", label: "Baloo 2", group: "Desi", weights: range(400, 800), defaultWeight: 800, sample: "धमाका Sale!" },
   { family: "Mukta", label: "Mukta", group: "Desi", weights: [400, 600, 700, 800], defaultWeight: 700, sample: "चाय पे चर्चा" },
+  { family: "Rozha One", label: "Rozha One", group: "Desi", weights: [400], defaultWeight: 400, sample: "बुरी नज़र" },
+  { family: "Yatra One", label: "Yatra One", group: "Desi", weights: [400], defaultWeight: 400, sample: "चाय टपरी" },
+  { family: "Khand", label: "Khand", group: "Desi", weights: [500, 600, 700], defaultWeight: 700, sample: "धमाकेदार SALE" },
   { family: "Tiro Devanagari Hindi", label: "Tiro Devanagari Hindi", group: "Desi", weights: [400], defaultWeight: 400, italic: true, sample: "शुभ दीपावली" },
   { family: "JetBrains Mono", label: "JetBrains Mono", group: "Mono", weights: range(400, 800), defaultWeight: 600, sample: "SEEDS 072" },
   { family: "Space Mono", label: "Space Mono", group: "Mono", weights: [400, 700], defaultWeight: 700, italic: true, sample: "ISSUE 07" },

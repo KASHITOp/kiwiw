@@ -263,3 +263,17 @@ Figma/Linear-grade tooling, with kiwi personality in the margins, never in the c
 | Layers | Real thumbnails: the element rendered on the page background colour. Human names: "Headline: MAIN CHARACTER", "Text: …", "Sticker: starburst", "Shape: red dot", "Photo". |
 | No selection | Page size, background, quick add, then a random design tip with a joke and a "another tip" button. |
 | Autosave | A design joins My designs only after its first edit. Opening a template is not a design. |
+
+## 16 — Effects engine
+
+Flat is the enemy. Every effect is data on the element (so it saves, undoes, exports and juices), rendered by the shared `ElementContent`. The recipes that use them live in `STYLE_DNA.md`.
+
+| Group | Effects | Rules |
+| --- | --- | --- |
+| Image | halftone (dot size), duotone (2 colours), posterize (levels), B&W high-contrast | Processed on a canvas into a data URL, cached by source + settings, so exports match the screen. Halftone dots sit on a 45° grid. Its paper can be transparent so the page shows through. Duotone feeds the halftone's ink and paper. |
+| Finish (any element) | grain, cutout border | Grain is an inline SVG turbulence filter **clipped to the element's own pixels** (it never paints the empty box). Cutout is a stacked `drop-shadow` sticker border (white by default) that hugs the real shape, plus one soft shadow. |
+| Frames (any element) | postage stamp, torn paper, polaroid, retro OS window, truck-art border, evil-eye ring | Frames wrap the element and inset its content; the element's box is the outer frame. All are drawn in our own SVG/CSS. The window gets a hard ink shadow and three title-bar buttons. The stamp's perforation radius is 3.5% of the short side. |
+| Type | wave, arch (curve), outline + hard shadow, stacked condensed caps, Devanagari display, glossy | Wave offsets each glyph on a sine wave (amplitude in % of the font size). "Stack" is an action (caps, one word per line, line height 0.84, Anton), not a mode. Glossy = an ink outline layer under a vertical gradient-clipped fill with a white top highlight, at most one glossy element per design. Devanagari display faces: Rozha One, Yatra One, Khand, Tiro Devanagari Hindi, Baloo 2. |
+| Backgrounds | warped checkerboard, psychedelic swirl, halftone gradient, sunburst rays, pixel grid | Stretchable stickers in the "Backgrounds" category, recolourable with 3 slots. "Use as page background" sizes them to the page and sends them to the back. |
+
+**Panel:** with an element selected, the right panel shows an **Effects** gallery grouped as above. Every tile is a **live preview of the selected element** with that effect applied (not an icon). Clicking a tile toggles the effect, and its controls (sliders, colours) appear under the gallery. Active tiles get the lime ring.

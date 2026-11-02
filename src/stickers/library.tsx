@@ -6,13 +6,14 @@ import {
   type Pt, smoothClosed, smoothOpen, poly, polyline, blobPts, starPts, scallop,
   wobble, arrowHead, tornEdge, zigX,
 } from "./geometry";
+import { EXTRA_DEFS } from "./extra";
 
 export interface StickerColors { fill: string; accent: string; ink: string }
 export type ColorSlot = keyof StickerColors;
 
 export const STICKER_CATEGORIES = [
   "Blobs", "Bursts", "Badges", "Scribbles", "Arrows", "Tape & paper",
-  "Bubbles", "Lines", "Texture", "Kiwi", "Desi",
+  "Bubbles", "Lines", "Texture", "Kiwi", "Desi", "Pixel", "Backgrounds",
 ] as const;
 export type StickerCategory = (typeof STICKER_CATEGORIES)[number];
 
@@ -490,6 +491,8 @@ const DEFS: StickerDef[] = [
     ),
   },
 ];
+
+DEFS.push(...EXTRA_DEFS);
 
 export const STICKERS = DEFS;
 export const STICKER_MAP: Record<string, StickerDef> = Object.fromEntries(DEFS.map((d) => [d.kind, d]));
