@@ -5,13 +5,19 @@ import { makeText, makeImage } from "../data/factory";
 import { magicWrite, magicImage, removeBackground, keys, type WriteMode } from "../ai/provider";
 import { oops } from "../personality/bus";
 
-export default function AIPanel() {
+const TOOLS = [
+  { id: "write", words: "magic write copy text rephrase shorten expand words", El: MagicWrite },
+  { id: "image", words: "magic media image generate picture art", El: MagicImage },
+  { id: "bg", words: "background remover remove bg cutout erase", El: MagicBgRemove },
+];
+
+export default function AIPanel({ q = "" }: { q?: string }) {
+  const words = q.toLowerCase().split(/\s+/).filter(Boolean);
+  const shown = TOOLS.filter((t) => words.every((w) => t.words.includes(w)));
   return (
     <>
-      <h4>Magic Studio</h4>
-      <MagicWrite />
-      <MagicImage />
-      <MagicBgRemove />
+      {shown.map(({ id, El }) => <El key={id} />)}
+      {!shown.length && <div className="empty">No magic called "{q}". We have three spells: write, image, background.</div>}
     </>
   );
 }

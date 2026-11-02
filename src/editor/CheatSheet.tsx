@@ -16,7 +16,8 @@ const ROWS: [string[], string][] = [
   [["Drag"], "On empty canvas: marquee select"],
   [["Alt", "Drag"], "Move without snapping"],
   [["Shift", "Rotate"], "Snap to 15°"],
-  [["/"], "Search stickers"],
+  [["/"], "Search the open panel"],
+  [["Ctrl", "\\"], "Hide / show the panel"],
   [["Esc"], "Deselect"],
   [["?"], "This sheet"],
 ];

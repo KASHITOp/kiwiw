@@ -12,14 +12,13 @@ function placeholderPhotos(seed: string): string[] {
   return Array.from({ length: 12 }, (_, i) => `https://picsum.photos/seed/${base + i}/400/400`);
 }
 
-export default function AssetPanel() {
+// The query comes from the panel's header search (DESIGN.md §15), debounced.
+export default function AssetPanel({ q: query }: { q: string }) {
   const add = useEditor((s) => s.addElement);
-  const [q, setQ] = useState("nature");
   const [photos, setPhotos] = useState<string[]>(placeholderPhotos("nature"));
   const [loading, setLoading] = useState(false);
 
   const search = async (term: string) => {
-    setQ(term);
     if (!PEXELS) { setPhotos(placeholderPhotos(term)); return; }
     setLoading(true);
     try {
@@ -35,19 +34,15 @@ export default function AssetPanel() {
     }
   };
 
-  useEffect(() => { search("nature"); /* eslint-disable-next-line */ }, []);
+  useEffect(() => {
+    const t = setTimeout(() => search(query.trim() || "nature"), query ? 400 : 0);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query]);
 
   return (
     <>
-      <h4>Photos {PEXELS ? <span className="badge live">Pexels</span> : <span className="badge mock">demo</span>}</h4>
-      <div className="field">
-        <input
-          type="text"
-          placeholder="Search photos…"
-          defaultValue={q}
-          onKeyDown={(e) => e.key === "Enter" && search((e.target as HTMLInputElement).value)}
-        />
-      </div>
+      <p className="fx-note" style={{ marginTop: 0 }}>{PEXELS ? <><span className="badge live">Pexels</span> Real stock, properly licensed.</> : <><span className="badge mock">demo</span> Placeholder photos until a Pexels key shows up.</>}</p>
       {loading ? (
         <div className="empty"><span className="spinner" /></div>
       ) : (

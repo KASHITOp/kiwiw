@@ -1,14 +1,14 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Citrus, RefreshCw } from "lucide-react";
 import { useEditor } from "../store";
 import Thumb from "../editor/Thumb";
-import { juiceWithAI, DEFAULT_IDEA, EXAMPLE_IDEAS, type JuiceResult } from ".";
+import { juiceWithAI, EXAMPLE_IDEAS, type JuiceResult } from ".";
 import "./juice.css";
 
 // Juice It inside the editor: same engine, results load straight onto the canvas.
-export default function JuicePanel() {
+// The idea is typed in the panel's header search (DESIGN.md §15); Enter juices it.
+export default function JuicePanel({ text, setText }: { text: string; setText: (v: string) => void }) {
   const loadDoc = useEditor((s) => s.loadDoc);
-  const [text, setText] = useState(DEFAULT_IDEA);
   const [variant, setVariant] = useState(0);
   const [busy, setBusy] = useState(false);
   const [results, setResults] = useState<JuiceResult[] | null>(null);
@@ -22,13 +22,17 @@ export default function JuicePanel() {
     setBusy(false);
   };
 
+  const runRef = useRef(run);
+  runRef.current = run;
+  useEffect(() => {
+    const on = (e: Event) => { if ((e as CustomEvent).detail === "juice") runRef.current(0); };
+    window.addEventListener("kiwiw:panel-enter", on);
+    return () => window.removeEventListener("kiwiw:panel-enter", on);
+  }, []);
+
   return (
     <>
-      <h4>Juice it</h4>
-      <p className="fx-note" style={{ marginTop: 0, marginBottom: 12 }}>One boring line in, six posters out. Click one to drop it on the canvas.</p>
-      <div className="jp-input">
-        <input type="text" value={text} maxLength={70} onChange={(e) => setText(e.target.value)} onKeyDown={(e) => e.key === "Enter" && run(0)} placeholder="bake sale saturday 10am" aria-label="Your boring line" />
-      </div>
+      <p className="fx-note" style={{ marginTop: 0, marginBottom: 12 }}>Type one boring line in the box above. Six posters come out. Click one to drop it on the canvas.</p>
       <div className="row" style={{ marginBottom: 12 }}>
         <button className="btn primary sm" onClick={() => run(0)} disabled={busy || !text.trim()}>
           {busy ? <span className="spinner" /> : <><Citrus size={15} /> Juice it</>}

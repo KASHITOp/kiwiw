@@ -131,7 +131,7 @@ The page reads like a botanical plate that someone graffitied with a design tool
 | ≥ 900px | Two columns in a centred **1440px** container. Headline + copy + mini-editor left; slice right, sized `min(44vw, 700px, 100vh − 150px)` so it never crosses the fold. Hero pinned for 230vh of scroll. |
 | Verified | 390, 1280×720, 1366×768, 1440×900, 1920×1080: nav, both headline lines, CTA and full slice above the fold. |
 
-**Editor chrome** follows the same tokens in a calm register: ink surfaces, hairlines, one kiwi button (Export), mono for numbers and section labels, the slice logo, Bricolage only for the wordmark. No grain, no cursor, no annotations in the editor.
+**Editor chrome** follows the same tokens in a calm register: ink surfaces, hairlines, one kiwi button (Export), mono for numbers and section labels, the slice logo. Bricolage appears only in the wordmark and the left panel's section header. Grain appears only on the left panel, at 4% or less. No cursor, no annotations. Details in §15.
 
 ---
 
@@ -244,5 +244,22 @@ The canvas should feel like it wants to help.
 | Snapping | Drag snaps to page edges and centre and to other elements' edges and centres within **6 screen px**. Edge/centre guides are **pink `#FF3D9A`**, 1 screen px. Equal-spacing guides are **lime `#D8F27A`** with a small gap marker on both sides. Hold **Alt** to drag freely. |
 | Multi-select | Shift-click toggles. Dragging on empty canvas draws a marquee (kiwi-tint fill, dashed kiwi border). Multiple selection shows one dashed bounding box; resize handles only for a single element. |
 | Groups | Ctrl+G groups the selection; clicking any member selects the whole group. Ctrl+Shift+G ungroups. |
-| Shortcuts | Ctrl+D duplicate · arrows nudge 1px (Shift 10px) · Delete · Ctrl+G / Ctrl+Shift+G · Ctrl+C / Ctrl+V · Ctrl+Z / Ctrl+Y · Ctrl+A · Esc · `/` search stickers · `?` cheat sheet. |
+| Shortcuts | Ctrl+D duplicate · arrows nudge 1px (Shift 10px) · Delete · Ctrl+G / Ctrl+Shift+G · Ctrl+C / Ctrl+V · Ctrl+Z / Ctrl+Y · Ctrl+A · Esc · `/` search the open panel · `?` cheat sheet · `Ctrl+\` collapse the panel. |
 | Autosave | Every change saves to localStorage after 600ms idle. "My designs" in the Design tab lists up to 24, newest first. Opening /editor with nothing loaded restores the last design. |
+
+## 15 — Editor chrome v2
+
+Figma/Linear-grade tooling, with kiwi personality in the margins, never in the controls.
+
+| Surface | Rule |
+| --- | --- |
+| Rail | **56px**, icons only (lucide, 20px, stroke 1.75). Labels are instant tooltips (no delay) to the right, as mono 11px ink pills. Active = lime pill (`--accent-soft`, 40×36, radius 10) behind the icon, plus a **4px lime dot** on the rail's left edge. Order: Juice, Templates, Text, Stickers, Photos, Uploads, Magic. Juice is special: its icon is kiwi-green with a soft glow (`0 0 14px rgba(139,214,48,.45)`), always. |
+| Left panel | **320px**. Header: section name in Bricolage 22/800 with a mono 11px count or hint beside it. Below it, a **search bar that is always present**, scoped to the section. Section changes fade and slide 150ms (8px, ease-out). `Ctrl+\` collapses it (width animates to 0 in 150ms). Grain at 4%. |
+| Empty states | Exactly one joke each, after the instruction. |
+| Template cards | **Masonry**, 2 columns. Card height follows the design's aspect ratio. Landscape formats (≥ 1.3:1) span both columns; banners get a fixed 2.4:1 card with the design centred on a dark backdrop (`#14170F`) and 12px of padding, so they never read as a strip. Hover shows the funny name plus the size ("1584 × 396 · LinkedIn banner"). |
+| Template tabs | "My designs" and "Templates" are separate tabs inside the panel. Category chips sit under search: All, Posts, Stories, Posters, Slides, Banners, Desi, Resumes. Slides includes YouTube thumbnails. |
+| Page | The sheet has a soft drop shadow (`0 18px 50px rgba(0,0,0,.45)`) and a 1px `rgba(255,255,255,.06)` border. The stage keeps a faint 20px dot grid. |
+| Zoom pill | Floating at bottom-centre of the stage: − / zoom % / + / fit / page size readout in mono. It stays clear of the mascot (bottom-right), and toasts sit above it. |
+| Layers | Real thumbnails: the element rendered on the page background colour. Human names: "Headline: MAIN CHARACTER", "Text: …", "Sticker: starburst", "Shape: red dot", "Photo". |
+| No selection | Page size, background, quick add, then a random design tip with a joke and a "another tip" button. |
+| Autosave | A design joins My designs only after its first edit. Opening a template is not a design. |
