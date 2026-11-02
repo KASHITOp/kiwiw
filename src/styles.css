@@ -143,7 +143,7 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
 .lyr:hover { background: var(--g-2); }
 .lyr.active { background: var(--g-2); border-color: var(--accent-ring); }
 .lyr.dragover { border-top: 2px solid var(--accent); }
-.lyr-thumb { width: 32px; height: 32px; flex: none; border-radius: var(--r-sm); border: 1px solid var(--border); background: #fff; overflow: hidden; position: relative; }
+.lyr-thumb { width: 36px; height: 36px; flex: none; border-radius: var(--r-sm); border: 1px solid var(--border); background: var(--g-0); overflow: hidden; position: relative; }
 .lyr-thumb .tpl-render { position: relative; transform-origin: top left; }
 .lyr-type { color: var(--faint); flex: none; display: grid; place-items: center; }
 .lyr-name { flex: 1; min-width: 0; background: transparent; border: 1px solid transparent; color: var(--text); font-size: var(--t-13); height: 26px; padding: 0 var(--s-1); border-radius: 4px; }
@@ -417,3 +417,11 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
 .zp-sep { width: 1px; height: 16px; background: var(--border-2); margin: 0 4px; }
 .zp-size { padding: 0 8px 0 2px; font-family: var(--font-mono); font-size: 11px; color: var(--faint); white-space: nowrap; }
 .editor .toaster { bottom: 72px; }
+
+/* empty selection: design tip (DESIGN.md §15) */
+.tip { margin-top: var(--s-5); padding: var(--s-3) var(--s-4) var(--s-4); border-radius: var(--r-md); border: 1px dashed rgba(139, 214, 48, 0.35); background: rgba(139, 214, 48, 0.05); }
+.tip-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--s-2); }
+.tip-head span { font-family: var(--font-mono); font-size: var(--t-xs); text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); }
+.tip-next { border: 0; background: none; padding: 0; color: var(--muted); font-size: 12px; text-decoration: underline; text-underline-offset: 3px; }
+.tip-next:hover { color: var(--text); }
+.tip p { margin: 0; font-size: var(--t-13); line-height: 1.5; color: var(--text); animation: lp-in 0.15s ease-out both; }

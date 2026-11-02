@@ -4,6 +4,7 @@ import { useEditor } from "../store";
 import { PALETTE, makeText, makeShape } from "../data/factory";
 import { fontDef, nearestWeight } from "../fonts/kit";
 import { STICKER_MAP, type ColorSlot } from "../stickers/library";
+import { humanName } from "./names";
 import type { TextElement, ShapeElement, ImageElement, StickerElement } from "../types";
 import FontPicker from "./FontPicker";
 
@@ -14,7 +15,7 @@ export default function PropertiesPanel() {
   if (!el) return <EmptyState />;
 
   const up = (patch: Partial<typeof el>) => updateElement(el.id, patch);
-  const title = el.type === "sticker" ? STICKER_MAP[el.kind]?.name ?? "sticker" : el.type;
+  const title = humanName(el, doc).split(":")[0];
 
   return (
     <>
@@ -62,7 +63,37 @@ function EmptyState() {
       <button className="quick-action" onClick={() => addElement(makeShape("ellipse"))}>
         <span className="qi"><Circle size={16} /></span> Add a circle
       </button>
+      <Tip />
     </>
+  );
+}
+
+// One tip at a time, each with exactly one joke (DESIGN.md §13).
+const TIPS = [
+  "Two fonts is a pairing. Four fonts is a ransom note.",
+  "Make the headline twice the size you think. Then a bit more. Shy headlines don't get read.",
+  "Leave a margin. Text touching the edge looks like it's trying to escape.",
+  "One accent colour. The rest is support staff.",
+  "Squint at your design. Whatever you still see is your hierarchy.",
+  "Left-align body text. Centred paragraphs are a wedding-invite thing.",
+  "Contrast is not optional. Grey on beige is a whisper nobody hears.",
+  "If everything is bold, nothing is. Like a group chat in all caps.",
+  "Align things to something. The snapping guides are pink so you can't miss them.",
+  "Hold Alt while dragging to move freely. Rebel.",
+  "Stuck? Hit Roast. It's mean, but it fixes things.",
+  "White space is not wasted space. It's the room the design breathes in.",
+];
+
+function Tip() {
+  const [i, setI] = useState(() => Math.floor(Math.random() * TIPS.length));
+  return (
+    <div className="tip">
+      <div className="tip-head">
+        <span>Design tip</span>
+        <button className="tip-next" onClick={() => setI((n) => (n + 1 + Math.floor(Math.random() * (TIPS.length - 1))) % TIPS.length)}>Another tip</button>
+      </div>
+      <p key={i}>{TIPS[i]}</p>
+    </div>
   );
 }
 

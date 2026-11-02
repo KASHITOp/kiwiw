@@ -14,6 +14,8 @@ export interface ElementBase {
   locked?: boolean;
   hidden?: boolean;
   name?: string;
+  /** true once someone renamed the layer by hand; otherwise the panel names it. */
+  userNamed?: boolean;
   /** Elements sharing a groupId select and move together. */
   groupId?: string;
 }
