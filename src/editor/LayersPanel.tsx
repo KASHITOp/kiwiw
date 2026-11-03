@@ -1,25 +1,35 @@
 import { useState } from "react";
-import { Type, Square, Image as ImageIcon, Eye, EyeOff, Lock, Unlock, ArrowUp, ArrowDown, Trash2, GripVertical } from "lucide-react";
+import { Type, Square, Image as ImageIcon, Sparkles, Eye, EyeOff, Lock, Unlock, ArrowUp, ArrowDown, Trash2, GripVertical } from "lucide-react";
 import { useEditor } from "../store";
 import type { Element, KiwiwDoc } from "../types";
 import Thumb from "./Thumb";
+import { humanName } from "./names";
+import { contrast } from "../personality/roast";
 
 const typeIcon = (el: Element) =>
-  el.type === "text" ? <Type size={14} /> : el.type === "image" ? <ImageIcon size={14} /> : <Square size={14} />;
+  el.type === "text" ? <Type size={14} /> : el.type === "image" ? <ImageIcon size={14} /> : el.type === "sticker" ? <Sparkles size={14} /> : <Square size={14} />;
 
-const defaultName = (el: Element) =>
-  el.type === "text" ? (el.text.trim().slice(0, 22) || "Text") : el.type === "image" ? "Image" : el.shape;
-
-// a 1-element document so the thumbnail shows just this layer's content
-const miniDoc = (el: Element): KiwiwDoc => ({
-  width: el.w || 100,
-  height: el.h || 100,
-  background: "transparent",
-  elements: [{ ...el, x: 0, y: 0, rotation: 0, opacity: 1, hidden: false }],
-});
+// a 1-element document, on the page colour, so the thumbnail shows just this
+// layer as it really looks. Very wide layers (lines of text) are cropped to
+// 2:1 from their aligned edge so the thumbnail stays legible.
+const miniDoc = (el: Element, page: string): KiwiwDoc => {
+  // light text on a light page (it usually sits on a sticker) would vanish: flip the backdrop
+  const bg = el.type === "text" && contrast(el.color, page) < 1.6 ? (contrast(el.color, "#0B0D08") > contrast(el.color, "#FFFFFF") ? "#0B0D08" : "#FFFFFF") : page;
+  const w = Math.max(1, el.w), h = Math.max(1, el.h);
+  const W = Math.min(w, h * 2.2), H = Math.min(h, w * 2.2);
+  const align = el.type === "text" ? el.align : "center";
+  const x = align === "left" ? 0 : align === "right" ? W - w : (W - w) / 2;
+  const pad = Math.max(W, H) * 0.08;
+  return {
+    width: W + pad * 2,
+    height: H + pad * 2,
+    background: bg,
+    elements: [{ ...el, x: x + pad, y: (H - h) / 2 + pad, rotation: 0, opacity: 1, hidden: false }],
+  };
+};
 
 export default function LayersPanel() {
-  const { doc, selectedId, select, updateElement, removeElement, reorder, setLayerOrder } = useEditor();
+  const { doc, selectedIds, select, updateElement, removeElement, reorder, setLayerOrder } = useEditor();
   const [dragId, setDragId] = useState<string | null>(null);
   const [overId, setOverId] = useState<string | null>(null);
 
@@ -39,12 +49,12 @@ export default function LayersPanel() {
   return (
     <>
       <h4 className="sub-h">Layers</h4>
-      {layers.length === 0 && <div className="empty">No layers yet.<br />Add something from the left.</div>}
+      {layers.length === 0 && <div className="empty">No layers yet. It's lonely in here.<br />Add something from the left.</div>}
       {layers.map((el) => (
         <div
           key={el.id}
-          className={"lyr" + (el.id === selectedId ? " active" : "") + (overId === el.id ? " dragover" : "")}
-          onClick={() => select(el.id)}
+          className={"lyr" + (selectedIds.includes(el.id) ? " active" : "") + (overId === el.id ? " dragover" : "")}
+          onClick={(e) => select(el.id, e.shiftKey)}
           draggable
           onDragStart={() => setDragId(el.id)}
           onDragOver={(e) => { e.preventDefault(); setOverId(el.id); }}
@@ -53,13 +63,14 @@ export default function LayersPanel() {
         >
           <span className="lyr-grip"><GripVertical size={14} /></span>
           <div className="lyr-thumb">
-            <Thumb doc={miniDoc(el)} />
+            <Thumb doc={miniDoc(el, doc.background)} />
           </div>
           <span className="lyr-type">{typeIcon(el)}</span>
           <input
             className="lyr-name"
-            value={el.name ?? defaultName(el)}
-            onChange={(e) => updateElement(el.id, { name: e.target.value }, false)}
+            value={humanName(el, doc)}
+            onChange={(e) => updateElement(el.id, { name: e.target.value, userNamed: !!e.target.value }, false)}
+            title="Rename this layer"
             onClick={(e) => e.stopPropagation()}
           />
           <div className="lyr-actions">

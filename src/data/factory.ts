@@ -1,4 +1,5 @@
 import type { Element, ShapeKind, TextElement, ShapeElement, ImageElement } from "../types";
+import { FONT_KIT } from "../fonts/kit";
 
 // Kiwi palette first (DESIGN.md 02), then two warm extras for user designs.
 export const PALETTE = [
@@ -6,10 +7,8 @@ export const PALETTE = [
   "#D8F27A", "#F2F5E6", "#ffffff", "#fb7185", "#f59e0b",
 ];
 
-export const FONTS = [
-  "Inter", "Bricolage Grotesque Variable", "JetBrains Mono", "Georgia", "Poppins", "Playfair Display",
-  "Courier New", "Arial", "Impact", "Comic Sans MS",
-];
+/** Every family in the content type kit (DESIGN.md §10). */
+export const FONTS = FONT_KIT.map((f) => f.family);
 
 export function makeText(partial: Partial<TextElement> = {}): Omit<Element, "id"> {
   return {

@@ -1,6 +1,6 @@
 // Core data model for Kiwiw documents.
 
-export type ElementType = "text" | "shape" | "image";
+export type ElementType = "text" | "shape" | "image" | "sticker";
 
 export interface ElementBase {
   id: string;
@@ -14,6 +14,40 @@ export interface ElementBase {
   locked?: boolean;
   hidden?: boolean;
   name?: string;
+  /** true once someone renamed the layer by hand; otherwise the panel names it. */
+  userNamed?: boolean;
+  /** Elements sharing a groupId select and move together. */
+  groupId?: string;
+  /** Deliberately touches text (Swiss walker, timeline digits): the collision check skips it. */
+  allowOverlap?: boolean;
+  /** Effects engine (DESIGN.md §16), any element type. */
+  frame?: FrameFx | null;
+  cutout?: { color: string; width: number } | null;
+  /** 0–1 paper grain, clipped to the element's own pixels. */
+  grain?: number;
+}
+
+export type FrameKind = "stamp" | "torn" | "polaroid" | "window" | "truck" | "evileye";
+
+export interface FrameFx {
+  kind: FrameKind;
+  /** Paper / bar / border colour, depending on the frame. */
+  color?: string;
+  /** Secondary colour (window body, stamp hairline). */
+  accent?: string;
+  /** Window title or polaroid caption. */
+  title?: string;
+}
+
+/** Image effects (DESIGN.md §16). Processed on a canvas and cached. */
+export interface ImageFx {
+  halftone?: { dot: number; ink?: string; paper?: string | null; invert?: boolean } | null;
+  duotone?: { dark: string; light: string } | null;
+  /** Legacy (rendered as Riso now). */
+  posterize?: number | null;
+  /** Riso print: 2–3 flat inks, misregistration, halftone shadows, paper grain. */
+  riso?: { inks: string[]; paper: string; misreg?: number } | null;
+  bw?: boolean;
 }
 
 export interface TextElement extends ElementBase {
@@ -28,6 +62,19 @@ export interface TextElement extends ElementBase {
   align: "left" | "center" | "right";
   lineHeight: number;
   letterSpacing: number;
+  /** Text effects (DESIGN.md §12). All optional. */
+  uppercase?: boolean;
+  outline?: { color: string; width: number } | null;
+  shadow?: { color: string; x: number; y: number } | null;
+  highlight?: { color: string } | null;
+  /** −100 (frown) … 100 (smile); 0 = straight. */
+  curve?: number;
+  /** Wave warp, −100…100 (% of a third of the font size). */
+  wave?: number;
+  /** Glossy bubble fill: vertical gradient with an ink outline layer. */
+  glossy?: { from: string; to: string; ink: string } | null;
+  /** Role hint used by Juice It, the Vibe slider and Roast. */
+  role?: "headline" | "sub" | "body" | "label" | "cta";
 }
 
 export type ShapeKind = "rect" | "ellipse" | "line" | "triangle";
@@ -46,9 +93,22 @@ export interface ImageElement extends ElementBase {
   src: string;
   radius: number;
   fit: "cover" | "contain";
+  fx?: ImageFx;
+  /** Focal point for cover crops, 0–1 (default centre). */
+  focus?: { x: number; y: number };
 }
 
-export type Element = TextElement | ShapeElement | ImageElement;
+export interface StickerElement extends ElementBase {
+  type: "sticker";
+  /** Key into the sticker library (src/stickers). */
+  kind: string;
+  fill: string;
+  accent: string;
+  ink: string;
+  flipX?: boolean;
+}
+
+export type Element = TextElement | ShapeElement | ImageElement | StickerElement;
 
 export interface KiwiwDoc {
   width: number;
@@ -63,4 +123,11 @@ export interface Template {
   category: string;
   thumbBg: string;
   doc: KiwiwDoc;
+  /** One-line joke shown on hover. */
+  description?: string;
+  /** Style direction from REFERENCES.md. */
+  style?: string;
+  /** Format label, e.g. "Instagram post". */
+  format?: string;
+  tags?: string[];
 }

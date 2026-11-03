@@ -11,9 +11,11 @@ export default function Thumb({ doc }: { doc: KiwiwDoc }) {
   useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
+    // layout size (not getBoundingClientRect): ignores CSS transforms, so a
+    // card that is mid-animation or tilted still renders its thumbnail full size
     const measure = () => {
-      const r = el.getBoundingClientRect();
-      if (r.width && r.height) setScale(Math.min(r.width / doc.width, r.height / doc.height));
+      const w = el.clientWidth, h = el.clientHeight;
+      if (w && h) setScale(Math.min(w / doc.width, h / doc.height));
     };
     measure();
     const ro = new ResizeObserver(measure);

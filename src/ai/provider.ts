@@ -16,6 +16,14 @@ const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 export type WriteMode = "write" | "rephrase" | "shorten" | "expand";
 
 export async function magicWrite(prompt: string, mode: WriteMode): Promise<string> {
+  // Gemini on our server first (key never reaches the browser), silently
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 28000);
+    const r = await fetch("/api/magic-write", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text: prompt, mode }), signal: ctrl.signal });
+    clearTimeout(t);
+    if (r.status === 200) { const d = await r.json(); if (d?.text) return d.text; }
+  } catch { /* fall through */ }
   if (keys.openai) {
     const sys = {
       write: "You are a concise copywriter. Produce punchy marketing copy.",
@@ -41,7 +49,7 @@ export async function magicWrite(prompt: string, mode: WriteMode): Promise<strin
   await delay(700);
   const base = prompt.trim() || "your idea";
   switch (mode) {
-    case "rephrase": return `Here's a fresh take: ${base} — reimagined with clarity and a confident voice.`;
+    case "rephrase": return `${capitalize(base)}, but make it main-character energy.`;
     case "shorten": return base.split(/\s+/).slice(0, 8).join(" ") + "…";
     case "expand": return `${base}. And there's more to it — this version adds context, benefits, and a clear call to action so readers know exactly what to do next.`;
     default: return `✨ ${capitalize(base)} that people actually love.\nBuilt for speed. Designed to stand out. Yours in minutes.`;

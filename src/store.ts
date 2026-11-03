@@ -17,12 +17,19 @@ interface History {
 
 interface EditorState {
   doc: KiwiwDoc;
+  /** Autosave slot this doc belongs to. */
+  designId: string;
+  /** Primary selection (the panels edit this one). */
   selectedId: string | null;
+  /** Everything selected, primary last. */
+  selectedIds: string[];
   zoom: number;
   history: History;
 
   // mutations
-  loadDoc: (doc: KiwiwDoc) => void;
+  loadDoc: (doc: KiwiwDoc, designId?: string) => void;
+  /** Swap the whole doc, keeping selection; pass record=true to checkpoint first. */
+  replaceDoc: (doc: KiwiwDoc, record?: boolean) => void;
   newDoc: (width: number, height: number) => void;
   addElement: (el: Omit<Element, "id">) => void;
   updateElement: (id: string, patch: Partial<Element>, record?: boolean) => void;
@@ -30,7 +37,16 @@ interface EditorState {
   duplicateElement: (id: string) => void;
   reorder: (id: string, dir: "front" | "back" | "forward" | "backward") => void;
   setLayerOrder: (panelIds: string[]) => void;
-  select: (id: string | null) => void;
+  /** additive=true toggles (shift-click). Groups select together. */
+  select: (id: string | null, additive?: boolean) => void;
+  selectMany: (ids: string[]) => void;
+  /** Patch many elements at once (drag, nudge, align). */
+  updateMany: (patches: Record<string, Partial<Element>>, record?: boolean) => void;
+  removeSelected: () => void;
+  duplicateSelected: () => void;
+  pasteElements: (els: Element[]) => void;
+  group: () => void;
+  ungroup: () => void;
   setBackground: (color: string) => void;
   setZoom: (zoom: number) => void;
   commit: () => void; // push a history checkpoint
@@ -42,17 +58,29 @@ const clone = (d: KiwiwDoc): KiwiwDoc => JSON.parse(JSON.stringify(d));
 
 export const useEditor = create<EditorState>((set, get) => ({
   doc: blankDoc,
+  designId: uid(),
   selectedId: null,
+  selectedIds: [],
   zoom: 1,
   history: { past: [], future: [] },
 
-  loadDoc: (doc) =>
-    set({ doc: clone(doc), selectedId: null, history: { past: [], future: [] } }),
+  loadDoc: (doc, designId) =>
+    set({ doc: clone(doc), designId: designId ?? uid(), selectedId: null, selectedIds: [], history: { past: [], future: [] } }),
+
+  replaceDoc: (doc, record = false) => {
+    if (record) get().commit();
+    set((s) => {
+      const ids = s.selectedIds.filter((id) => doc.elements.some((e) => e.id === id));
+      return { doc, selectedIds: ids, selectedId: ids[ids.length - 1] ?? null };
+    });
+  },
 
   newDoc: (width, height) =>
     set({
       doc: { width, height, background: "#ffffff", elements: [] },
+      designId: uid(),
       selectedId: null,
+      selectedIds: [],
       history: { past: [], future: [] },
     }),
 
@@ -67,6 +95,7 @@ export const useEditor = create<EditorState>((set, get) => ({
     set((s) => ({
       doc: { ...s.doc, elements: [...s.doc.elements, { ...el, id } as Element] },
       selectedId: id,
+      selectedIds: [id],
     }));
   },
 
@@ -86,6 +115,7 @@ export const useEditor = create<EditorState>((set, get) => ({
     get().commit();
     set((s) => ({
       doc: { ...s.doc, elements: s.doc.elements.filter((e) => e.id !== id) },
+      selectedIds: s.selectedIds.filter((x) => x !== id),
       selectedId: s.selectedId === id ? null : s.selectedId,
     }));
   },
@@ -98,7 +128,56 @@ export const useEditor = create<EditorState>((set, get) => ({
     copy.id = uid();
     copy.x = src.x + 24;
     copy.y = src.y + 24;
-    set((s) => ({ doc: { ...s.doc, elements: [...s.doc.elements, copy] }, selectedId: copy.id }));
+    set((s) => ({ doc: { ...s.doc, elements: [...s.doc.elements, copy] }, selectedId: copy.id, selectedIds: [copy.id] }));
+  },
+
+  updateMany: (patches, record = true) => {
+    if (record) get().commit();
+    set((s) => ({ doc: { ...s.doc, elements: s.doc.elements.map((e) => (patches[e.id] ? ({ ...e, ...patches[e.id] } as Element) : e)) } }));
+  },
+
+  removeSelected: () => {
+    const ids = new Set(get().selectedIds);
+    if (!ids.size) return;
+    get().commit();
+    set((s) => ({ doc: { ...s.doc, elements: s.doc.elements.filter((e) => !ids.has(e.id)) }, selectedId: null, selectedIds: [] }));
+  },
+
+  duplicateSelected: () => {
+    const sel = new Set(get().selectedIds);
+    const src = get().doc.elements.filter((e) => sel.has(e.id));
+    if (src.length) get().pasteElements(src);
+  },
+
+  pasteElements: (els) => {
+    if (!els.length) return;
+    get().commit();
+    const regroup = new Map<string, string>();
+    const copies = els.map((src) => {
+      const c = JSON.parse(JSON.stringify(src)) as Element;
+      c.id = uid();
+      c.x += 24;
+      c.y += 24;
+      if (src.groupId) { if (!regroup.has(src.groupId)) regroup.set(src.groupId, uid()); c.groupId = regroup.get(src.groupId); }
+      return c;
+    });
+    const ids = copies.map((c) => c.id);
+    set((s) => ({ doc: { ...s.doc, elements: [...s.doc.elements, ...copies] }, selectedIds: ids, selectedId: ids[ids.length - 1] }));
+  },
+
+  group: () => {
+    const ids = new Set(get().selectedIds);
+    if (ids.size < 2) return;
+    get().commit();
+    const gid = uid();
+    set((s) => ({ doc: { ...s.doc, elements: s.doc.elements.map((e) => (ids.has(e.id) ? { ...e, groupId: gid } : e)) } }));
+  },
+
+  ungroup: () => {
+    const ids = new Set(get().selectedIds);
+    if (!ids.size) return;
+    get().commit();
+    set((s) => ({ doc: { ...s.doc, elements: s.doc.elements.map((e) => (ids.has(e.id) ? { ...e, groupId: undefined } : e)) } }));
   },
 
   setLayerOrder: (panelIds) => {
@@ -128,7 +207,18 @@ export const useEditor = create<EditorState>((set, get) => ({
     });
   },
 
-  select: (id) => set({ selectedId: id }),
+  select: (id, additive = false) =>
+    set((s) => {
+      if (!id) return { selectedId: null, selectedIds: [] };
+      const el = s.doc.elements.find((e) => e.id === id);
+      const unit = el?.groupId ? s.doc.elements.filter((e) => e.groupId === el.groupId).map((e) => e.id) : [id];
+      if (!additive) return { selectedIds: unit, selectedId: id };
+      const has = s.selectedIds.includes(id);
+      const ids = has ? s.selectedIds.filter((x) => !unit.includes(x)) : [...s.selectedIds.filter((x) => !unit.includes(x)), ...unit];
+      return { selectedIds: ids, selectedId: has ? ids[ids.length - 1] ?? null : id };
+    }),
+
+  selectMany: (ids) => set({ selectedIds: ids, selectedId: ids[ids.length - 1] ?? null }),
   setBackground: (color) => {
     get().commit();
     set((s) => ({ doc: { ...s.doc, background: color } }));
@@ -143,6 +233,7 @@ export const useEditor = create<EditorState>((set, get) => ({
       doc: prev,
       history: { past: history.past.slice(0, -1), future: [clone(doc), ...history.future] },
       selectedId: null,
+      selectedIds: [],
     });
   },
 
@@ -154,6 +245,7 @@ export const useEditor = create<EditorState>((set, get) => ({
       doc: next,
       history: { past: [...history.past, clone(doc)], future: history.future.slice(1) },
       selectedId: null,
+      selectedIds: [],
     });
   },
 }));

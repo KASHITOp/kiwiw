@@ -131,7 +131,7 @@ The page reads like a botanical plate that someone graffitied with a design tool
 | ≥ 900px | Two columns in a centred **1440px** container. Headline + copy + mini-editor left; slice right, sized `min(44vw, 700px, 100vh − 150px)` so it never crosses the fold. Hero pinned for 230vh of scroll. |
 | Verified | 390, 1280×720, 1366×768, 1440×900, 1920×1080: nav, both headline lines, CTA and full slice above the fold. |
 
-**Editor chrome** follows the same tokens in a calm register: ink surfaces, hairlines, one kiwi button (Export), mono for numbers and section labels, the slice logo, Bricolage only for the wordmark. No grain, no cursor, no annotations in the editor.
+**Editor chrome** follows the same tokens in a calm register: ink surfaces, hairlines, one kiwi button (Export), mono for numbers and section labels, the slice logo. Bricolage appears only in the wordmark and the left panel's section header. Grain appears only on the left panel, at 4% or less. No cursor, no annotations. Details in §15.
 
 ---
 
@@ -148,6 +148,7 @@ Motion explains the cut. It never decorates.
 | Performance | Scroll-linked and looping motion animates `transform` and `opacity` only, on composited layers. Never re-render an SVG per frame. The one exception: the Magic Resize demo morphs a ≤ 240px box's width/height, because a resize *is* the point. |
 | Demos | Loop only while on screen (IntersectionObserver); each loop ≤ 6s; hover pauses. |
 | Marquee | Constant speed, pauses on hover and focus. |
+| Juice reveal | A kiwi fades in and splits (1.5s), then six posters fly out of the cut to their slots: 780ms each, staggered 80ms, starting at 8% scale with a spin that settles. Thumbnails measure layout size, never transformed size. |
 | Reduced motion | `prefers-reduced-motion: reduce` → no pinning, no flight, no marquee scroll; everything sits in its finished state. |
 
 ---
@@ -163,3 +164,118 @@ Motion explains the cut. It never decorates.
 - **No straight or curved cuts,** and never more than one cut per screen.
 - **No text on the crack** or over the seed ring; annotate beside it.
 - **No layout that leaks the fold** at the verified viewports, and no horizontal scroll at 390px.
+
+The Don'ts above govern **Kiwiw's own chrome** (landing, editor UI). Template
+*content* follows the six directions in `REFERENCES.md`, which may use their own
+palettes (hot pink, marigold, peacock…). The gradient ban applies everywhere.
+
+---
+
+## 10 — Content type kit (what users design with)
+
+The brand UI stays on three faces (section 03). Designs get a bigger kit, all
+Google Fonts self-hosted via Fontsource so PNG export embeds them.
+
+| Group (picker label) | Faces | Use for |
+| --- | --- | --- |
+| Display · loud | Bricolage Grotesque, Anton, Archivo Black, Unbounded, Syne, Rubik Mono One | Headlines that need to be read from across a chai stall. |
+| Serif · fancy | Instrument Serif, Fraunces, DM Serif Display | Editorial headlines, one italic word. |
+| Hand · human | Caveat, Permanent Marker, Gochi Hand | Notes, scribbles, meme captions. |
+| Desi · apna | Baloo 2, Mukta, Tiro Devanagari Hindi | Hindi + Hinglish, Devanagari that actually renders. |
+| Mono · nerdy | JetBrains Mono, Space Mono | Labels, prices, timestamps. |
+| Clean · plain | Inter | Body copy. |
+
+- The picker previews every face **in itself** and snaps weight to the nearest real weight the face ships (no faux bold).
+- A design may use **three families max** before Roast My Design complains.
+
+---
+
+## 11 — Stickers
+
+All stickers are Kiwiw's own SVG, drawn or generated from seeded geometry.
+
+| Rule | Value |
+| --- | --- |
+| Colour slots | Every sticker exposes at most three: `fill`, `accent`, `ink`. Users recolour any of them. |
+| Line weight | Ink outlines at 3–4% of the sticker's short side; hand-drawn strokes use round caps and joins. |
+| Hand feel | Wobble comes from seeded jitter, so a sticker looks hand-drawn but renders identically every time. |
+| Fills | Flat colour. The only textures are halftone dots and grain, and those are stickers themselves. |
+| Categories | Basic shapes, Blobs, Bursts, Badges, Scribbles, Arrows, Tape & paper, Bubbles, Lines, Texture, Kiwi, Desi. |
+| Search | By name, category and tags. |
+
+Never: clip-art realism, gradients inside stickers, trademarked characters.
+
+---
+
+## 12 — Text effects
+
+| Effect | Spec |
+| --- | --- |
+| Outline | `-webkit-text-stroke`, painted behind the fill (`paint-order: stroke fill`), 1–24px. |
+| Hard shadow | Zero-blur `text-shadow`, offset only. Blurred shadows don't exist here. |
+| Highlight | A flat colour block behind each line (`box-decoration-break: clone`), marker-style padding. |
+| Curve | Text set on an SVG arc, −100 (frown) to +100 (smile); single line. |
+| Case | Sentence or ALL CAPS, as a toggle, never baked into the copy. |
+
+---
+
+## 13 — Personality
+
+Funny, never confusing. The joke rides along with the instruction; it never replaces it.
+
+| Surface | Rule | Example |
+| --- | --- | --- |
+| Microcopy | Say what happened first, then the aside. ≤ 12 words. | "Exported. It's juicy." |
+| Errors | What broke, what to do, then a light line. Never blame the user. | "Export tripped over a seed. Try again?" |
+| Empty states | Invite one specific action. | "A blank page is just a poster with stage fright." |
+| Roast My Design | Roast the design, never the person. Every roast names the problem plainly and offers a one-click **Fix it**. | "Everything is centred. Bold choice. By which we mean default." |
+| Vibe slider | One axis, Corporate ⇄ Unhinged, in five steps: Corporate, Polished, Neutral, Spicy, Unhinged. It changes copy tone, font choice, sticker density and rotation chaos. Neutral is always the original. | — |
+| Mascot | A happy kiwi in the editor corner. It reacts only to real events (comic-energy fonts, roast results, exports, the Konami code) and never blocks anything. | "Comic Sans energy detected." |
+| Easter eggs | Konami code squeezes the kiwi; the seed counter; the mascot. No more. | — |
+
+Toasts: bottom-centre, ink pill, 2.6s, one at a time, `aria-live="polite"`.
+
+## 14 — Editor mechanics
+
+The canvas should feel like it wants to help.
+
+| Mechanic | Rule |
+| --- | --- |
+| Snapping | Drag snaps to page edges and centre and to other elements' edges and centres within **6 screen px**. Edge/centre guides are **pink `#FF3D9A`**, 1 screen px. Equal-spacing guides are **lime `#D8F27A`** with a small gap marker on both sides. Hold **Alt** to drag freely. |
+| Multi-select | Shift-click toggles. Dragging on empty canvas draws a marquee (kiwi-tint fill, dashed kiwi border). Multiple selection shows one dashed bounding box; resize handles only for a single element. |
+| Groups | Ctrl+G groups the selection; clicking any member selects the whole group. Ctrl+Shift+G ungroups. |
+| Shortcuts | Ctrl+D duplicate · arrows nudge 1px (Shift 10px) · Delete · Ctrl+G / Ctrl+Shift+G · Ctrl+C / Ctrl+V · Ctrl+Z / Ctrl+Y · Ctrl+A · Esc · `/` search the open panel · `?` cheat sheet · `Ctrl+\` collapse the panel. |
+| Autosave | Every change saves to localStorage after 600ms idle. "My designs" in the Design tab lists up to 24, newest first. Opening /editor with nothing loaded restores the last design. |
+
+## 15 — Editor chrome v2
+
+Figma/Linear-grade tooling, with kiwi personality in the margins, never in the controls.
+
+| Surface | Rule |
+| --- | --- |
+| Rail | **56px**, icons only (lucide, 20px, stroke 1.75). Labels are instant tooltips (no delay) to the right, as mono 11px ink pills. Active = lime pill (`--accent-soft`, 40×36, radius 10) behind the icon, plus a **4px lime dot** on the rail's left edge. Order: Juice, Templates, Text, Stickers, Photos, Uploads, Magic. Juice is special: its icon is kiwi-green with a soft glow (`0 0 14px rgba(139,214,48,.45)`), always. |
+| Left panel | **320px**. Header: section name in Bricolage 22/800 with a mono 11px count or hint beside it. Below it, a **search bar that is always present**, scoped to the section. Section changes fade and slide 150ms (8px, ease-out). `Ctrl+\` collapses it (width animates to 0 in 150ms). Grain at 4%. |
+| Empty states | Exactly one joke each, after the instruction. |
+| Template cards | **Masonry**, 2 columns. Card height follows the design's aspect ratio. Landscape formats (≥ 1.3:1) span both columns; banners get a fixed 2.4:1 card with the design centred on a dark backdrop (`#14170F`) and 12px of padding, so they never read as a strip. Hover shows the funny name plus the size ("1584 × 396 · LinkedIn banner"). |
+| Template tabs | "My designs" and "Templates" are separate tabs inside the panel. Category chips sit under search: All, Posts, Stories, Posters, Slides, Banners, Desi, Resumes. Slides includes YouTube thumbnails. |
+| Page | The sheet has a soft drop shadow (`0 18px 50px rgba(0,0,0,.45)`) and a 1px `rgba(255,255,255,.06)` border. The stage keeps a faint 20px dot grid. |
+| Zoom pill | Floating at bottom-centre of the stage: − / zoom % / + / fit / page size readout in mono. It stays clear of the mascot (bottom-right), and toasts sit above it. |
+| Layers | Real thumbnails: the element rendered on the page background colour. Human names: "Headline: MAIN CHARACTER", "Text: …", "Sticker: starburst", "Shape: red dot", "Photo". |
+| No selection | Page size, background, quick add, then a random design tip with a joke and a "another tip" button. |
+| Autosave | A design joins My designs only after its first edit. Opening a template is not a design. |
+
+## 16 — Effects engine
+
+Flat is the enemy. Every effect is data on the element (so it saves, undoes, exports and juices), rendered by the shared `ElementContent`. The recipes that use them live in `STYLE_DNA.md`.
+
+| Group | Effects | Rules |
+| --- | --- | --- |
+| Image | halftone (dot size), duotone (2 colours), **Riso print** (2–3 flat palette inks, 1–2 px misregistration, halftone in the shadows, paper grain), B&W high-contrast. Posterize is retired: it looked like a broken JPEG. Dark photos are auto-brightened before any effect. | Processed on a canvas into a data URL, cached by source + settings, so exports match the screen. Halftone dots sit on a 45° grid. Its paper can be transparent so the page shows through. Duotone feeds the halftone's ink and paper. |
+| Finish (any element) | grain, cutout border | Grain is an inline SVG turbulence filter **clipped to the element's own pixels** (it never paints the empty box). Cutout is a stacked `drop-shadow` sticker border (white by default) that hugs the real shape, plus one soft shadow. |
+| Frames (any element) | postage stamp, torn paper, polaroid, retro OS window, truck-art border, evil-eye ring | Frames wrap the element and inset its content; the element's box is the outer frame. All are drawn in our own SVG/CSS. The window gets a hard ink shadow and three title-bar buttons. The stamp's perforation radius is 3.5% of the short side. |
+| Type | wave, arch (curve), outline + hard shadow, stacked condensed caps, Devanagari display, glossy | Wave offsets each glyph on a sine wave (amplitude in % of the font size). "Stack" is an action (caps, one word per line, line height 0.84, Anton), not a mode. Glossy = an ink outline layer under a vertical gradient-clipped fill with a white top highlight, at most one glossy element per design. Devanagari display faces: Rozha One, Yatra One, Khand, Tiro Devanagari Hindi, Baloo 2. |
+| Backgrounds | warped checkerboard, psychedelic swirl, halftone gradient, sunburst rays, pixel grid | Stretchable stickers in the "Backgrounds" category, recolourable with 3 slots. "Use as page background" sizes them to the page and sends them to the back. |
+
+**Panel:** with an element selected, the right panel shows an **Effects** gallery grouped as above. Every tile is a **live preview of the selected element** with that effect applied (not an icon). Clicking a tile toggles the effect, and its controls (sliders, colours) appear under the gallery. Active tiles get the lime ring.
+
+**Collision check (§16):** anything above a text element in z-order (stickers, filled shapes, or text under 35% of its size) must not cover that text's measured ink box. `src/dna/collide.ts` nudges the element up to 30% of the page in 16 directions, or shrinks it to 45% towards its far corner. It runs on every Juice result and every hero at freeze time. Deliberate contact (the Swiss walker, timeline digits) is marked `allowOverlap`. `/dev/kit?view=collide` lists raw collisions.

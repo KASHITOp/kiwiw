@@ -132,4 +132,4 @@ src/
 
 ---
 
-Built with [Claude Code](https://claude.com/claude-code).
+Made by Kartavyaa.

@@ -1,136 +1,173 @@
-import { useRef, useState } from "react";
-import { LayoutTemplate, Shapes, Type, Image as ImageIcon, Upload, Sparkles, Square, Circle, Triangle, Minus } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { LayoutTemplate, Shapes, Type, Image as ImageIcon, Upload, Sparkles, Search, Citrus, X } from "lucide-react";
 import { useEditor } from "../store";
-import { makeText, makeShape, makeImage } from "../data/factory";
+import { makeImage } from "../data/factory";
 import { TEMPLATES } from "../data/templates";
-import Thumb from "./Thumb";
+import { TEXT_PRESETS } from "../data/presets";
+import TemplatesTab from "./TemplatesTab";
 import AIPanel from "./AIPanel";
-import AssetPanel from "./AssetPanel";
+import { StickersTab, TextTab, PhotosTab } from "./panels";
+import JuicePanel from "../juice/JuicePanel";
+import { DEFAULT_IDEA } from "../juice";
 
-type Tab = "templates" | "elements" | "text" | "photos" | "uploads" | "ai";
+type Tab = "juice" | "templates" | "text" | "elements" | "photos" | "uploads" | "ai";
 
-const TABS: { id: Tab; icon: React.ReactNode; label: string }[] = [
-  { id: "templates", icon: <LayoutTemplate size={20} />, label: "Design" },
-  { id: "elements", icon: <Shapes size={20} />, label: "Shapes" },
-  { id: "text", icon: <Type size={20} />, label: "Text" },
-  { id: "photos", icon: <ImageIcon size={20} />, label: "Photos" },
-  { id: "uploads", icon: <Upload size={20} />, label: "Upload" },
-  { id: "ai", icon: <Sparkles size={20} />, label: "Magic" },
+// DESIGN.md §15: icons only, labels as instant tooltips, Juice first and glowing.
+const TABS: { id: Tab; icon: React.ReactNode; label: string; placeholder: string }[] = [
+  { id: "juice", icon: <Citrus size={20} strokeWidth={1.75} />, label: "Juice It", placeholder: "Your boring line, then Enter" },
+  { id: "templates", icon: <LayoutTemplate size={20} strokeWidth={1.75} />, label: "Templates", placeholder: "Search: rave, resume, diwali…" },
+  { id: "text", icon: <Type size={20} strokeWidth={1.75} />, label: "Text", placeholder: "Search: headline, hinglish, meme…" },
+  { id: "elements", icon: <Shapes size={20} strokeWidth={1.75} />, label: "Stickers", placeholder: "Search: burst, tape, diya, kiwi…" },
+  { id: "photos", icon: <ImageIcon size={20} strokeWidth={1.75} />, label: "Photos", placeholder: "Search photos: chai, neon, beach…" },
+  { id: "uploads", icon: <Upload size={20} strokeWidth={1.75} />, label: "Uploads", placeholder: "Filter your uploads by name" },
+  { id: "ai", icon: <Sparkles size={20} strokeWidth={1.75} />, label: "Magic", placeholder: "Search: write, roast, vibe, background…" },
 ];
+
+const HINTS: Record<Tab, string> = {
+  juice: "1 line in, 6 posters out",
+  templates: `${TEMPLATES.length} originals`,
+  text: `${TEXT_PRESETS.length} presets`,
+  elements: "all hand-drawn",
+  photos: "free to use",
+  uploads: "yours, obviously",
+  ai: "4 spells, no wand",
+};
 
 export default function LeftPanel() {
   const [tab, setTab] = useState<Tab>("templates");
+  const [collapsed, setCollapsed] = useState(false);
+  const [queries, setQueries] = useState<Record<Tab, string>>({ juice: DEFAULT_IDEA, templates: "", text: "", elements: "", photos: "", uploads: "", ai: "" });
+  const q = queries[tab];
+  const setQ = (v: string) => setQueries((s) => ({ ...s, [tab]: v }));
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  // "/" focuses the open panel's search; Ctrl+\ collapses the panel (DESIGN.md §14–15)
+  useEffect(() => {
+    const focus = () => { setCollapsed(false); setTimeout(() => searchRef.current?.focus(), 30); };
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && (e.key === "\\" || e.code === "Backslash")) { e.preventDefault(); setCollapsed((c) => !c); }
+    };
+    window.addEventListener("kiwiw:search", focus);
+    window.addEventListener("keydown", onKey);
+    return () => { window.removeEventListener("kiwiw:search", focus); window.removeEventListener("keydown", onKey); };
+  }, []);
+
+  const pick = (id: Tab) => {
+    if (id === tab && !collapsed) { setCollapsed(true); return; }
+    setTab(id);
+    setCollapsed(false);
+  };
+  const meta = TABS.find((t) => t.id === tab)!;
+
   return (
     <>
-      <div className="rail">
+      <nav className="rail" aria-label="Editor sections">
         {TABS.map((t) => (
-          <button key={t.id} className={tab === t.id ? "active" : ""} onClick={() => setTab(t.id)}>
+          <button
+            key={t.id}
+            className={"rail-btn" + (t.id === "juice" ? " juice" : "") + (tab === t.id && !collapsed ? " active" : "")}
+            onClick={() => pick(t.id)}
+            aria-label={t.label}
+            aria-pressed={tab === t.id && !collapsed}
+            data-tip={t.label}
+          >
             {t.icon}
-            {t.label}
           </button>
         ))}
-      </div>
-      <div className="side">
-        {tab === "templates" && <TemplatesTab />}
-        {tab === "elements" && <ShapesTab />}
-        {tab === "text" && <TextTab />}
-        {tab === "photos" && <AssetPanel />}
-        {tab === "uploads" && <UploadTab />}
-        {tab === "ai" && <AIPanel />}
-      </div>
-    </>
-  );
-}
-
-function TemplatesTab() {
-  const loadDoc = useEditor((s) => s.loadDoc);
-  return (
-    <>
-      <h4>Templates</h4>
-      <div className="tpl-grid">
-        {TEMPLATES.map((t) => (
-          <div key={t.id} className="tpl" onClick={() => loadDoc(t.doc)} title={t.name}>
-            <Thumb doc={t.doc} />
-            <div className="tpl-label">{t.name}</div>
+        <span className="rail-spacer" />
+        <button className="rail-btn" onClick={() => setCollapsed((c) => !c)} aria-label="Collapse panel" data-tip={collapsed ? "Open panel (Ctrl+\\)" : "Hide panel (Ctrl+\\)"}>
+          <span className={"rail-chev" + (collapsed ? " flip" : "")} aria-hidden="true">‹</span>
+        </button>
+      </nav>
+      <aside className={"lp" + (collapsed ? " collapsed" : "")} aria-hidden={collapsed}>
+        <div className="lp-inner">
+          <header className="lp-head">
+            <h2>{meta.label}</h2>
+            <span>{HINTS[tab]}</span>
+          </header>
+          <div className="lp-search">
+            <Search size={15} />
+            <input
+              ref={searchRef}
+              id="panel-search"
+              type="text"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") window.dispatchEvent(new CustomEvent("kiwiw:panel-enter", { detail: tab }));
+                if (e.key === "Escape") { if (q) setQ(""); else searchRef.current?.blur(); }
+              }}
+              placeholder={meta.placeholder}
+              aria-label={`Search ${meta.label}`}
+            />
+            {q && <button className="lp-clear" onClick={() => setQ("")} aria-label="Clear search"><X size={13} /></button>}
           </div>
-        ))}
-      </div>
+          <div className="lp-body" key={tab}>
+            {tab === "juice" && <JuicePanel text={q} setText={setQ} />}
+            {tab === "templates" && <TemplatesTab q={q} />}
+            {tab === "elements" && <StickersTab q={q} setQ={setQ} />}
+            {tab === "text" && <TextTab q={q} />}
+            {tab === "photos" && <PhotosTab q={q} />}
+            {tab === "uploads" && <UploadTab q={q} />}
+            {tab === "ai" && <AIPanel q={q} />}
+          </div>
+        </div>
+      </aside>
     </>
   );
 }
 
-function ShapesTab() {
-  const add = useEditor((s) => s.addElement);
-  const shapes = [
-    { k: "rect" as const, label: "Rectangle", icon: <Square size={18} /> },
-    { k: "ellipse" as const, label: "Circle", icon: <Circle size={18} /> },
-    { k: "triangle" as const, label: "Triangle", icon: <Triangle size={18} /> },
-    { k: "line" as const, label: "Line", icon: <Minus size={18} /> },
-  ];
-  return (
-    <>
-      <h4>Shapes</h4>
-      {shapes.map((s) => (
-        <button key={s.k} className="btn block" style={{ justifyContent: "flex-start", marginBottom: "var(--s-2)" }} onClick={() => add(makeShape(s.k))}>
-          {s.icon} {s.label}
-        </button>
-      ))}
-    </>
-  );
+const match = (q: string, ...hay: (string | undefined)[]) => {
+  const words = q.toLowerCase().split(/\s+/).filter(Boolean);
+  const text = hay.join(" ").toLowerCase();
+  return words.every((w) => text.includes(w));
+};
+
+function NoMatch({ q, tryThis }: { q: string; tryThis: string }) {
+  return <div className="empty">Nothing matches "{q}". Try {tryThis}. Or don't, we're a panel, not a cop.</div>;
 }
 
-function TextTab() {
-  const add = useEditor((s) => s.addElement);
-  const presets = [
-    { label: "Add a heading", size: 72, weight: 800, preview: 20 },
-    { label: "Add a subheading", size: 42, weight: 600, preview: 16 },
-    { label: "Add body text", size: 24, weight: 400, preview: 14 },
-  ];
-  return (
-    <>
-      <h4>Text</h4>
-      {presets.map((p) => (
-        <button
-          key={p.label}
-          className="btn text-preset"
-          style={{ fontSize: p.preview, fontWeight: p.weight }}
-          onClick={() => add(makeText({ text: p.label.replace("Add a ", "").replace("Add ", ""), fontSize: p.size, fontWeight: p.weight }))}
-        >
-          {p.label}
-        </button>
-      ))}
-    </>
-  );
-}
+// uploads survive tab switches (not reloads: they're data URLs, and localStorage has feelings)
+let UPLOADS: { name: string; src: string }[] = [];
 
-function UploadTab() {
+function UploadTab({ q }: { q: string }) {
   const add = useEditor((s) => s.addElement);
   const ref = useRef<HTMLInputElement>(null);
-  const [imgs, setImgs] = useState<string[]>([]);
+  const [imgs, setImgs] = useState(UPLOADS);
+  const shown = imgs.filter((i) => match(q, i.name));
 
-  const onFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    Array.from(e.target.files ?? []).forEach((f) => {
+  const [over, setOver] = useState(false);
+  const read = (files: FileList | null) => {
+    Array.from(files ?? []).filter((f) => f.type.startsWith("image/")).forEach((f) => {
       const r = new FileReader();
-      r.onload = () => setImgs((p) => [r.result as string, ...p]);
+      r.onload = () => setImgs((p) => (UPLOADS = [{ name: f.name, src: r.result as string }, ...p]));
       r.readAsDataURL(f);
     });
   };
 
   return (
     <>
-      <h4>Uploads</h4>
-      <button className="btn primary block" style={{ marginBottom: "var(--s-3)" }} onClick={() => ref.current?.click()}>
-        <Upload size={16} /> Upload image
+      <button
+        className={"up-drop" + (over ? " over" : "")}
+        onClick={() => ref.current?.click()}
+        onDragOver={(e) => { e.preventDefault(); setOver(true); }}
+        onDragLeave={() => setOver(false)}
+        onDrop={(e) => { e.preventDefault(); setOver(false); read(e.dataTransfer.files); }}
+      >
+        <span className="up-ic"><Upload size={22} /></span>
+        <b>{over ? "Drop it like it's hot" : "Drop images here"}</b>
+        <span>or click to browse · PNG, JPG, WebP</span>
       </button>
-      <input ref={ref} type="file" accept="image/*" multiple hidden onChange={onFile} />
+      <input ref={ref} type="file" accept="image/*" multiple hidden onChange={(e) => read(e.target.files)} />
       <div className="asset-grid">
-        {imgs.map((src, i) => (
-          <div key={i} className="asset" onClick={() => add(makeImage(src))}>
-            <img src={src} />
+        {shown.map((im, i) => (
+          <div key={i} className="asset" onClick={() => add(makeImage(im.src))} title={im.name}>
+            <img src={im.src} alt={im.name} />
           </div>
         ))}
       </div>
-      {imgs.length === 0 && <div className="empty">Your uploads appear here.</div>}
+      {imgs.length === 0 && <p className="fx-note up-note">Uploads stay in your browser. Screenshots of the group chat also accepted.</p>}
+      {imgs.length > 0 && !shown.length && <NoMatch q={q} tryThis="part of a file name" />}
     </>
   );
 }
