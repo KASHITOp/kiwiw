@@ -1,7 +1,7 @@
 # Kiwiw `juice-v2` — overnight REVIEW
 
 Branch: `juice-v2` (main and production untouched).
-Preview: **https://kiwiw-f3k7pcu44-kartavyaas-projects.vercel.app**
+Preview: **https://kiwiw-mksvgetnh-kartavyaas-projects.vercel.app**
 (Vercel protects previews on the hobby plan, so log in to Vercel to view it. Production at kiwiw.vercel.app is unchanged.)
 
 > Status: all six phases done and committed (one commit per phase). Typecheck and build pass. Zero console errors at 1366×768, 1920×1080 and 390px.
@@ -110,7 +110,7 @@ One input, six posters, no API key. The parser splits the line into headline, da
 
 # Round 3: Style DNA, effects engine, Juice It 2.0 (overnight, 3 Nov)
 
-Preview: **https://kiwiw-f3k7pcu44-kartavyaas-projects.vercel.app** (Vercel preview, behind login; production untouched, main untouched).
+Preview: **https://kiwiw-mksvgetnh-kartavyaas-projects.vercel.app** (Vercel preview, behind login; production untouched, main untouched).
 
 ## Phase 1 · Style DNA
 `STYLE_DNA.md` defines 10 recipes taken from your board: **Nazar Battu, Tapri Print, Stadium Halftone, Brutal Grid, Swiss Drop, Trippy Window, Neo Brutal Pop, 8-Bit Flex, Sticker Bomb, Glossy Bloom**. Each recipe has a palette, a font pairing, a layout grammar, effects, stickers, a copy tone, 3 headlines and a never-rule. I borrowed techniques only: no celebrity, club, car brand, soft-drink brand or character from the board appears anywhere. Photos are 29 Pexels shots, bundled and credited in LICENSES.md. Six new Google Fonts: Rozha One, Yatra One, Khand, Press Start 2P, Shrikhand, Bagel Fat One.
