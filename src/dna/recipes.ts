@@ -49,9 +49,11 @@ const short = (s: string, n = 4) => s.split(/\s+/).slice(0, n).join(" ");
 
 export function topicOf(text: string): Topic {
   const t = topicFor(text);
-  if (!t) return "other";
-  if (t === "portrait") return "work";
-  return t as Topic;
+  const map: Record<string, Topic> = {
+    bake: "bake", cake: "party", chai: "chai", crowd: "crowd", fest: "crowd", music: "crowd", diwali: "diwali", gym: "gym",
+    launch: "launch", startup: "launch", party: "party", podcast: "podcast", office: "work", laptop: "work", portrait: "work", wedding: "wedding",
+  };
+  return (t && map[t]) || "other";
 }
 
 function bankFor(topic: Topic, idea: Idea): Bank {
