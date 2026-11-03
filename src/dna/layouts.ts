@@ -505,50 +505,59 @@ const stickerC: Layout = (x) => {
 };
 
 /* ================================= 10 · GLOSSY BLOOM ============================== */
-const GL = { char: "#1C1C1E", milk: "#F7F3EC", butter: "#FFE58A", blush: "#FFC2D1", leaf: "#8BD630" };
+// Premium: 3D bubble type, rounded glossy photo cards with a sheen, chrome stickers, cream or deep plum.
+const GL = { cream: "#F6EEDF", plum: "#2A0F2E", plum2: "#4A1A4F", butter: "#FFE58A", blush: "#FFC2D1", lilac: "#C9B8FF", ink: "#2A0F2E" };
 const gloss = (from: string, to: string, ink: string): Partial<TextElement> => ({ glossy: { from, to, ink } });
+const SHEEN = "linear-gradient(155deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,.12) 22%, rgba(255,255,255,0) 40%, rgba(255,255,255,0) 78%, rgba(255,255,255,.18) 100%)";
+/** A photo in a rounded glossy card: white rim, soft shadow, specular sheen on top. */
+const glossCard = (x: Ctx, b: Box, rot: number, r = 48, which: "photo" | "photo2" = "photo") => [
+  photo(x, b, { radius: r, rotation: rot, cutout: { color: "#FFFFFF", width: 12 } }, which),
+  R({ ...b, fill: SHEEN, radius: r, rotation: rot }),
+];
 
 const glossyA: Layout = (x) => {
   const { c } = x;
-  const h = fit(c.head, F.bagel, { x: 50, y: 70, w: 980, h: 400 }, { size: 210, color: GL.milk, lh: 0.95, lines: 2, align: "center", extra: gloss("#FFFFFF", "#D8D2C8", "#4A4744") });
-  return doc(GL.char, [
+  const h = fit(c.head, F.bagel, { x: 50, y: 70, w: 980, h: 400 }, { size: 230, lh: 0.92, lines: 2, align: "center", extra: gloss("#FFD6E5", "#E0457B", "#5E1236") });
+  const py = h.bottom + 70;
+  return doc(GL.cream, [
+    R({ x: 0, y: 0, w: W, h: H, fill: GL.cream, grain: 0.3 }),
     h.el,
-    T({ x: 60, y: h.bottom + 10, w: 960, h: 40, text: c.kicker, font: F.smono, size: 22, fontWeight: 700, color: GL.butter, align: "center", letterSpacing: 6 }),
-    photo(x, { x: 270, y: h.bottom + 80, w: 540, h: Math.min(660, 1130 - h.bottom - 80) }, { rotation: -3, frame: { kind: "polaroid", title: c.sub.toLowerCase().slice(0, 26) } }),
-    S("burst-sparkle", { x: 830, y: h.bottom + 60, w: 140, h: 140, fill: GL.butter }),
-    S("burst-sparkle", { x: 120, y: h.bottom + 520, w: 100, h: 100, fill: GL.blush }),
-    T({ x: 60, y: 1180, w: 460, h: 120, text: c.sub + ". " + (c.where ? `At ${c.plain.toLowerCase()} HQ, ${c.where.toLowerCase()}.` : "Bring someone you like."), font: F.instr, size: 30, color: GL.milk, lineHeight: 1.2 }),
-    T({ x: 560, y: 1180, w: 460, h: 120, text: c.when, font: F.instr, size: 30, italic: true, color: GL.butter, align: "right", lineHeight: 1.2 }),
+    glossCard(x, { x: 200, y: py, w: 680, h: Math.min(640, 1150 - py) }, -3),
+    S("chrome-star", { x: 820, y: py - 90, w: 190, h: 190, rotation: 12 }),
+    S("chrome-heart", { x: 90, y: py + 360, w: 170, h: 153, rotation: -14 }),
+    R({ x: 220, y: 1196, w: 640, h: 80, fill: GL.plum, radius: 40 }),
+    fit(c.when, F.smono, { x: 250, y: 1206, w: 580, h: 60 }, { size: 26, weight: 700, color: GL.butter, align: "center", lines: 1, valign: "center" }).el,
+    T({ x: 60, y: 1290, w: 960, h: 44, text: c.sub, font: F.instr, size: 34, italic: true, color: GL.plum, align: "center" }),
   ]);
 };
 
 const glossyB: Layout = (x) => {
   const { c } = x;
-  const h = fit(c.head, F.bagel, { x: 60, y: 760, w: 960, h: 360 }, { size: 200, color: GL.blush, lh: 0.95, lines: 2, align: "center", extra: gloss("#FFE3EC", "#FF7FA8", "#7A2440") });
-  return doc(GL.milk, [
-    R({ x: 0, y: 0, w: W, h: H, fill: GL.milk, grain: 0.35 }),
-    photo(x, { x: 240, y: 90, w: 600, h: 600 }, { radius: 300, cutout: { color: "#FFFFFF", width: 16 } }),
-    S("blob-cloud", { x: 690, y: 80, w: 260, h: 170, fill: GL.butter }),
-    T({ x: 700, y: 120, w: 240, h: 90, text: c.kicker, font: F.bagel, size: 34, color: GL.char, align: "center", lineHeight: 1 }),
+  const h = fit(c.head, F.bagel, { x: 50, y: 780, w: 980, h: 360 }, { size: 220, lh: 0.92, lines: 2, align: "center", extra: gloss("#FFF6C9", "#F2B705", "#6B4A00") });
+  return doc(GL.plum, [
+    S("bg-halftone", { x: 0, y: 980, w: W, h: 370, fill: GL.plum2, accent: GL.plum }),
+    T({ x: 60, y: 70, w: 960, h: 40, text: c.kicker, font: F.smono, size: 24, fontWeight: 700, color: GL.blush, align: "center", letterSpacing: 10 }),
+    glossCard(x, { x: 255, y: 150, w: 570, h: 570 }, 3, 285),
+    S("chrome-heart", { x: 760, y: 140, w: 200, h: 180, rotation: 14 }),
+    S("chrome-star", { x: 110, y: 560, w: 170, h: 170, rotation: -8 }),
     h.el,
-    T({ x: 160, y: 1160, w: 760, h: 60, text: c.sub, font: F.instr, size: 44, italic: true, color: GL.char, align: "center" }),
-    mono(160, 1250, 760, `${c.when}${c.where ? "  ·  " + c.where : ""}`, "#7A2440", 20, "center"),
-    S("burst-sparkle", { x: 140, y: 680, w: 110, h: 110, fill: "#FF7FA8" }),
+    T({ x: 60, y: 1170, w: 960, h: 60, text: c.sub, font: F.instr, size: 46, italic: true, color: GL.cream, align: "center" }),
+    mono(60, 1260, 960, `${c.when}${c.where ? "  ·  " + c.where : ""}`, GL.butter, 22, "center"),
   ]);
 };
 
 const glossyC: Layout = (x) => {
   const { c } = x;
-  const h = fit(c.head, F.bagel, { x: 40, y: 260, w: 1000, h: 560 }, { size: 280, color: GL.butter, lh: 0.92, lines: 3, align: "center", valign: "center", extra: gloss("#FFF6C9", "#F2B705", "#6B4A00") });
-  return doc(GL.blush, [
-    S("bg-halftone", { x: 0, y: 650, w: W, h: 700, fill: "#FF9DB8", accent: GL.blush }),
-    T({ x: 60, y: 120, w: 960, h: 50, text: c.kicker, font: F.smono, size: 26, fontWeight: 700, color: GL.char, align: "center", letterSpacing: 8 }),
+  const h = fit(c.head, F.bagel, { x: 50, y: 60, w: 980, h: 330 }, { size: 210, lh: 0.92, lines: 2, align: "center", extra: gloss("#F1ECFF", "#8E6CFF", "#2A0F2E") });
+  return doc(GL.cream, [
+    R({ x: 0, y: 0, w: W, h: H, fill: "linear-gradient(180deg, #F6EEDF 0%, #FFD9E6 100%)", grain: 0.25 }),
     h.el,
-    photo(x, { x: 640, y: 830, w: 380, h: 440 }, { rotation: 6, frame: { kind: "polaroid", title: "proof" } }),
-    S("kiwi-happy", { x: 70, y: 860, w: 220, h: 220, rotation: -10 }),
-    T({ x: 60, y: 1110, w: 560, h: 120, text: c.sub, font: F.instr, size: 46, italic: true, color: GL.char, lineHeight: 1.05 }),
-    mono(60, 1250, 560, c.when, GL.char, 20),
-    S("burst-sparkle", { x: 880, y: 200, w: 130, h: 130, fill: "#FFFFFF" }),
+    glossCard(x, { x: 80, y: h.bottom + 60, w: 500, h: Math.min(720, 1120 - h.bottom - 60) }, -6, 44),
+    glossCard(x, { x: 510, y: h.bottom + 120, w: 490, h: Math.min(700, 1140 - h.bottom - 120) }, 5, 44, "photo2"),
+    S("chrome-blob", { x: 440, y: h.bottom + 20, w: 170, h: 170 }),
+    S("chrome-star", { x: 880, y: h.bottom + 40, w: 150, h: 150, rotation: 10 }),
+    T({ x: 60, y: 1180, w: 960, h: 60, text: c.sub, font: F.instr, size: 44, italic: true, color: GL.ink, align: "center" }),
+    mono(60, 1260, 960, `${c.when}${c.where ? "  ·  " + c.where : ""}`, GL.ink, 22, "center"),
   ]);
 };
 

@@ -283,13 +283,18 @@ const shade = (hex: string, k: number) => {
 /** Glossy bubble type: an ink outline layer under a gradient fill with a white top shine. */
 export function GlossyText({ el, style }: { el: TextElement; style: React.CSSProperties }) {
   const g = el.glossy!;
-  const sw = el.fontSize * 0.11;
+  const f = el.fontSize;
+  const sw = f * 0.09;
   const layer: React.CSSProperties = { ...style, position: "absolute", inset: 0 };
+  // extrusion: stacked ink offsets read as depth, then one soft contact shadow
+  const depth = Array.from({ length: 7 }, (_, i) => `0 ${((i + 1) * f * 0.014).toFixed(1)}px 0 ${shade(g.ink, 1 - i * 0.05)}`).join(", ");
+  const clip = { color: "transparent", WebkitBackgroundClip: "text", backgroundClip: "text" } as const;
   return (
     <div style={{ position: "relative", width: "100%", height: "100%" }}>
-      <div style={{ ...layer, color: g.ink, WebkitTextStroke: `${sw}px ${g.ink}`, paintOrder: "stroke fill", textShadow: `0 ${el.fontSize * 0.07}px 0 ${g.ink}, 0 ${el.fontSize * 0.14}px ${el.fontSize * 0.1}px rgba(0,0,0,.35)` }}><div>{el.text}</div></div>
-      <div style={{ ...layer, color: "transparent", backgroundImage: `linear-gradient(180deg, #FFFFFF 0%, ${g.from} 26%, ${g.to} 68%, ${shade(g.to, 0.7)} 100%)`, WebkitBackgroundClip: "text", backgroundClip: "text" }}><div>{el.text}</div></div>
-      <div style={{ ...layer, color: "transparent", backgroundImage: "linear-gradient(180deg, rgba(255,255,255,.85) 0%, rgba(255,255,255,0) 38%)", WebkitBackgroundClip: "text", backgroundClip: "text", transform: `translateY(-${el.fontSize * 0.03}px) scale(.985)` }}><div>{el.text}</div></div>
+      <div style={{ ...layer, color: g.ink, WebkitTextStroke: `${sw}px ${g.ink}`, paintOrder: "stroke fill", textShadow: `${depth}, 0 ${f * 0.14}px ${f * 0.16}px rgba(20,0,20,.32)` }}><div>{el.text}</div></div>
+      <div style={{ ...layer, ...clip, backgroundImage: `radial-gradient(ellipse 60% 40% at 30% 18%, rgba(255,255,255,.7), rgba(255,255,255,0) 60%), linear-gradient(180deg, ${g.from} 0%, ${g.from} 22%, ${g.to} 64%, ${shade(g.to, 0.62)} 100%)` }}><div>{el.text}</div></div>
+      <div style={{ ...layer, ...clip, backgroundImage: "linear-gradient(180deg, rgba(255,255,255,0) 6%, rgba(255,255,255,.95) 13%, rgba(255,255,255,.15) 27%, rgba(255,255,255,0) 34%)", transform: `translateY(-${f * 0.02}px) scale(.96, .9)` }}><div>{el.text}</div></div>
+      <div style={{ ...layer, ...clip, backgroundImage: "linear-gradient(0deg, rgba(255,255,255,.45) 0%, rgba(255,255,255,0) 14%)" }}><div>{el.text}</div></div>
     </div>
   );
 }

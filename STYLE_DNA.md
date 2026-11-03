@@ -117,13 +117,14 @@ Effect names refer to the effects engine (DESIGN.md §16): `halftone`, `duotone`
 - **Never:** fewer than 5 stickers, a centred grid, or empty corners.
 
 ## 10. Glossy Bloom
-*Glossy 3D bubble type and soft daylight photos.*
+*Premium glossy 3D: bubble type you want to lick, photos in glass-smooth cards.*
 
-- **Palette:** charcoal `#1C1C1E`, milk `#F7F3EC`, butter `#FFE58A`, blush `#FFC2D1`, leaf `#8BD630`.
-- **Fonts:** Bagel Fat One (rendered `glossy`) + Instrument Serif (soft lines) + Inter (tiny copy).
-- **Layout grammar:** a giant glossy two-word headline across the top third. A photo sits in a `polaroid` frame, overlapping the frame edge (pop-out). A short serif paragraph runs in two columns underneath. Sparkles sit near the headline.
-- **Signature effects:** `glossy` type, `polaroid` frame, `grain` (light).
-- **Stickers:** burst-sparkle, kiwi-happy, blob-cloud.
+- **Palette:** cream `#F6EEDF` or deep plum `#2A0F2E`; bubble fills pink `#FFD6E5→#E0457B`, butter `#FFF6C9→#F2B705`, lilac `#F1ECFF→#8E6CFF`; blush `#FFC2D1`.
+- **Fonts:** Bagel Fat One rendered `glossy` (7-step ink extrusion, two-stop gradient body, inner specular stripe, bottom rim light, soft contact shadow) + Instrument Serif italic + Space Mono.
+- **Layout grammar:** a giant 3D headline (top or bottom third). Photos sit in rounded glossy cards: white 12px rim, radius ≥ 44, a specular sheen gradient on top, and a slight tilt. Chrome stickers float at the card corners. Details go in a plum pill or a centred serif line.
+- **Signature effects:** `glossy` type, rounded cards with `cutout` + sheen, `grain` (light), `bg-halftone` in plum.
+- **Stickers:** chrome sparkle, chrome heart, glossy bubble.
 - **Copy tone:** soft-launch luxury, gentle brag.
-- **Sample headlines:** "GLOSSY BLOOM" · "SOFT LAUNCH, HARD FLEX" · "FRESH OUT THE OVEN"
-- **Never:** harsh neon, more than one glossy element, or busy patterned backgrounds.
+- **Sample headlines:** "Save the date" · "Sweet things, slowly" · "Diwali Sale"
+- **Never:** flat fills on the headline, square photo corners, neon, or more than three chrome stickers.
+- **Rework log (round 4):** I reworked it twice against Nazar Battu, and it now matches it, so it stays in Juice It.

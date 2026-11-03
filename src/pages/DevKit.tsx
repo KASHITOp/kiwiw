@@ -12,7 +12,7 @@ import ElementContent from "../editor/ElementContent";
 import Thumb from "../editor/Thumb";
 import type { Element, KiwiwDoc } from "../types";
 import { useEffect, useState } from "react";
-import { juiceWithAI, ensureJuiceFonts, type JuiceResult } from "../juice";
+import { juiceWithAI, ensureJuiceFonts, juiceRecipe, type JuiceResult, type RecipeKey } from "../juice";
 import { buildHeroes } from "../dna/heroes";
 
 /** ?dump=heroes: build the hero templates with real fonts and print the JSON. */
@@ -75,12 +75,17 @@ function DocRender({ doc }: { doc: KiwiwDoc }) {
 /** Waits for the measured fonts, exactly like the real Juice It flow. */
 function JuiceView({ text, variant }: { text: string; variant: number }) {
   const [results, setResults] = useState<JuiceResult[] | null>(null);
-  useEffect(() => { juiceWithAI(text, variant).then((r) => setResults(r.results)); }, [text, variant]);
+  useEffect(() => {
+    const recipe = new URLSearchParams(location.search).get("recipe") as RecipeKey | null;
+    // ?recipe=<key>: all three layouts of one recipe (art-direction rounds)
+    if (recipe) ensureJuiceFonts().then(() => setResults([0, 1, 2].map((i) => juiceRecipe(text, recipe, i))));
+    else juiceWithAI(text, variant).then((r) => setResults(r.results));
+  }, [text, variant]);
   if (!results) return null;
   return (
     <div id="juice-ready" style={{ display: "flex", flexWrap: "wrap", gap: 40, padding: 40, background: "#0B0D08", zoom: Number(new URLSearchParams(location.search).get("zoom") ?? 1) }}>
       {results.map((r) => (
-        <div key={r.style} data-juice={r.style}>
+        <div key={r.style + r.layout} data-juice={r.style}>
           <DocRender doc={r.doc} />
           <div style={{ fontFamily: "JetBrains Mono", fontSize: 30, color: "#D8F27A", marginTop: 12 }}>{r.name} · layout {r.layout + 1}</div>
         </div>

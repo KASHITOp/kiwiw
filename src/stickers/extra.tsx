@@ -116,6 +116,57 @@ export const EXTRA_DEFS: StickerDef[] = [
     ),
   },
 
+
+  /* Glossy Bloom: chrome stickers (metallic gradients, specular stripe) */
+  {
+    kind: "chrome-star", name: "Chrome sparkle", category: "Bursts", tags: ["chrome", "glossy", "y2k", "sparkle", "star", "metal", "3d"], vb: [100, 100], size: [200, 200],
+    uses: ["fill", "accent"], colors: { fill: "#E9E4F2", accent: "#FFC2D1", ink: "#2A0F2E" },
+    Art: ({ c, uid }) => (
+      <g>
+        <defs>
+          <linearGradient id={`cs${uid}`} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#FFFFFF" /><stop offset=".35" stopColor={c.fill} /><stop offset=".55" stopColor="#8E8A99" /><stop offset=".7" stopColor="#FFFFFF" /><stop offset="1" stopColor={c.accent} />
+          </linearGradient>
+        </defs>
+        <path d="M50,2 C54,34 66,46 98,50 C66,54 54,66 50,98 C46,66 34,54 2,50 C34,46 46,34 50,2Z" fill="#2A0F2E" opacity=".25" transform="translate(3 5)" />
+        <path d="M50,2 C54,34 66,46 98,50 C66,54 54,66 50,98 C46,66 34,54 2,50 C34,46 46,34 50,2Z" fill={`url(#cs${uid})`} stroke="#FFFFFF" strokeWidth="1.2" />
+        <path d="M48,14 C50,30 54,40 60,44" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" fill="none" opacity=".9" />
+      </g>
+    ),
+  },
+  {
+    kind: "chrome-heart", name: "Chrome heart", category: "Bursts", tags: ["chrome", "glossy", "heart", "love", "y2k", "3d", "metal"], vb: [100, 90], size: [200, 180],
+    uses: ["fill", "accent"], colors: { fill: "#FF9DB8", accent: "#FFFFFF", ink: "#2A0F2E" },
+    Art: ({ c, uid }) => (
+      <g>
+        <defs>
+          <radialGradient id={`ch${uid}`} cx=".35" cy=".3" r=".8">
+            <stop offset="0" stopColor="#FFFFFF" /><stop offset=".25" stopColor={c.fill} /><stop offset=".75" stopColor="#B83A6A" /><stop offset="1" stopColor="#5E1236" />
+          </radialGradient>
+        </defs>
+        <path d="M50,86 C20,64 4,46 4,28 C4,12 16,4 28,4 C38,4 46,10 50,18 C54,10 62,4 72,4 C84,4 96,12 96,28 C96,46 80,64 50,86Z" fill="#2A0F2E" opacity=".25" transform="translate(2 5)" />
+        <path d="M50,86 C20,64 4,46 4,28 C4,12 16,4 28,4 C38,4 46,10 50,18 C54,10 62,4 72,4 C84,4 96,12 96,28 C96,46 80,64 50,86Z" fill={`url(#ch${uid})`} />
+        <ellipse cx="28" cy="22" rx="11" ry="6" fill={c.accent} opacity=".85" transform="rotate(-25 28 22)" />
+      </g>
+    ),
+  },
+  {
+    kind: "chrome-blob", name: "Glossy bubble", category: "Blobs", tags: ["chrome", "glossy", "bubble", "blob", "3d", "y2k"], vb: [100, 100], size: [220, 220],
+    uses: ["fill", "accent"], colors: { fill: "#FFE58A", accent: "#FFFFFF", ink: "#2A0F2E" },
+    Art: ({ c, uid }) => (
+      <g>
+        <defs>
+          <radialGradient id={`cb${uid}`} cx=".35" cy=".3" r=".85">
+            <stop offset="0" stopColor="#FFFFFF" /><stop offset=".3" stopColor={c.fill} /><stop offset="1" stopColor="#C9900A" />
+          </radialGradient>
+        </defs>
+        <circle cx="52" cy="55" r="42" fill="#2A0F2E" opacity=".2" />
+        <circle cx="50" cy="50" r="42" fill={`url(#cb${uid})`} />
+        <ellipse cx="36" cy="30" rx="14" ry="8" fill={c.accent} opacity=".9" transform="rotate(-30 36 30)" />
+      </g>
+    ),
+  },
+
   /* Style DNA stickers */
   {
     kind: "desi-nimbu-mirchi", name: "Nimbu mirchi", category: "Desi", tags: ["nimbu", "mirchi", "lemon", "chilli", "nazar", "evil eye", "totka", "desi"], vb: [100, 230], size: [180, 414],
