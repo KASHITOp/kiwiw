@@ -5,5 +5,10 @@
       "source": "/((?!api/).*)",
       "destination": "/index.html"
     }
-  ]
+  ],
+  "functions": {
+    "api/juice-copy.js": {
+      "maxDuration": 30
+    }
+  }
 }

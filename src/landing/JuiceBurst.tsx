@@ -24,7 +24,12 @@ export default function JuiceBurst({ text, nonce }: { text: string; nonce: numbe
     if (!nonce) return;
     let live = true;
     secRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    juiceWithAI(text).then((r) => { if (live) { session.current = r.session; setResults(r.results); setAi(r.ai); setBatch((b) => b + 1); } });
+    juiceWithAI(text).then((r) => {
+      if (!live) return;
+      session.current = r.session; setResults(r.results); setAi(r.ai); setBatch((b) => b + 1);
+      // AI copy swaps in place, unless the user already re-juiced
+      r.upgrade.then((u) => { if (live && u) { setResults((cur) => (cur === r.results ? u : cur)); setAi(true); } });
+    });
     return () => { live = false; };
   }, [text, nonce]);
 

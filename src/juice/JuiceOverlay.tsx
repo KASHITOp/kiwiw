@@ -30,7 +30,12 @@ export default function JuiceOverlay({ text, onClose }: Props) {
   useEffect(() => {
     let alive = true;
     setResults(null);
-    juiceWithAI(text).then((r) => { if (alive) { session.current = r.session; setResults(r.results); setAi(r.ai); } });
+    juiceWithAI(text).then((r) => {
+      if (!alive) return;
+      session.current = r.session; setResults(r.results); setAi(r.ai);
+      // AI copy swaps in place, unless the user already re-juiced
+      r.upgrade.then((u) => { if (alive && u) { setResults((cur) => (cur === r.results ? u : cur)); setAi(true); } });
+    });
     return () => { alive = false; };
   }, [text]);
 

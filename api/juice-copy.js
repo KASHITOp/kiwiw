@@ -17,7 +17,9 @@ const RECIPES = {
 export default async function handler(req, res) {
   if (req.method !== "POST") { res.status(405).end(); return; }
   const key = process.env.GEMINI_API_KEY;
-  if (!key) { res.status(204).end(); return; }
+  // X-Juice-Reason explains a fallback (never includes the key)
+  const skip = (why) => { res.setHeader("X-Juice-Reason", why); res.status(204).end(); };
+  if (!key) { skip("no-key"); return; }
   let text = "";
   try { text = String((typeof req.body === "string" ? JSON.parse(req.body) : req.body)?.text ?? "").slice(0, 120).trim(); } catch { /* bad body */ }
   if (!text) { res.status(400).end(); return; }
@@ -28,21 +30,37 @@ Each value is {"head": max 5 words, "sub": max 9 words}. Tones:
 ${Object.entries(RECIPES).map(([k, v]) => `- ${k}: ${v}`).join("\n")}
 Rules: witty, never mean; no real brands, celebrities, sports clubs or characters; keep dates, times and places out of "head".`;
 
+  // Models in order. Lite first: fastest. Google retires model ids, so
+  // GEMINI_MODEL (if set) is tried first and the list falls through 404/503s.
+  const models = [process.env.GEMINI_MODEL, "gemini-flash-lite-latest", "gemini-3.8-flash", "gemini-3.5-flash-lite"].filter(Boolean);
+  const deadline = Date.now() + 25000;
+  let r = null, why = "no-model";
   try {
-    const model = process.env.GEMINI_MODEL || "gemini-2.5-flash";
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 8000);
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-      method: "POST",
-      signal: ctrl.signal,
-      headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-      body: JSON.stringify({
-        contents: [{ role: "user", parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.95, responseMimeType: "application/json" },
-      }),
-    });
-    clearTimeout(timer);
-    if (!r.ok) { res.status(204).end(); return; }
+    for (const model of models) {
+      const left = deadline - Date.now();
+      if (left < 1500) { why = "timeout"; break; }
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), left);
+      const lite = /lite/.test(model);
+      try {
+        r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+          method: "POST",
+          signal: ctrl.signal,
+          headers: { "Content-Type": "application/json", "x-goog-api-key": key },
+          body: JSON.stringify({
+            contents: [{ role: "user", parts: [{ text: prompt }] }],
+            // lite models reject thinkingConfig; full flash gets no thinking (copy should be fast, not deep)
+            generationConfig: { temperature: 0.95, responseMimeType: "application/json", ...(lite ? {} : { thinkingConfig: { thinkingBudget: 0 } }) },
+          }),
+        });
+      } catch (e) {
+        r = null; why = e?.name === "AbortError" ? "timeout" : "network";
+      } finally { clearTimeout(timer); }
+      if (r?.ok) { res.setHeader("X-Juice-Model", model); break; }
+      if (r) why = `upstream-${r.status}`;
+      r = null;
+    }
+    if (!r) { skip(why); return; }
     const data = await r.json();
     const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "{}";
     const parsed = JSON.parse(raw);
@@ -54,7 +72,7 @@ Rules: witty, never mean; no real brands, celebrities, sports clubs or character
     }
     res.setHeader("Cache-Control", "no-store");
     res.status(200).json(clean);
-  } catch {
-    res.status(204).end();
+  } catch (e) {
+    skip(e?.name === "AbortError" ? "timeout" : "parse-or-network");
   }
 }

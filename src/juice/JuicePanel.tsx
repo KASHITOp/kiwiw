@@ -22,6 +22,7 @@ export default function JuicePanel({ text, setText }: { text: string; setText: (
     setResults(r.results);
     setBatch((b) => b + 1);
     setBusy(false);
+    r.upgrade.then((u) => { if (u) setResults((cur) => (cur === r.results ? u : cur)); });
   };
   const again = () => { if (!session.current) return; setResults(juiceBatch(session.current)); setBatch((b) => b + 1); };
   const swap = (i: number, r: JuiceResult) => setResults((rs) => rs && rs.map((x, j) => (j === i ? r : x)));
