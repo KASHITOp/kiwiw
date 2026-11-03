@@ -119,7 +119,7 @@ const swissPost = () => {
     ...Array.from({ length: 12 }, (_, i) => T({ x: 60 + i * 84, y: 572, w: 60, h: 30, text: String(i + 1).padStart(2, "0"), font: F.smono, size: 18, fontWeight: 700, color: i === 5 ? "#E30613" : "#141414" })),
     S("figure-walker", { x: 480, y: 432, w: 64, h: 128 }),
     img("portrait-3979997", { x: 60, y: 700, w: 220, h: 280 }, { fx: { bw: true }, cutout: { color: "#FFFFFF", width: 6 }, rotation: -4 }),
-    T({ x: 60, y: 60, w: 420, h: 120, text: "Summer Sale\n(A Small One)", font: F.inter, size: 30, fontWeight: 600, color: "#141414", lineHeight: 1.3 }),
+    T({ x: 300, y: 660, w: 340, h: 120, text: "Summer Sale\n(A Small One)", font: F.inter, size: 34, fontWeight: 700, color: "#141414", lineHeight: 1.3 }),
     mono(60, 1010, 600, "01—30 JUNE / UP TO 30% / NO DRAMA", "#141414", 18),
   ]);
 };
