@@ -71,7 +71,7 @@ const nazarC: Layout = (x) => {
   const h = fit(c.head, F.rozha, { x: 60, y: 780, w: 960, h: 360 }, { size: 270, color: NZ.yellow, lh: 1.05, lines: 2, extra: { outline: { color: "#111111", width: 10 }, shadow: { color: "#111111", x: 12, y: 12 } } });
   return doc(NZ.cobalt, [
     S("bg-sunburst", { x: -200, y: -300, w: 1480, h: 1500, fill: "#2B4FF0", accent: NZ.cobalt, opacity: 1 }),
-    photo(x, { x: 300, y: 120, w: 560, h: 640 }, { rotation: -4, cutout: { color: "#FFFFFF", width: 14 }, fx: { posterize: 4 } }),
+    photo(x, { x: 300, y: 120, w: 560, h: 640 }, { rotation: -4, cutout: { color: "#FFFFFF", width: 14 }, fx: { riso: { inks: ["#1D3FD8", "#F2479B"], paper: "#FBEEDC" } } }),
     S("desi-nimbu-mirchi", { x: 860, y: -30, w: 160, h: 368, rotation: -8 }),
     S("desi-evil-eye", { x: 70, y: 130, w: 200, h: 200, rotation: -10 }),
     T({ x: 60, y: 610, w: 600, h: 170, text: c.kicker.split(" ")[0], font: F.anton, size: 190, color: NZ.pink, lineHeight: 0.9, outline: { color: "#111111", width: 8 }, rotation: -6 }),
@@ -92,7 +92,7 @@ const tapriA: Layout = (x) => {
     R({ x: 0, y: 0, w: W, h: H, fill: "transparent", frame: { kind: "truck", color: TP.red } }),
     T({ x: 150, y: 150, w: 780, h: 50, text: c.kicker, font: F.khand, size: 40, fontWeight: 700, color: TP.teal, align: "center" }),
     h.el,
-    photo(x, { x: 260, y: h.bottom + 20, w: 560, h: Math.min(540, 960 - h.bottom) }, { rotation: -3, frame: { kind: "stamp", color: "#FFFDF6" }, fx: { posterize: 5 } }),
+    photo(x, { x: 260, y: h.bottom + 20, w: 560, h: Math.min(540, 960 - h.bottom) }, { rotation: -3, frame: { kind: "stamp", color: "#FFFDF6" }, fx: { riso: { inks: ["#0F7C7A", "#D62828", "#F7931E"], paper: "#FFF3D6" } } }),
     S("desi-marigold", { x: 150, y: 470, w: 150, h: 150 }),
     S("desi-marigold", { x: 800, y: 860, w: 130, h: 130 }),
     R({ x: 170, y: 1000, w: 740, h: 100, fill: TP.teal, rotation: -2 }),
@@ -106,7 +106,7 @@ const tapriB: Layout = (x) => {
   const h = fit(c.head, F.yatra, { x: 80, y: 820, w: 920, h: 240 }, { size: 200, align: "center", color: TP.yellow, lh: 1.15, lines: 2, extra: { outline: { color: TP.ink, width: 10 }, shadow: { color: TP.ink, x: 10, y: 10 } } });
   return doc(TP.teal, [
     S("bg-sunburst", { x: -300, y: -200, w: 1680, h: 1600, fill: TP.saffron, accent: TP.teal }),
-    photo(x, { x: 270, y: 160, w: 540, h: 540 }, { radius: 270, cutout: { color: TP.chalk, width: 16 }, fx: { posterize: 4 } }),
+    photo(x, { x: 270, y: 160, w: 540, h: 540 }, { radius: 270, cutout: { color: TP.chalk, width: 16 }, fx: { riso: { inks: ["#1A1208", "#D62828"], paper: "#FFF3D6" } } }),
     S("desi-toran", { x: 0, y: 0, w: W, h: 200 }),
     R({ x: 160, y: 720, w: 760, h: 100, fill: TP.red, cutout: { color: TP.ink, width: 6 } }),
     T({ x: 160, y: 720, w: 760, h: 100, text: c.sub, font: F.baloo, size: 50, fontWeight: 800, color: TP.chalk, align: "center", lineHeight: 1 }),
@@ -164,7 +164,7 @@ const stadiumB: Layout = (x) => {
   return doc(ST.red, [
     S("bg-halftone", { x: 0, y: 650, w: W, h: 700, fill: "#9E0F12", accent: ST.red }),
     h.el,
-    photo(x, { x: 300, y: py, w: 700, h: 1140 - py }, { fx: { bw: true, posterize: 5 }, cutout: { color: "#FFFFFF", width: 14 }, rotation: 2 }),
+    photo(x, { x: 300, y: py, w: 700, h: 1140 - py }, { fx: { riso: { inks: ["#111111", "#D7191C"], paper: "#F2E8D5" } }, cutout: { color: "#FFFFFF", width: 14 }, rotation: 2 }),
     R({ x: 40, y: 1150, w: 520, h: 160, fill: ST.ink }),
     mono(60, 1165, 490, stats(c), ST.cream, 20),
     T({ x: 600, y: 1170, w: 440, h: 140, text: c.manifesto.toUpperCase(), font: F.anton, size: 40, color: ST.cream, align: "right", lineHeight: 1.1 }),
@@ -203,7 +203,7 @@ const brutalA: Layout = (x) => {
     R({ x: 40, y: 990, w: 500, h: 290, fill: BG.blue }),
     T({ x: 60, y: 1005, w: 460, h: 60, text: "02", font: F.archivo, size: 54, color: BG.paper }),
     T({ x: 60, y: 1080, w: 460, h: 190, text: (c.where || c.sub).toUpperCase(), font: F.archivo, size: 44, color: BG.paper, lineHeight: 1.05 }),
-    photo(x, { x: 540, y: 700, w: 500, h: 580 }, { fx: { bw: true, posterize: 3 } }),
+    photo(x, { x: 540, y: 700, w: 500, h: 580 }, { fx: { riso: { inks: ["#0A0A0A", "#FF2E1F"], paper: "#F4F1EA" } } }),
     S("arrow-straight", { x: 600, y: 640, w: 260, h: 80, ink: BG.red, fill: BG.red }),
     mono(40, 1300, 1000, `03 — ${c.sub.toUpperCase()}`, BG.ink, 18),
   ]);
@@ -314,7 +314,7 @@ const trippyB: Layout = (x) => {
   return doc(TW.pink, [
     S("bg-checker", { x: 0, y: 0, w: W, h: H, fill: "#C8102E", accent: "#F7B2C4" }),
     h.el,
-    photo(x, { x: 160, y: h.bottom + 40, w: 760, h: 700 }, { rotation: -2, frame: { kind: "window", color: TW.sun, accent: TW.cream, title: `${c.noun.toLowerCase()}.jpg` }, fx: { posterize: 5 } }),
+    photo(x, { x: 160, y: h.bottom + 40, w: 760, h: 700 }, { rotation: -2, frame: { kind: "window", color: TW.sun, accent: TW.cream, title: `${c.noun.toLowerCase()}.jpg` }, fx: { riso: { inks: ["#6B3FD8", "#FF4FA3", "#FFC72C"], paper: "#FFF1DE" } } }),
     R({ x: 190, y: 1200, w: 700, h: 90, fill: TW.cream, radius: 45, cutout: { color: TW.ink, width: 5 } }),
     T({ x: 190, y: 1200, w: 700, h: 90, text: `${c.when}${c.where ? " · " + c.where : ""}`, font: F.smono, size: 26, fontWeight: 700, color: TW.ink, align: "center", lineHeight: 1 }),
   ]);
@@ -347,7 +347,7 @@ const neoA: Layout = (x) => {
     hard(hb), card(hb, NB.white),
     T({ x: 110, y: 140, w: 600, h: 50, text: `● ${c.kicker}`, font: F.smono, size: 26, fontWeight: 700, color: NB.ink }),
     h.el,
-    hard({ x: 70, y: 590, w: 560, h: 560 }, -2), photo(x, { x: 70, y: 590, w: 560, h: 560 }, { radius: 26, rotation: -2, cutout: { color: NB.ink, width: 6 }, fx: { posterize: 6 } }),
+    hard({ x: 70, y: 590, w: 560, h: 560 }, -2), photo(x, { x: 70, y: 590, w: 560, h: 560 }, { radius: 26, rotation: -2, cutout: { color: NB.ink, width: 6 }, fx: { riso: { inks: ["#111111", "#FF6FB5"], paper: "#FFE14D" } } }),
     hard({ x: 680, y: 640, w: 330, h: 120 }), card({ x: 680, y: 640, w: 330, h: 120 }, NB.pink),
     T({ x: 680, y: 640, w: 330, h: 120, text: c.cta, font: F.archivo, size: 34, color: NB.ink, align: "center", lineHeight: 1 }),
     hard({ x: 680, y: 800, w: 330, h: 350 }), card({ x: 680, y: 800, w: 330, h: 350 }, NB.lime),
@@ -372,7 +372,7 @@ const neoB: Layout = (x) => {
     T({ x: 80, y: 800, w: 440, h: 140, text: c.cta, font: F.archivo, size: 40, color: NB.ink, align: "center", lineHeight: 1 }),
     hard({ x: 560, y: 800, w: 440, h: 140 }), card({ x: 560, y: 800, w: 440, h: 140 }, NB.white),
     T({ x: 560, y: 800, w: 440, h: 140, text: "OBVIOUSLY", font: F.archivo, size: 40, color: NB.ink, align: "center", lineHeight: 1 }),
-    photo(x, { x: 300, y: 1000, w: 480, h: 300 }, { radius: 26, rotation: 3, cutout: { color: NB.ink, width: 6 }, fx: { posterize: 5 } }),
+    photo(x, { x: 300, y: 1000, w: 480, h: 300 }, { radius: 26, rotation: 3, cutout: { color: NB.ink, width: 6 }, fx: { riso: { inks: ["#111111", "#B6F23A"], paper: "#FFFFFF" } } }),
     S("arrow-loop", { x: 60, y: 1000, w: 220, h: 200, ink: NB.ink, rotation: -10 }),
     S("badge-pill", { x: 790, y: 1060, w: 230, h: 100, fill: NB.pink, ink: NB.ink, rotation: -8 }),
     T({ x: 790, y: 1060, w: 230, h: 100, text: "NEW", font: F.archivo, size: 40, color: NB.ink, align: "center", rotation: -8, lineHeight: 1 }),
@@ -384,7 +384,7 @@ const neoC: Layout = (x) => {
   const h = fit(c.head, F.archivo, { x: 60, y: 70, w: 960, h: 520 }, { size: 210, upper: true, color: NB.yellow, lh: 0.92, lines: 4, extra: { outline: { color: NB.ink, width: 10 }, shadow: { color: NB.ink, x: 14, y: 14 } } });
   return doc(NB.pink, [
     h.el,
-    hard({ x: 150, y: 640, w: 560, h: 540 }, 4), photo(x, { x: 150, y: 640, w: 560, h: 540 }, { radius: 30, rotation: 4, cutout: { color: NB.ink, width: 7 }, fx: { posterize: 6 } }),
+    hard({ x: 150, y: 640, w: 560, h: 540 }, 4), photo(x, { x: 150, y: 640, w: 560, h: 540 }, { radius: 30, rotation: 4, cutout: { color: NB.ink, width: 7 }, fx: { riso: { inks: ["#111111", "#FFE14D"], paper: "#FFFFFF" } } }),
     ...[c.when, c.where || c.noun, c.cta].filter(Boolean).map((t, i) => [
       hard({ x: 650, y: 690 + i * 150, w: 380, h: 110 }, 0, 55), card({ x: 650, y: 690 + i * 150, w: 380, h: 110 }, i === 1 ? NB.lime : NB.white, 0, 55),
       T({ x: 670, y: 690 + i * 150, w: 340, h: 110, text: t.slice(0, 26), font: F.smono, size: 26, fontWeight: 700, color: NB.ink, align: "center", lineHeight: 1.1 }),
@@ -406,7 +406,7 @@ const pixelA: Layout = (x) => {
     T({ x: 500, y: 40, w: 520, h: 80, text: "♥ ♥ ♥", font: F.press, size: 30, color: PX.night, align: "right", lineHeight: 1 }),
     h.el,
     R({ x: 230, y: 500, w: 620, h: 580, fill: PX.cyan, stroke: "#FFFFFF", strokeWidth: 8 }),
-    photo(x, { x: 250, y: 520, w: 580, h: 540 }, { fx: { posterize: 3 }, grain: 0.2 }),
+    photo(x, { x: 250, y: 520, w: 580, h: 540 }, { fx: { riso: { inks: ["#120B2E", "#FF3EA5"], paper: "#3FE0FF" } }, grain: 0.2 }),
     S("pixel-star", { x: 70, y: 560, w: 150, h: 150 }), S("pixel-heart", { x: 860, y: 900, w: 160, h: 144 }),
     R({ x: 240, y: 1110, w: 600, h: 110, fill: PX.slime, stroke: PX.night, strokeWidth: 6 }),
     T({ x: 240, y: 1110, w: 600, h: 110, text: c.sub, font: F.press, size: 34, color: PX.night, align: "center", lineHeight: 1 }),
@@ -423,7 +423,7 @@ const pixelB: Layout = (x) => {
     h.el,
     ...Array.from({ length: 10 }, (_, i) => R({ x: 60 + i * 64, y: h.bottom + 40, w: 54, h: 40, fill: i < 7 ? PX.pink : "#3A2A6B" })),
     T({ x: 720, y: h.bottom + 40, w: 300, h: 40, text: "HP 70%", font: F.press, size: 20, color: PX.pink, align: "right" }),
-    photo(x, { x: 60, y: h.bottom + 130, w: 520, h: 620 }, { fx: { posterize: 4, duotone: { dark: PX.night, light: PX.cyan } }, cutout: { color: "#FFFFFF", width: 8 } }),
+    photo(x, { x: 60, y: h.bottom + 130, w: 520, h: 620 }, { fx: { riso: { inks: ["#120B2E", "#FF3EA5"], paper: "#3FE0FF" } }, cutout: { color: "#FFFFFF", width: 8 } }),
     T({ x: 620, y: h.bottom + 140, w: 400, h: 400, text: `MISSION:\n${c.plain.toUpperCase().slice(0, 28)}\n\nWHEN:\n${c.when}\n\nWHERE:\n${(c.where || "ONLINE").slice(0, 20)}`, font: F.press, size: 20, color: "#FFFFFF", lineHeight: 1.6 }),
     S("pixel-heart", { x: 860, y: 1130, w: 150, h: 135 }),
     S("pixel-star", { x: 660, y: 1140, w: 120, h: 120 }),
@@ -437,7 +437,7 @@ const pixelC: Layout = (x) => {
     R({ x: 90, y: 110, w: 900, h: 1130, fill: PX.night, stroke: "#FFFFFF", strokeWidth: 10, cutout: { color: PX.night, width: 8 } }),
     T({ x: 120, y: 150, w: 840, h: 60, text: `HI-SCORE  ${String(9000 + (x.seed % 999)).padStart(6, "0")}`, font: F.press, size: 26, color: PX.coin, align: "center" }),
     fit(c.head, F.press, { x: 130, y: 230, w: 820, h: 260 }, { size: 96, color: PX.slime, lh: 1.25, lines: 3, align: "center", valign: "center", extra: { shadow: { color: PX.pink, x: 6, y: 6 } } }).el,
-    photo(x, { x: 250, y: 500, w: 580, h: 520 }, { fx: { posterize: 3 }, frame: { kind: "stamp", color: PX.coin } }),
+    photo(x, { x: 250, y: 500, w: 580, h: 520 }, { fx: { riso: { inks: ["#120B2E", "#FF3EA5"], paper: "#FFD400" } }, frame: { kind: "stamp", color: PX.coin } }),
     T({ x: 120, y: 1040, w: 840, h: 50, text: c.sub, font: F.press, size: 30, color: "#FFFFFF", align: "center" }),
     T({ x: 120, y: 1120, w: 840, h: 80, text: `${c.when}${c.where ? "\n" + c.where : ""}`, font: F.press, size: 18, color: PX.cyan, align: "center", lineHeight: 1.6 }),
     S("pixel-star", { x: 30, y: 30, w: 150, h: 150 }), S("pixel-heart", { x: 900, y: 1180, w: 150, h: 135 }),
@@ -453,7 +453,7 @@ const stickerA: Layout = (x) => {
   const h = fit(c.head, F.bagel, { x: 50, y: 60, w: 760, h: 420 }, { size: 170, color: SB.lime, lh: 0.95, lines: 3, extra: bubble({ rotation: -6 }) });
   return doc(SB.blue, [
     S("texture-halftone", { x: 600, y: 0, w: 480, h: 480, fill: "#3A58FF" }),
-    photo(x, { x: 230, y: 360, w: 640, h: 760 }, { rotation: 4, cutout: { color: SB.white, width: 18 }, fx: { posterize: 6 } }),
+    photo(x, { x: 230, y: 360, w: 640, h: 760 }, { rotation: 4, cutout: { color: SB.white, width: 18 }, fx: { riso: { inks: ["#2443FF", "#FF7AC6"], paper: "#FFFFFF" } } }),
     h.el,
     S("burst-12", { x: 820, y: 330, w: 200, h: 200, fill: SB.pink, ink: SB.ink, rotation: 10 }),
     T({ x: 830, y: 380, w: 180, h: 100, text: "NEW!", font: F.bagel, size: 44, color: SB.white, align: "center", rotation: 10, lineHeight: 1 }),

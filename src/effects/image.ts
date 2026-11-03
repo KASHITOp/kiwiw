@@ -1,11 +1,12 @@
-// Image effects (DESIGN.md §16): halftone, duotone, posterize, B&W.
+// Image effects (DESIGN.md §16): halftone, duotone, Riso print, B&W.
+// Every effect auto-brightens dark photos first (diyas at night stay readable).
 // Rendered on a canvas into a data URL and cached by source + settings, so the
 // canvas, thumbnails and PNG export all show exactly the same pixels.
 import type { ImageFx } from "../types";
 
 const cache = new Map<string, Promise<string>>();
 
-export const hasImageFx = (fx?: ImageFx) => !!fx && !!(fx.halftone || fx.duotone || fx.posterize || fx.bw);
+export const hasImageFx = (fx?: ImageFx) => !!fx && !!(fx.halftone || fx.duotone || fx.posterize || fx.riso || fx.bw);
 
 export function processImage(src: string, fx: ImageFx): Promise<string> {
   const key = src.length > 200 ? src.slice(0, 120) + src.length + src.slice(-60) : src;
@@ -50,6 +51,11 @@ async function run(src: string, fx: ImageFx): Promise<string> {
   g.drawImage(img, 0, 0, w, h);
   const d = g.getImageData(0, 0, w, h);
   const a = d.data;
+  brighten(a);
+  if (fx.riso || fx.posterize) {
+    g.putImageData(d, 0, 0);
+    return riso(c, fx.riso ?? { inks: ["#1D3FD8", "#FF4FA3"], paper: "#F4EBDD" });
+  }
 
   const tone = !!(fx.bw || fx.duotone || fx.halftone);
   const contrast = fx.bw ? 1.6 : fx.halftone ? 1.3 : fx.duotone ? 1.2 : 1;
@@ -102,4 +108,91 @@ async function run(src: string, fx: ImageFx): Promise<string> {
   }
   o.fill();
   return out.toDataURL("image/png");
+}
+
+/** Lift dark photos: if the mean luminance is low, apply a gamma so midtones open up. */
+function brighten(a: Uint8ClampedArray) {
+  let sum = 0, n = 0;
+  for (let i = 0; i < a.length; i += 16) { sum += 0.299 * a[i] + 0.587 * a[i + 1] + 0.114 * a[i + 2]; n++; }
+  const mean = sum / Math.max(1, n) / 255;
+  if (mean > 0.42) return;
+  const gamma = Math.max(0.45, Math.log(0.5) / Math.log(Math.max(0.05, mean)));
+  const lut = new Uint8ClampedArray(256);
+  for (let v = 0; v < 256; v++) lut[v] = 255 * Math.pow(v / 255, gamma);
+  for (let i = 0; i < a.length; i += 4) { a[i] = lut[a[i]]; a[i + 1] = lut[a[i + 1]]; a[i + 2] = lut[a[i + 2]]; }
+}
+
+/**
+ * Riso print: paper, then up to three flat ink layers multiplied on top,
+ * each nudged 1–2 px (misregistration), with halftone dots in the shadows and
+ * a paper grain over everything. Reads like a printed zine, never a broken JPEG.
+ */
+function riso(src: HTMLCanvasElement, o: { inks: string[]; paper: string; misreg?: number }): string {
+  const w = src.width, h = src.height;
+  const L = new Float32Array(w * h);
+  const sd = src.getContext("2d")!.getImageData(0, 0, w, h).data;
+  // smoothed, contrast-stretched luminance (flat ink areas, no JPEG speckle)
+  let lo = 255, hi = 0;
+  for (let i = 0, p = 0; i < sd.length; i += 4, p++) { const l = 0.299 * sd[i] + 0.587 * sd[i + 1] + 0.114 * sd[i + 2]; L[p] = l; }
+  const B = new Float32Array(w * h), r = Math.max(1, Math.round(w / 400));
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    let s = 0, n = 0;
+    for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
+      const xx = Math.min(w - 1, Math.max(0, x + dx)), yy = Math.min(h - 1, Math.max(0, y + dy));
+      s += L[yy * w + xx]; n++;
+    }
+    const v = s / n; B[y * w + x] = v; if (v < lo) lo = v; if (v > hi) hi = v;
+  }
+  const span = Math.max(1, hi - lo);
+  for (let p = 0; p < B.length; p++) B[p] = (B[p] - lo) / span; // 0 = dark, 1 = light
+
+  const out = document.createElement("canvas");
+  out.width = w; out.height = h;
+  const g = out.getContext("2d")!;
+  g.fillStyle = o.paper; g.fillRect(0, 0, w, h);
+  const m = (o.misreg ?? 1.5) * (w / 600);
+  const inks = o.inks.slice(0, 3);
+  // ink k covers everything darker than its threshold; darker inks cover less
+  const thresholds = inks.length >= 3 ? [0.3, 0.52, 0.74] : [0.38, 0.68];
+  const layer = (ink: string, t: number, k: number) => {
+    const c = document.createElement("canvas");
+    c.width = w; c.height = h;
+    const cg = c.getContext("2d")!;
+    const id = cg.createImageData(w, h);
+    const [R, G, Bc] = rgb(ink);
+    const cell = Math.max(3, w / 140);
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      const v = B[y * w + x];
+      let on = v < t;
+      // shadows of the darkest ink get halftone dots just above the threshold
+      if (!on && k === 0 && v < t + 0.16) {
+        const u = ((x + y) / cell) % 1, q = ((x - y) / cell) % 1;
+        const dist = Math.hypot((u + 1) % 1 - 0.5, (q + 1) % 1 - 0.5);
+        on = dist < 0.42 * (1 - (v - t) / 0.16);
+      }
+      if (!on) continue;
+      const i = (y * w + x) * 4;
+      id.data[i] = R; id.data[i + 1] = G; id.data[i + 2] = Bc; id.data[i + 3] = 235;
+    }
+    cg.putImageData(id, 0, 0);
+    return c;
+  };
+  g.globalCompositeOperation = "multiply";
+  // light ink first, dark ink last, each knocked slightly off register
+  [...inks].reverse().forEach((ink, j) => {
+    const k = inks.length - 1 - j;
+    const off = k === 0 ? 0 : (k % 2 ? 1 : -1) * m;
+    g.drawImage(layer(ink, thresholds[k] ?? 0.5, k), off, k === 0 ? 0 : off * 0.6);
+  });
+  // paper grain
+  g.globalCompositeOperation = "multiply";
+  const gd = g.getImageData(0, 0, w, h);
+  let seed = 7;
+  for (let i = 0; i < gd.data.length; i += 4) {
+    seed = (seed * 16807) % 2147483647;
+    const n = 1 - ((seed % 1000) / 1000) * 0.09;
+    gd.data[i] *= n; gd.data[i + 1] *= n; gd.data[i + 2] *= n;
+  }
+  g.putImageData(gd, 0, 0);
+  return out.toDataURL("image/jpeg", 0.9);
 }

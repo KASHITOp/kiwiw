@@ -83,7 +83,14 @@ function FxControls({ el, up }: { el: Element; up: (p: Partial<Element>) => void
       <ColorPopover label="Lights" value={fx.duotone.light} onChange={(c) => setFx({ duotone: { ...fx.duotone!, light: c } })} />
     </div>,
   );
-  if (el.type === "image" && fx.posterize) rows.push(<Range key="post" label="Posterize levels" min={2} max={8} value={fx.posterize} onChange={(v) => setFx({ posterize: v })} />);
+  if (el.type === "image" && fx.riso) rows.push(
+    <div key="riso" className="row">
+      {fx.riso.inks.slice(0, 2).map((ink, i) => (
+        <ColorPopover key={i} label={i ? "Ink 2" : "Ink 1"} value={ink} onChange={(c) => setFx({ riso: { ...fx.riso!, inks: fx.riso!.inks.map((x, j) => (j === i ? c : x)) } })} />
+      ))}
+    </div>,
+    <Range key="mis" label="Misregistration" min={0} max={4} step={0.5} value={fx.riso.misreg ?? 1.5} onChange={(v) => setFx({ riso: { ...fx.riso!, misreg: v } })} fmt={(v) => `${v}px`} />,
+  );
   if (el.type === "text" && el.wave) rows.push(<Range key="wave" label="Wave" min={-100} max={100} value={el.wave} onChange={(v) => up({ wave: v } as Partial<Element>)} />);
   if (el.type === "text" && el.glossy) rows.push(
     <div key="gl" className="row">

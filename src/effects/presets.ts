@@ -19,7 +19,7 @@ export interface FxPreset {
 const img = (el: Element): el is ImageElement => el.type === "image";
 const txt = (el: Element): el is TextElement => el.type === "text";
 const fxOf = (el: Element) => (img(el) ? el.fx ?? {} : {});
-const imgFx = (id: string, label: string, val: unknown, key: "halftone" | "duotone" | "posterize" | "bw"): FxPreset => ({
+const imgFx = (id: string, label: string, val: unknown, key: "halftone" | "duotone" | "riso" | "bw"): FxPreset => ({
   id, label, group: "Image", applies: img,
   on: (el) => !!(fxOf(el) as Record<string, unknown>)[key],
   apply: (el) => ({ fx: { ...fxOf(el), [key]: val } }) as Partial<Element>,
@@ -41,7 +41,7 @@ const deva = (family: string, label: string): FxPreset => ({
 export const FX_PRESETS: FxPreset[] = [
   imgFx("halftone", "Halftone", { dot: 12, ink: "#111111", paper: null }, "halftone"),
   imgFx("duotone", "Duotone", { dark: "#141414", light: "#D7191C" }, "duotone"),
-  imgFx("posterize", "Posterize", 4, "posterize"),
+  imgFx("riso", "Riso print", { inks: ["#1D3FD8", "#FF4FA3"], paper: "#F4EBDD", misreg: 1.5 }, "riso"),
   imgFx("bw", "B&W punch", true, "bw"),
 
   {

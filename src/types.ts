@@ -41,7 +41,10 @@ export interface FrameFx {
 export interface ImageFx {
   halftone?: { dot: number; ink?: string; paper?: string | null; invert?: boolean } | null;
   duotone?: { dark: string; light: string } | null;
+  /** Legacy (rendered as Riso now). */
   posterize?: number | null;
+  /** Riso print: 2–3 flat inks, misregistration, halftone shadows, paper grain. */
+  riso?: { inks: string[]; paper: string; misreg?: number } | null;
   bw?: boolean;
 }
 
