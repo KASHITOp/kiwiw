@@ -2,6 +2,8 @@ import "../landing/landing.css";
 import Hero from "../landing/Hero";
 import Marquee from "../landing/Marquee";
 import DnaWall from "../landing/DnaWall";
+import JuiceBurst from "../landing/JuiceBurst";
+import { useState } from "react";
 import MagicRows from "../landing/MagicRows";
 import Footer, { ZigRule } from "../landing/Footer";
 import Toaster from "../personality/Toaster";
@@ -12,10 +14,12 @@ const onKonami = () => { squeezeKiwis(); toast("↑↑↓↓←→←→BA. Kiwi
 
 export default function Landing() {
   useKonami(onKonami);
+  const [juice, setJuice] = useState({ text: "", nonce: 0 });
   return (
     <div className="land">
       <div className="grain" aria-hidden="true" />
-      <Hero />
+      <Hero onJuice={(text) => setJuice((j) => ({ text, nonce: j.nonce + 1 }))} />
+      <JuiceBurst text={juice.text} nonce={juice.nonce} />
       <ZigRule />
       <DnaWall />
       <ZigRule />

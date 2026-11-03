@@ -322,23 +322,24 @@
 .dna-inp { margin-top: 22px; width: min(460px, 100%); height: 48px; padding: 0 18px; border-radius: 999px; border: 1px solid var(--line); background: var(--ink-2); color: var(--paper); font: 500 16px var(--mono); outline: none; }
 .dna-inp:focus { border-color: var(--kiwi); }
 .dna-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
-.dna-card { position: relative; aspect-ratio: 1080 / 1350; border-radius: 14px; overflow: hidden; cursor: pointer; outline: none; transition: transform 200ms cubic-bezier(.2,.9,.25,1), box-shadow 200ms; }
+.dna-top { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 40px; align-items: center; margin-bottom: clamp(32px, 5vw, 64px); }
+.dna-top .sec-head { margin-bottom: 0; }
+.dna-spin { position: relative; width: clamp(220px, 24vw, 340px); aspect-ratio: 1080 / 1350; }
+.dna-spin-card { position: absolute; inset: 0; border-radius: 14px; overflow: hidden; transform: rotate(4deg); box-shadow: 0 30px 70px rgba(0,0,0,.55); animation: dna-in 600ms cubic-bezier(.2,.9,.25,1) both; }
+@keyframes dna-in { from { opacity: 0; transform: rotate(-8deg) scale(.86) translateY(20px); } }
+.dna-spin-tag { position: absolute; left: 50%; bottom: -34px; transform: translateX(-50%); white-space: nowrap; font-size: 11px; letter-spacing: .1em; color: var(--flesh); }
+.dna-card { position: relative; display: flex; flex-direction: column; border-radius: 14px; overflow: hidden; background: var(--ink-2); outline: none; transition: transform 200ms cubic-bezier(.2,.9,.25,1), box-shadow 200ms; }
 .dna-card:hover, .dna-card:focus-visible { transform: translateY(-6px) rotate(-1.5deg); box-shadow: 0 24px 50px rgba(0,0,0,.5); }
 .dna-card:nth-child(even):hover { transform: translateY(-6px) rotate(1.5deg); }
-.dna-front { position: absolute; inset: 0; padding: 16px; display: flex; flex-direction: column; transition: opacity 180ms; }
-.dna-no { font-size: 12px; opacity: .8; }
-.dna-face { flex: 1; display: grid; place-items: center; font-size: clamp(28px, 3.4vw, 54px); line-height: 1; text-align: center; overflow: hidden; }
-.dna-sw { display: flex; gap: 4px; margin-bottom: 10px; }
-.dna-sw i { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid rgba(0,0,0,.35); }
-.dna-name { font: 800 clamp(16px, 1.4vw, 22px)/1.05 var(--display); letter-spacing: -0.02em; }
-.dna-vibe { font-size: 10px; letter-spacing: .04em; opacity: .85; margin-top: 4px; line-height: 1.35; }
-.dna-back { position: absolute; inset: 0; opacity: 0; transform: scale(1.04); transition: opacity 180ms, transform 220ms; }
-.dna-card:hover .dna-back, .dna-card:focus-visible .dna-back { opacity: 1; transform: none; }
-.dna-card:hover .dna-front, .dna-card:focus-visible .dna-front { opacity: 0; }
+.dna-poster { position: relative; aspect-ratio: 1080 / 1350; }
+.dna-tag { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 2px; }
+.dna-no { font-size: 10px; opacity: .8; }
+.dna-name { font-size: clamp(15px, 1.25vw, 19px); font-weight: 400; line-height: 1.1; letter-spacing: -0.01em; }
+.dna-vibe { font-size: 10px; line-height: 1.35; opacity: .9; max-height: 0; overflow: hidden; transition: max-height 200ms; }
+.dna-card:hover .dna-vibe, .dna-card:focus-visible .dna-vibe { max-height: 40px; }
 @media (max-width: 1000px) { .dna-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (max-width: 620px) { .dna-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } }
-@media (hover: none) { .dna-back { opacity: 1; transform: none; } .dna-front { opacity: 0; } }
-
+@media (max-width: 760px) { .dna-top { grid-template-columns: 1fr; } .dna-spin { margin: 0 auto 30px; width: min(260px, 70vw); } }
+@media (max-width: 620px) { .dna-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } .dna-vibe { max-height: none; } }
 .ba-box { position: relative; width: min(560px, 100%); aspect-ratio: 1080 / 1350; margin: 0 auto; border-radius: 16px; overflow: hidden; cursor: ew-resize; user-select: none; touch-action: pan-y; box-shadow: 0 30px 70px rgba(0,0,0,.5); }
 .ba-after, .ba-before { position: absolute; inset: 0; }
 .ba-before { background: #FFFFFF; }
@@ -350,3 +351,18 @@
 .ba-handle span { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 46px; height: 46px; border-radius: 50%; background: var(--kiwi); color: var(--ink); display: grid; place-items: center; font-size: 20px; font-weight: 800; box-shadow: 0 6px 18px rgba(0,0,0,.4); }
 .ba-tag { position: absolute; top: 12px; font-size: 10px; letter-spacing: .1em; padding: 4px 8px; border-radius: 4px; background: rgba(11,13,8,.85); color: var(--flesh); }
 .ba-tag.l { left: 12px; } .ba-tag.r { right: 12px; }
+
+/* ---------- inline Juice It burst under the hero ---------- */
+.jb { position: relative; padding-top: clamp(48px, 7vw, 96px); scroll-margin-top: 0; }
+.jb-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 18px; }
+.jb-title { font-size: clamp(32px, 4.4vw, 64px); font-weight: 800; letter-spacing: -0.04em; line-height: 0.95; margin: 8px 0 0; }
+.jb-kiwi { position: relative; width: 150px; height: 150px; margin: 0 auto -40px; z-index: 0; pointer-events: none; }
+.jb-kiwi > div { position: absolute; inset: 0; }
+.jb-kiwi svg { width: 100%; height: 100%; }
+.jb-wait { text-align: center; color: var(--flesh); padding: 80px 0; }
+.jb-fan { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 18px; padding-top: 20px; }
+.jb-card { display: flex; flex-direction: column; gap: 8px; min-width: 0; transform: rotate(var(--r)) translateY(var(--y)); transition: transform 200ms cubic-bezier(.2,.9,.25,1); }
+.jb-card:hover { transform: rotate(0) translateY(-10px) scale(1.04); z-index: 2; }
+.jb-card .jz-art { box-shadow: 0 18px 40px rgba(0, 0, 0, .45); }
+@media (max-width: 1100px) { .jb-fan { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .jb-fan { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } .jb-card { transform: none; } }

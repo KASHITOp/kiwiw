@@ -12,7 +12,7 @@ const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
 const easeOut = (t: number) => 1 - (1 - t) ** 3;
 const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
 
-export default function Hero() {
+export default function Hero({ onJuice }: { onJuice: (text: string) => void }) {
   const desktop = useMedia("(min-width: 900px)");
   const reduced = useMedia("(prefers-reduced-motion: reduce)");
   const fine = useMedia("(pointer: fine)");
@@ -152,7 +152,7 @@ export default function Hero() {
             </div>
           </div>
 
-          <div className="hero-card"><JuiceCard posterRef={posterRef} full={full} /></div>
+          <div className="hero-card"><JuiceCard posterRef={posterRef} full={full} onJuice={onJuice} /></div>
 
           <div className="hero-kiwi" ref={kiwiRef} onPointerMove={fine ? onKiwiMove : undefined} onPointerLeave={onKiwiLeave}>
             <div className="half" ref={leftRef}><KiwiSlice half="left" /></div>

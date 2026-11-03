@@ -27,29 +27,47 @@ export default function DnaWall() {
   return (
     <>
       <section id="dna" className="sec dna">
-        <div className="sec-head">
-          <div className="mono eyebrow">[02] STYLE DNA · 10 RECIPES, 30 LAYOUTS</div>
-          <h2 className="display sec-h2">Same line. Ten personalities.</h2>
-          <p className="sec-sub">Hover a recipe to see your line in its style. Type something boring first. We dare you.</p>
-          <input className="dna-inp" value={line} maxLength={60} onChange={(e) => setLine(e.target.value)} aria-label="Your line for the Style DNA wall" />
+        <div className="dna-top">
+          <div className="sec-head">
+            <div className="mono eyebrow">[02] STYLE DNA · 10 RECIPES, 30 LAYOUTS</div>
+            <h2 className="display sec-h2">Same line. Ten personalities.</h2>
+            <p className="sec-sub">Every card below is your line, juiced live in that recipe. Type something boring. We dare you.</p>
+            <input className="dna-inp" value={line} maxLength={60} onChange={(e) => setLine(e.target.value)} aria-label="Your line for the Style DNA wall" />
+          </div>
+          <Spinner results={results} />
         </div>
         <div className="dna-grid">
           {RECIPE_ORDER.map((r, i) => (
-            <div key={r} className="dna-card" tabIndex={0} style={{ background: SWATCH[r][0] }}>
-              <div className="dna-front" style={{ color: SWATCH[r][1] }}>
+            <div key={r} className="dna-card" tabIndex={0}>
+              <div className="dna-poster"><Thumb doc={results[r].doc} /></div>
+              <div className="dna-tag" style={{ background: SWATCH[r][0], color: SWATCH[r][1] }}>
                 <span className="mono dna-no">{String(i + 1).padStart(2, "0")}</span>
-                <span className="dna-face" style={{ fontFamily: FACE[r].font }}>{FACE[r].text}</span>
-                <span className="dna-sw">{SWATCH[r].map((c) => <i key={c} style={{ background: c }} />)}</span>
-                <b className="dna-name">{RECIPES[r].name}</b>
-                <span className="mono dna-vibe">{RECIPES[r].vibe} · {RECIPES[r].jokes[0]}</span>
+                <b className="dna-name" style={{ fontFamily: FACE[r].font }}>{RECIPES[r].name}</b>
+                <span className="mono dna-vibe">{RECIPES[r].jokes[0]}</span>
               </div>
-              <div className="dna-back"><Thumb doc={results[r].doc} /></div>
             </div>
           ))}
         </div>
       </section>
       <BeforeAfter line={line.trim() || DEFAULT_IDEA} ready={ready} />
     </>
+  );
+}
+
+/** A big poster that cycles through the recipes (fills the header's right side). */
+function Spinner({ results }: { results: Record<string, ReturnType<typeof juiceRecipe>> }) {
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const t = setInterval(() => setI((n) => (n + 1) % RECIPE_ORDER.length), 1800);
+    return () => clearInterval(t);
+  }, []);
+  const r = RECIPE_ORDER[i];
+  return (
+    <div className="dna-spin" aria-hidden="true">
+      <div className="dna-spin-card" key={r}><Thumb doc={results[r].doc} /></div>
+      <span className="mono dna-spin-tag">{RECIPES[r].name.toUpperCase()} · {String(i + 1).padStart(2, "0")}/10</span>
+    </div>
   );
 }
 

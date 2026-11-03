@@ -1,21 +1,21 @@
 import { useEffect, useMemo, useState } from "react";
 import { juice, DEFAULT_IDEA, EXAMPLE_IDEAS, ensureJuiceFonts } from "../juice";
-import JuiceOverlay from "../juice/JuiceOverlay";
 import Thumb from "../editor/Thumb";
 import "../juice/juice.css";
 
 interface Props {
   posterRef: React.RefObject<HTMLDivElement | null>;
   full: boolean;
+  /** Juice inline under the hero (no overlay). */
+  onJuice: (text: string) => void;
 }
 
 // The hero demo: type a boring line, watch it get juiced live, then burst it into six.
-export default function JuiceCard({ posterRef, full }: Props) {
+export default function JuiceCard({ posterRef, full, onJuice }: Props) {
   const [text, setText] = useState(DEFAULT_IDEA);
   const [debounced, setDebounced] = useState(DEFAULT_IDEA);
   const [styleIdx, setStyleIdx] = useState(0);
   const [fontsReady, setFontsReady] = useState(false);
-  const [open, setOpen] = useState(false);
 
   useEffect(() => { ensureJuiceFonts().then(() => setFontsReady(true)); }, []);
   useEffect(() => { const t = setTimeout(() => setDebounced(text), 180); return () => clearTimeout(t); }, [text]);
@@ -49,7 +49,7 @@ export default function JuiceCard({ posterRef, full }: Props) {
             value={text}
             maxLength={70}
             onChange={(e) => setText(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter" && text.trim()) setOpen(true); }}
+            onKeyDown={(e) => { if (e.key === "Enter" && text.trim()) onJuice(text.trim()); }}
             placeholder="bake sale saturday 10am"
           />
           <div className="jc-examples">
@@ -58,12 +58,11 @@ export default function JuiceCard({ posterRef, full }: Props) {
             ))}
           </div>
           <div className="jc-go">
-            <button className="k-btn sm" onClick={() => setOpen(true)} disabled={!text.trim()}>Juice it →</button>
+            <button className="k-btn sm" onClick={() => onJuice(text.trim())} disabled={!text.trim()}>Juice it →</button>
             <span className="mono mini-lbl" style={{ margin: 0 }}>6 POSTERS · 0 API KEYS</span>
           </div>
         </div>
       </div>
-      {open && <JuiceOverlay text={text.trim()} onClose={() => setOpen(false)} />}
     </div>
   );
 }
