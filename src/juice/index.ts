@@ -113,11 +113,31 @@ export async function juiceWithAI(text: string, variant = 0, session?: JuiceSess
   await ensureJuiceFonts();
   const s = session ?? newSession(text);
   let ai = false;
-  if (keys.openai && !s.ai) {
-    try { s.ai = await aiCopy(text); ai = true; } catch { /* the built-in copy is funny enough */ }
+  if (!s.ai) {
+    // Gemini via our serverless function (key stays on the server), then OpenAI if a dev key is set
+    const g = await geminiCopy(text);
+    if (g) { s.ai = g; ai = true; }
+    else if (keys.openai) {
+      try { s.ai = await aiCopy(text); ai = true; } catch { /* the built-in copy is funny enough */ }
+    }
   }
   if (!session) for (let v = 0; v < variant; v++) juiceBatch(s);
   return { results: juiceBatch(s), ai, session: s };
+}
+
+/** POST /api/juice-copy. Any failure (no key, offline, dev server) → null, silently. */
+async function geminiCopy(text: string): Promise<JuiceSession["ai"] | null> {
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 9000);
+    const res = await fetch("/api/juice-copy", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text }), signal: ctrl.signal });
+    clearTimeout(t);
+    if (res.status !== 200 || !(res.headers.get("content-type") ?? "").includes("json")) return null;
+    const data = await res.json();
+    return data && typeof data === "object" && Object.keys(data).length ? data : null;
+  } catch {
+    return null;
+  }
 }
 
 async function aiCopy(text: string): Promise<JuiceSession["ai"]> {
