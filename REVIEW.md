@@ -160,6 +160,16 @@ There are 2 heroes per recipe. One is a poster from a Juice layout with curated 
 ![Template wall](docs/review/templates-wall.png)
 ![Editor with a hero](docs/review/editor-hero.png)
 
+## Phase 5 · Landing v3
+- **Style DNA wall:** 10 giant recipe cards, each with its display face, palette dots and joke. Hover a card to see *your* line rendered in that recipe live, from a line you type above the wall.
+- **Before/after slider:** a Times New Roman flyer ("[clip art not found]") against the Sticker Bomb version of the same line.
+- **Template wall:** tilted 6°, draggable sideways, and infinite (it wraps), with drag-vs-click protection.
+- **Section numbers:** renumbered [01]–[06].
+
+| Style DNA wall | Before / after | Template wall |
+| --- | --- | --- |
+| ![](docs/review/landing-dna.png) | ![](docs/review/landing-before-after.png) | ![](docs/review/landing-wall.png) |
+
 ## Phase 6 · Editor chrome
 This was done in the previous run: 56px rail, tabs, chips, masonry cards, page shadow, zoom pill, real layer thumbnails and human names. I re-verified it here.
 
@@ -177,7 +187,7 @@ This was done in the previous run: 56px rail, tabs, chips, masonry cards, page s
 - **Full-bleed textures got cutouts.** The nimbu-mirchi gets a cream sticker border so it pops against the stripes.
 
 ## Unfinished
-- **Phase 5 (Landing v3)** is not built: no Style DNA wall, before/after slider or draggable template wall. The landing hero does already run the new Juice It, with the kiwi burst and six recipes. This was last in your priority order.
+- **Landing v3 is partly done.** The hero stays the cut kiwi; its Juice It already bursts six recipes. I didn't rebuild the hero to show the six results inline.
 - **11 of the 60 Juice results** are still below the bar (see the list above).
 - **Effects untested in some places:** the image effects re-render on the CPU, so very large uploads (over 4k) take a second, and PNG export with grain and cutout isn't verified in Safari.
 - **AI paths untested:** the per-recipe AI copy is untested without a key.

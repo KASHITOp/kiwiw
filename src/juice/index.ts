@@ -135,3 +135,8 @@ subs in Hinglish. Witty, never mean. No real brands, people or characters. Keep 
 
 /** Back-compat for callers that preload fonts by spec list. */
 export const JUICE_FONTS = DNA_FONTS.map(([spec]) => spec);
+
+/** One recipe, one layout, deterministic (the landing's Style DNA wall). */
+export function juiceRecipe(text: string, r: RecipeKey, layout = 0): JuiceResult {
+  return build(newSession(text), r, layout);
+}

@@ -190,7 +190,7 @@
 .mq { padding-left: 0; padding-right: 0; max-width: none; overflow: hidden; }
 .mq .sec-head { padding: 0 var(--pad); max-width: 1440px; margin-left: auto; margin-right: auto; }
 .mq .sec-head > * { max-width: 900px; }
-.mq-tilt { transform: rotate(-3deg); padding: 24px 0; margin: 0 -40px; display: grid; gap: 22px; }
+.mq-tilt { cursor: grab; touch-action: pan-y; user-select: none; transform: rotate(-6deg); padding: 24px 0; margin: 0 -40px; display: grid; gap: 22px; }
 .mq-row {
   overflow: hidden;
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
@@ -312,3 +312,41 @@
   .demo-erase.playing .de-wipe, .demo-erase.playing .de-wipe > .de-after { animation: none; transform: none; }
   .dr-box, .dr-photo, .dr-head, .dr-chip { transition: none; }
 }
+
+.mq-tilt.dragging { cursor: grabbing; }
+.mq-tilt.dragging .mq-track { animation-play-state: paused; }
+.mq-shift { will-change: transform; }
+.mq-tilt .mq-art img, .mq-tilt img { -webkit-user-drag: none; }
+
+/* ---------- Landing v3: Style DNA wall + before/after ---------- */
+.dna-inp { margin-top: 22px; width: min(460px, 100%); height: 48px; padding: 0 18px; border-radius: 999px; border: 1px solid var(--line); background: var(--ink-2); color: var(--paper); font: 500 16px var(--mono); outline: none; }
+.dna-inp:focus { border-color: var(--kiwi); }
+.dna-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
+.dna-card { position: relative; aspect-ratio: 1080 / 1350; border-radius: 14px; overflow: hidden; cursor: pointer; outline: none; transition: transform 200ms cubic-bezier(.2,.9,.25,1), box-shadow 200ms; }
+.dna-card:hover, .dna-card:focus-visible { transform: translateY(-6px) rotate(-1.5deg); box-shadow: 0 24px 50px rgba(0,0,0,.5); }
+.dna-card:nth-child(even):hover { transform: translateY(-6px) rotate(1.5deg); }
+.dna-front { position: absolute; inset: 0; padding: 16px; display: flex; flex-direction: column; transition: opacity 180ms; }
+.dna-no { font-size: 12px; opacity: .8; }
+.dna-face { flex: 1; display: grid; place-items: center; font-size: clamp(28px, 3.4vw, 54px); line-height: 1; text-align: center; overflow: hidden; }
+.dna-sw { display: flex; gap: 4px; margin-bottom: 10px; }
+.dna-sw i { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid rgba(0,0,0,.35); }
+.dna-name { font: 800 clamp(16px, 1.4vw, 22px)/1.05 var(--display); letter-spacing: -0.02em; }
+.dna-vibe { font-size: 10px; letter-spacing: .04em; opacity: .85; margin-top: 4px; line-height: 1.35; }
+.dna-back { position: absolute; inset: 0; opacity: 0; transform: scale(1.04); transition: opacity 180ms, transform 220ms; }
+.dna-card:hover .dna-back, .dna-card:focus-visible .dna-back { opacity: 1; transform: none; }
+.dna-card:hover .dna-front, .dna-card:focus-visible .dna-front { opacity: 0; }
+@media (max-width: 1000px) { .dna-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .dna-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } }
+@media (hover: none) { .dna-back { opacity: 1; transform: none; } .dna-front { opacity: 0; } }
+
+.ba-box { position: relative; width: min(560px, 100%); aspect-ratio: 1080 / 1350; margin: 0 auto; border-radius: 16px; overflow: hidden; cursor: ew-resize; user-select: none; touch-action: pan-y; box-shadow: 0 30px 70px rgba(0,0,0,.5); }
+.ba-after, .ba-before { position: absolute; inset: 0; }
+.ba-before { background: #FFFFFF; }
+.ba-plain { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 30px; color: #000; font-family: "Times New Roman", Times, serif; text-align: center; }
+.ba-plain p { margin: 0; font-size: clamp(16px, 2.4vw, 22px); }
+.ba-plain .ba-plain-h { font-size: clamp(26px, 4vw, 40px); font-weight: 700; text-decoration: underline; margin-bottom: 18px; }
+.ba-clip { margin-top: 30px !important; color: #888; font-style: italic; }
+.ba-handle { position: absolute; top: 0; bottom: 0; width: 3px; margin-left: -1.5px; background: var(--kiwi); pointer-events: none; }
+.ba-handle span { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 46px; height: 46px; border-radius: 50%; background: var(--kiwi); color: var(--ink); display: grid; place-items: center; font-size: 20px; font-weight: 800; box-shadow: 0 6px 18px rgba(0,0,0,.4); }
+.ba-tag { position: absolute; top: 12px; font-size: 10px; letter-spacing: .1em; padding: 4px 8px; border-radius: 4px; background: rgba(11,13,8,.85); color: var(--flesh); }
+.ba-tag.l { left: 12px; } .ba-tag.r { right: 12px; }

@@ -1,6 +1,7 @@
 import "../landing/landing.css";
 import Hero from "../landing/Hero";
 import Marquee from "../landing/Marquee";
+import DnaWall from "../landing/DnaWall";
 import MagicRows from "../landing/MagicRows";
 import Footer, { ZigRule } from "../landing/Footer";
 import Toaster from "../personality/Toaster";
@@ -15,6 +16,8 @@ export default function Landing() {
     <div className="land">
       <div className="grain" aria-hidden="true" />
       <Hero />
+      <ZigRule />
+      <DnaWall />
       <ZigRule />
       <Marquee />
       <ZigRule />

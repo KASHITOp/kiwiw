@@ -159,7 +159,7 @@ export default function MagicRows() {
   return (
     <section id="magic" className="sec mg">
       <div className="sec-head">
-        <div className="mono eyebrow">[03] MAGIC STUDIO · THREE TRICKS</div>
+        <div className="mono eyebrow">[05] MAGIC STUDIO · THREE TRICKS</div>
         <h2 className="display sec-h2">The juicy bits do themselves.</h2>
       </div>
       <div className="mg-rows">
