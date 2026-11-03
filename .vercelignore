@@ -1,0 +1,8 @@
+# The Vercel CLI uploads the working tree and does NOT read .gitignore.
+# Secrets live in Vercel → Settings → Environment Variables, never in uploads.
+.env
+.env.*
+!.env.example
+node_modules
+dist
+docs/review
