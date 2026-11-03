@@ -1,7 +1,7 @@
 # Kiwiw `juice-v2` — overnight REVIEW
 
 Branch: `juice-v2` (main and production untouched).
-Preview: **https://kiwiw-mksvgetnh-kartavyaas-projects.vercel.app**
+Preview: **https://kiwiw-msntoc21w-kartavyaas-projects.vercel.app**
 (Vercel protects previews on the hobby plan, so log in to Vercel to view it. Production at kiwiw.vercel.app is unchanged.)
 
 > Status: all six phases done and committed (one commit per phase). Typecheck and build pass. Zero console errors at 1366×768, 1920×1080 and 390px.
@@ -110,7 +110,7 @@ One input, six posters, no API key. The parser splits the line into headline, da
 
 # Round 3: Style DNA, effects engine, Juice It 2.0 (overnight, 3 Nov)
 
-Preview: **https://kiwiw-mksvgetnh-kartavyaas-projects.vercel.app** (Vercel preview, behind login; production untouched, main untouched).
+Preview: **https://kiwiw-msntoc21w-kartavyaas-projects.vercel.app** (Vercel preview, behind login; production untouched, main untouched).
 
 ## Phase 1 · Style DNA
 `STYLE_DNA.md` defines 10 recipes taken from your board: **Nazar Battu, Tapri Print, Stadium Halftone, Brutal Grid, Swiss Drop, Trippy Window, Neo Brutal Pop, 8-Bit Flex, Sticker Bomb, Glossy Bloom**. Each recipe has a palette, a font pairing, a layout grammar, effects, stickers, a copy tone, 3 headlines and a never-rule. I borrowed techniques only: no celebrity, club, car brand, soft-drink brand or character from the board appears anywhere. Photos are 29 Pexels shots, bundled and credited in LICENSES.md. Six new Google Fonts: Rozha One, Yatra One, Khand, Press Start 2P, Shrikhand, Bagel Fat One.
@@ -198,3 +198,50 @@ This was done in the previous run: 56px rail, tabs, chips, masonry cards, page s
 3. Cutout with real subject masking (background removal) for the Stadium and Sticker Bomb recipes.
 4. A recipe editor: tweak a recipe's palette and fonts and save it as "My DNA".
 5. An animated export (MP4 or GIF) of the kiwi burst plus the chosen poster, for LinkedIn.
+
+---
+
+# Round 4: Riso, photos, Glossy rework, collisions, landing, Gemini (3 Nov)
+
+Preview: **https://kiwiw-msntoc21w-kartavyaas-projects.vercel.app** (behind Vercel login; production and main untouched).
+
+**Juice It quality gate: 55/60** (up from 49). The 5 that still fail:
+- 8-Bit Flex: the fest photo reads as mush.
+- Swiss Drop: "HIRIN" and "DIW/ALI" crop awkwardly with long words.
+- Tapri Print: a washed-out hiring photo, and a muddy teal diya photo.
+
+Sheets: `docs/review/juice-gate/`.
+
+1. **Riso replaces posterize.** Two or three flat inks from the recipe palette, misregistered by 1–2px, with halftone dots in the shadows and paper grain. Every layout and hero that used posterize was re-rendered. Dark photos are auto-brightened before any effect, which fixes the diya photo. Neo Brutal Pop's small photos use a clean ink duotone instead, because Riso turned them to mush at that size.
+2. **Glossy Bloom is premium now.**
+   - Type: 3D bubble lettering (ink extrusion, gradient body, inner specular highlight, rim light, soft shadow).
+   - Photos and stickers: photos sit in rounded glossy cards, with new chrome sparkle, heart and bubble stickers.
+   - Backgrounds: cream or deep plum.
+
+   After two critique rounds it holds up against Nazar Battu, so **it stays in Juice It** (logged in STYLE_DNA.md).
+3. **Photo relevance.**
+   - **94 bundled Pexels photos**, tagged by topic: food, chai, crowd, fest, music, office, laptop, gym, wedding, diwali, cake, podcast, startup, city and abstract.
+   - Juice picks by keyword. A line that matches nothing gets an **abstract texture, never an unrelated photo**.
+   - I removed one photo of a child.
+4. **Collision check.** `src/dna/collide.ts` measures each text's real glyph box and moves or shrinks any sticker or shape covering it. It runs on every Juice result and every hero. Giant decorative letters and the Swiss walker are allowed to overlap.
+   - Specific fixes: the Lift or Die ✕, the JU/NE label and the NE line break, the Clickbait arrow, and tape over headlines.
+   - All 28 templates are now collision-free.
+5. **Landing.**
+   - The hero's **Juice it now bursts inline**: a kiwi splits under the hero and six posters fan out of the cut. There's no overlay anymore.
+   - Style DNA cards show your line as a **real mini poster by default**, and a big rotating poster fills the header's right side.
+6. **Gemini copy.** `api/juice-copy.js` (a Vercel function) reads `GEMINI_API_KEY` on the server only. With no key or on any error it returns 204, and Juice It silently keeps the built-in copy. Nothing Gemini-related is in the browser bundle. `.env.example` has an empty `GEMINI_API_KEY=`.
+
+**Verification:** `tsc` is clean and the build passes. On the production build, the landing hero, inline burst, Style DNA section and editor showed **0 console errors** at 1366×768, 1920×1080 and 390px.
+
+![Best 12](docs/review/juice-best12.jpg)
+
+| Hero burst 1366 | Style DNA 1366 | Burst 390 | Style DNA 390 |
+| --- | --- | --- | --- |
+| ![](docs/review/v4-1366-burst.png) | ![](docs/review/v4-1366-dna.png) | ![](docs/review/v4-390-burst.png) | ![](docs/review/v4-390-dna.png) |
+
+![Template wall](docs/review/templates-wall.png)
+
+**Still rough:**
+- The 5 gate fails listed above.
+- The Riso render runs on the CPU, so a very large upload takes a moment.
+- Gemini is untested against a real key. I tested a mocked response and the no-key path.
