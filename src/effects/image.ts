@@ -93,7 +93,8 @@ async function run(src: string, fx: ImageFx): Promise<string> {
       const x = w / 2 + u * cos - v * sin, y = h / 2 + u * sin + v * cos;
       if (x < -cell || y < -cell || x > w + cell || y > h + cell) continue;
       const sx = Math.min(w - 1, Math.max(0, Math.round(x))), sy = Math.min(h - 1, Math.max(0, Math.round(y)));
-      const r = cell * 0.62 * Math.sqrt(1 - L[sy * w + sx] / 255);
+      const lum = L[sy * w + sx] / 255;
+      const r = cell * 0.62 * Math.sqrt(fx.halftone.invert ? lum : 1 - lum);
       if (r < 0.35) continue;
       o.moveTo(x + r, y);
       o.arc(x, y, r, 0, Math.PI * 2);

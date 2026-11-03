@@ -39,7 +39,7 @@ export interface FrameFx {
 
 /** Image effects (DESIGN.md §16). Processed on a canvas and cached. */
 export interface ImageFx {
-  halftone?: { dot: number; ink?: string; paper?: string | null } | null;
+  halftone?: { dot: number; ink?: string; paper?: string | null; invert?: boolean } | null;
   duotone?: { dark: string; light: string } | null;
   posterize?: number | null;
   bw?: boolean;

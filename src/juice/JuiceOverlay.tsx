@@ -1,10 +1,10 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { RefreshCw, X } from "lucide-react";
+import { RefreshCw, X, Shuffle, Sparkles } from "lucide-react";
 import { useEditor } from "../store";
 import KiwiSlice from "../brand/KiwiSlice";
 import Thumb from "../editor/Thumb";
-import { juiceWithAI, type JuiceResult } from ".";
+import { juiceWithAI, juiceBatch, rejuiceOne, moreLikeThis, type JuiceResult, type JuiceSession } from ".";
 import "./juice.css";
 
 interface Props {
@@ -18,8 +18,9 @@ const LOADING = ["Squeezing…", "Removing the boring bits…", "Adding unnecess
 export default function JuiceOverlay({ text, onClose }: Props) {
   const navigate = useNavigate();
   const loadDoc = useEditor((s) => s.loadDoc);
-  const [variant, setVariant] = useState(0);
   const [results, setResults] = useState<JuiceResult[] | null>(null);
+  const [batch, setBatch] = useState(0);
+  const session = useRef<JuiceSession | null>(null);
   const [ai, setAi] = useState(false);
   const [msg] = useState(() => LOADING[Math.floor(Math.random() * LOADING.length)]);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -29,9 +30,13 @@ export default function JuiceOverlay({ text, onClose }: Props) {
   useEffect(() => {
     let alive = true;
     setResults(null);
-    juiceWithAI(text, variant).then((r) => { if (alive) { setResults(r.results); setAi(r.ai); } });
+    juiceWithAI(text).then((r) => { if (alive) { session.current = r.session; setResults(r.results); setAi(r.ai); } });
     return () => { alive = false; };
-  }, [text, variant]);
+  }, [text]);
+
+  // Re-juice: six new compositions (new recipes first, never a repeat combo)
+  const rejuiceAll = () => { if (!session.current) return; setResults(juiceBatch(session.current)); setBatch((b) => b + 1); };
+  const swap = (i: number, r: JuiceResult) => setResults((rs) => rs && rs.map((x, j) => (j === i ? r : x)));
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
@@ -82,7 +87,7 @@ export default function JuiceOverlay({ text, onClose }: Props) {
           <h2 className="jz-title">“{text}”, but juicy.</h2>
         </div>
         <div className="jz-actions">
-          <button className="jz-btn" onClick={() => setVariant((v) => v + 1)} disabled={!results}><RefreshCw size={16} /> Re-juice</button>
+          <button className="jz-btn" onClick={rejuiceAll} disabled={!results}><RefreshCw size={16} /> Re-juice all</button>
           <button className="jz-btn icon" onClick={onClose} aria-label="Close"><X size={18} /></button>
         </div>
       </div>
@@ -95,14 +100,21 @@ export default function JuiceOverlay({ text, onClose }: Props) {
               <div ref={kiwiR}><KiwiSlice half="right" /></div>
             </div>
             <div className="jz-grid">
-              {results.map((r) => (
-                <button key={r.style + variant} className="jz-card" onClick={() => open(r)} aria-label={`Open the ${r.name} version in the editor`}>
-                  <span className="jz-art"><Thumb doc={r.doc} /></span>
+              {results.map((r, i) => (
+                <div key={`${batch}-${i}`} className="jz-card">
+                  <button className="jz-open" onClick={() => open(r)} aria-label={`Open the ${r.name} version in the editor`}>
+                    <span className="jz-art" key={r.style + r.layout}><Thumb doc={r.doc} /></span>
+                  </button>
                   <span className="jz-meta">
                     <b>{r.name}</b>
-                    <span>{r.vibe} · open in editor →</span>
+                    <span>{r.joke}</span>
                   </span>
-                </button>
+                  <span className="jz-acts">
+                    <button onClick={() => open(r)}>Open</button>
+                    <button title="A different recipe in this slot" onClick={() => session.current && swap(i, rejuiceOne(session.current, results.map((x) => x.style)))}><Shuffle size={13} /> Re-juice</button>
+                    <button title="Same recipe, new layout, photo and copy" onClick={() => session.current && swap(i, moreLikeThis(session.current, r.style))}><Sparkles size={13} /> More</button>
+                  </span>
+                </div>
               ))}
             </div>
           </>

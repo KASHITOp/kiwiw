@@ -1,5 +1,5 @@
 // A tiny layout DSL for authoring templates as plain data.
-import type { Element, TextElement, ShapeElement, StickerElement, Template } from "../../types";
+import type { Element, TextElement, ShapeElement, StickerElement, ImageElement, Template } from "../../types";
 import { STICKER_MAP } from "../../stickers/library";
 
 let n = 0;
@@ -25,6 +25,12 @@ export const F = {
   smono: "Space Mono",
   jb: "JetBrains Mono",
   inter: "Inter",
+  rozha: "Rozha One",
+  yatra: "Yatra One",
+  khand: "Khand",
+  press: "Press Start 2P",
+  shri: "Shrikhand",
+  bagel: "Bagel Fat One",
 } as const;
 
 type Box = { x: number; y: number; w: number; h: number };
@@ -40,6 +46,11 @@ export function T(p: TextIn): Element {
 
 export function R(p: Box & Partial<ShapeElement>): Element {
   return { id: id(), type: "shape", shape: "rect", rotation: 0, opacity: 1, fill: "#000000", stroke: "#000000", strokeWidth: 0, radius: 0, ...p } as Element;
+}
+
+/** Photo, optionally with image effects / frame / cutout (DESIGN.md §16). */
+export function I(p: Box & Partial<ImageElement> & { src: string }): Element {
+  return { id: id(), type: "image", rotation: 0, opacity: 1, radius: 0, fit: "cover", ...p } as Element;
 }
 
 export function O(p: Box & Partial<ShapeElement>): Element {

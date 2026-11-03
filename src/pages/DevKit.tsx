@@ -70,8 +70,13 @@ function JuiceView({ text, variant }: { text: string; variant: number }) {
   useEffect(() => { juiceWithAI(text, variant).then((r) => setResults(r.results)); }, [text, variant]);
   if (!results) return null;
   return (
-    <div id="juice-ready" style={{ display: "flex", flexWrap: "wrap", gap: 40, padding: 40, background: "#0B0D08" }}>
-      {results.map((r) => <div key={r.style} data-juice={r.style}><DocRender doc={r.doc} /></div>)}
+    <div id="juice-ready" style={{ display: "flex", flexWrap: "wrap", gap: 40, padding: 40, background: "#0B0D08", zoom: Number(new URLSearchParams(location.search).get("zoom") ?? 1) }}>
+      {results.map((r) => (
+        <div key={r.style} data-juice={r.style}>
+          <DocRender doc={r.doc} />
+          <div style={{ fontFamily: "JetBrains Mono", fontSize: 30, color: "#D8F27A", marginTop: 12 }}>{r.name} · layout {r.layout + 1}</div>
+        </div>
+      ))}
     </div>
   );
 }

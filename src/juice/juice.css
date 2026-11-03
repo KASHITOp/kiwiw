@@ -25,7 +25,8 @@
 .jz-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 @media (min-width: 760px) { .jz-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; } }
 @media (min-width: 1180px) { .jz-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
-.jz-card { display: flex; flex-direction: column; gap: 10px; padding: 0; background: none; border: none; color: inherit; text-align: left; cursor: pointer; }
+.jz-card { display: flex; flex-direction: column; gap: 8px; color: inherit; text-align: left; min-width: 0; }
+.jz-open { display: block; padding: 0; border: 0; background: none; cursor: pointer; width: 100%; }
 .jz-art { position: relative; display: block; aspect-ratio: 1080 / 1350; border-radius: 10px; overflow: hidden; border: 1px solid rgba(242, 245, 230, 0.12); transition: transform 150ms, border-color 150ms, box-shadow 150ms; }
 .jz-card:hover .jz-art, .jz-card:focus-visible .jz-art { transform: translateY(-6px) rotate(-1deg); border-color: var(--kiwi); box-shadow: 0 22px 50px rgba(0, 0, 0, 0.5); }
 .jz-card:focus-visible { outline: none; }
@@ -55,3 +56,13 @@
 .jp-card span { font-family: var(--font-mono, monospace); font-size: 10px; letter-spacing: 0.06em; color: var(--muted, #9AA28A); }
 @keyframes jp-pop { from { transform: scale(.4) rotate(-8deg); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .jp-card { animation: none; } }
+
+/* per-card actions (Juice It 2.0) */
+.jz-acts { display: flex; gap: 6px; flex-wrap: wrap; }
+.jz-acts button { display: inline-flex; align-items: center; gap: 4px; height: 26px; padding: 0 9px; border-radius: 999px; border: 1px solid rgba(242, 245, 230, 0.18); background: rgba(242, 245, 230, 0.04); color: var(--paper, #F2F5E6); font-family: "JetBrains Mono", monospace; font-size: 10.5px; cursor: pointer; transition: background 120ms, border-color 120ms, color 120ms; }
+.jz-acts button:hover { border-color: var(--kiwi, #8BD630); color: var(--flesh, #D8F27A); }
+.jz-acts button:first-child { background: var(--kiwi, #8BD630); color: #0B0D08; border-color: transparent; font-weight: 700; }
+.jz-acts.sm button { height: 22px; padding: 0 7px; }
+.jz-acts.sm button:first-child { background: rgba(242, 245, 230, 0.04); color: var(--paper, #F2F5E6); border-color: rgba(242, 245, 230, 0.18); font-weight: 400; }
+.jz-meta span { text-transform: none; letter-spacing: 0; line-height: 1.35; }
+.jp-card .jz-art { animation: jp-pop 320ms cubic-bezier(.2,.9,.25,1); }

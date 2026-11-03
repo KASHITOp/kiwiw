@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { juice, DEFAULT_IDEA, EXAMPLE_IDEAS, JUICE_FONTS } from "../juice";
-import { ensureFonts } from "../juice/fit";
+import { juice, DEFAULT_IDEA, EXAMPLE_IDEAS, ensureJuiceFonts } from "../juice";
 import JuiceOverlay from "../juice/JuiceOverlay";
 import Thumb from "../editor/Thumb";
 import "../juice/juice.css";
@@ -18,7 +17,7 @@ export default function JuiceCard({ posterRef, full }: Props) {
   const [fontsReady, setFontsReady] = useState(false);
   const [open, setOpen] = useState(false);
 
-  useEffect(() => { ensureFonts(JUICE_FONTS).then(() => setFontsReady(true)); }, []);
+  useEffect(() => { ensureJuiceFonts().then(() => setFontsReady(true)); }, []);
   useEffect(() => { const t = setTimeout(() => setDebounced(text), 180); return () => clearTimeout(t); }, [text]);
   // the preview flips through the six styles so the card is never static
   useEffect(() => {

@@ -1,21 +1,26 @@
-// Juice It: one boring line in, six wildly different posters out.
-// Works with no API key (built-in copy); with an OpenAI key, the copy is
-// rewritten by AI first and the same deterministic layouts are applied.
+// Juice It 2.0: one boring line in, six posters from six different Style DNA
+// recipes out (STYLE_DNA.md). A session remembers every recipe+layout combo it
+// has shown, so Re-juice always brings a new composition: different recipe,
+// layout grammar, photo and copy angle. No API key needed; with an OpenAI key
+// the copy is rewritten in each recipe's tone first.
 import type { KiwiwDoc } from "../types";
 import { keys } from "../ai/provider";
-import { parseIdea, hash, type Idea } from "./parse";
-import { writeCopy, STYLE_META, STYLE_ORDER, type JuiceCopy, type StyleKey } from "./copy";
-import { LAYOUTS } from "./layouts";
-import { ensureFonts } from "./fit";
+import { parseIdea, hash } from "./parse";
+import { RECIPES, RECIPE_ORDER, writeCopy, type Copy, type RecipeKey } from "../dna/recipes";
+import { LAYOUTS, DNA_FONTS } from "../dna/layouts";
+import { photoFor } from "../data/photos";
 
-export type { StyleKey } from "./copy";
-export { STYLE_META, STYLE_ORDER } from "./copy";
+export type { RecipeKey } from "../dna/recipes";
+export { RECIPES, RECIPE_ORDER } from "../dna/recipes";
 
 export interface JuiceResult {
-  style: StyleKey;
+  /** Recipe key (kept as `style` for older callers). */
+  style: RecipeKey;
   name: string;
   vibe: string;
-  copy: JuiceCopy;
+  joke: string;
+  layout: number;
+  copy: Copy;
   doc: KiwiwDoc;
 }
 
@@ -23,59 +28,110 @@ export const DEFAULT_IDEA = "bake sale saturday 10am";
 
 export const EXAMPLE_IDEAS = [
   "bake sale saturday 10am",
-  "chai stall opening friday 6pm",
+  "chai tapri opening sunday",
   "diwali sale 40% off",
-  "we're hiring designers",
-  "garage gig 30 nov at sharma's garage",
+  "hiring designers",
+  "college fest friday 6pm",
 ];
 
-/** Fonts the layouts measure with; load before juicing for exact fits. */
-export const JUICE_FONTS = [
-  '400 100px "Anton"', '400 100px "Archivo Black"', '700 100px "Space Mono"', '400 100px "Space Mono"',
-  '400 100px "Instrument Serif"', 'italic 400 100px "Instrument Serif"', '400 100px "Rubik Mono One"',
-  '400 100px "Permanent Marker"', '700 100px "Caveat Variable"', '800 100px "Baloo 2 Variable"',
-  '800 100px "Mukta"', '600 100px "Mukta"', '400 100px "Tiro Devanagari Hindi"', '300 100px "Fraunces Variable"',
-  'italic 300 100px "Fraunces Variable"', '200 100px "Fraunces Variable"', '400 100px "Gochi Hand"',
-];
-
-type Overrides = Partial<Record<StyleKey, Partial<JuiceCopy>>>;
-
-export function juice(text: string, variant = 0, overrides?: Overrides): JuiceResult[] {
-  const idea: Idea = parseIdea(text.trim() || DEFAULT_IDEA);
-  const seed = hash(idea.raw.toLowerCase()) + variant * 13;
-  return STYLE_ORDER.map((style) => {
-    const copy = { ...writeCopy(style, idea, seed), ...(overrides?.[style] ?? {}) };
-    return { style, ...STYLE_META[style], copy, doc: LAYOUTS[style](copy, idea, seed) };
-  });
+export interface JuiceSession {
+  text: string;
+  used: Set<string>;
+  shown: number;
+  angle: Partial<Record<RecipeKey, number>>;
+  batch: number;
+  ai?: Partial<Record<RecipeKey, { head?: string; sub?: string }>>;
 }
 
-export async function juiceWithAI(text: string, variant = 0): Promise<{ results: JuiceResult[]; ai: boolean }> {
-  await ensureFonts(JUICE_FONTS);
-  if (!keys.openai) return { results: juice(text, variant), ai: false };
-  try {
-    return { results: juice(text, variant, await aiCopy(text)), ai: true };
-  } catch {
-    return { results: juice(text, variant), ai: false };
+export const newSession = (text: string): JuiceSession => ({ text, used: new Set(), shown: 0, angle: {}, batch: 0 });
+
+const combos = (r: RecipeKey) => LAYOUTS[r].length;
+const usedFor = (s: JuiceSession, r: RecipeKey) => LAYOUTS[r].filter((_, i) => s.used.has(`${r}:${i}`)).length;
+
+function nextLayout(s: JuiceSession, r: RecipeKey): number {
+  if (usedFor(s, r) >= combos(r)) for (let i = 0; i < combos(r); i++) s.used.delete(`${r}:${i}`);
+  // start from a seeded spot so different lines open with different grammars
+  const start = hash(s.text.toLowerCase() + r) % combos(r);
+  for (let k = 0; k < combos(r); k++) {
+    const i = (start + k) % combos(r);
+    if (!s.used.has(`${r}:${i}`)) { s.used.add(`${r}:${i}`); return i; }
   }
+  return start;
 }
 
-async function aiCopy(text: string): Promise<Overrides> {
-  const sys = `You write poster copy. Given a plain event/announcement line, return JSON with keys
-calm, sunday, block, filmi, zine, brainrot. Each value: {"headline": <=4 words, "sub": <=9 words}.
-Tone: calm=quiet luxury, sunday=editorial magazine, block=loud brutalist, filmi=Bollywood poster
-in Hinglish, zine=handmade punk, brainrot=Gen-Z meme. Keep facts (dates, times, places) out of headlines.`;
+function build(s: JuiceSession, r: RecipeKey, layout = nextLayout(s, r)): JuiceResult {
+  const idea = parseIdea(s.text.trim() || DEFAULT_IDEA);
+  const angle = s.angle[r] ?? hash(idea.raw + r) % 3;
+  s.angle[r] = angle + 1;
+  const n = s.shown++;
+  const copy = { ...writeCopy(r, idea, angle), ...(s.ai?.[r] ?? {}) };
+  const seed = hash(idea.raw) + n * 7;
+  const doc = LAYOUTS[r][layout]({ c: copy, photo: photoFor(idea.raw, n + hash(idea.raw)), photo2: photoFor(idea.raw, n + hash(idea.raw) + 1), seed });
+  const meta = RECIPES[r];
+  return { style: r, name: meta.name, vibe: meta.vibe, joke: meta.jokes[(angle + layout) % meta.jokes.length], layout, copy, doc };
+}
+
+/** Six results from six different recipes, preferring the least-shown ones. */
+export function juiceBatch(s: JuiceSession): JuiceResult[] {
+  // the default line opens with the curated six; any other line rotates the deck
+  const rot = (s.batch * 6 + (s.text.trim().toLowerCase() === DEFAULT_IDEA ? 0 : hash(s.text.toLowerCase()))) % RECIPE_ORDER.length;
+  const order = [...RECIPE_ORDER.slice(rot), ...RECIPE_ORDER.slice(0, rot)];
+  const pick = [...order].sort((a, b) => usedFor(s, a) - usedFor(s, b)).slice(0, 6);
+  s.batch++;
+  return order.filter((r) => pick.includes(r)).map((r) => build(s, r));
+}
+
+/** Replace one card with a recipe that isn't on screen yet. */
+export function rejuiceOne(s: JuiceSession, onScreen: RecipeKey[]): JuiceResult {
+  const free = RECIPE_ORDER.filter((r) => !onScreen.includes(r));
+  const r = [...free].sort((a, b) => usedFor(s, a) - usedFor(s, b))[0] ?? onScreen[0];
+  return build(s, r);
+}
+
+/** Same recipe, new layout grammar, new photo and copy angle. */
+export function moreLikeThis(s: JuiceSession, r: RecipeKey): JuiceResult {
+  return build(s, r);
+}
+
+/** Synchronous, deterministic batch (the landing hero preview). */
+export function juice(text: string, variant = 0): JuiceResult[] {
+  const s = newSession(text);
+  let out = juiceBatch(s);
+  for (let v = 0; v < variant; v++) out = juiceBatch(s);
+  return out;
+}
+
+export async function ensureJuiceFonts() {
+  if (typeof document === "undefined" || !document.fonts) return;
+  await Promise.all(DNA_FONTS.map(([spec, text]) => document.fonts.load(spec, text).catch(() => [])));
+}
+
+/** Async entry: loads fonts, optionally asks AI for copy, then juices. */
+export async function juiceWithAI(text: string, variant = 0, session?: JuiceSession): Promise<{ results: JuiceResult[]; ai: boolean; session: JuiceSession }> {
+  await ensureJuiceFonts();
+  const s = session ?? newSession(text);
+  let ai = false;
+  if (keys.openai && !s.ai) {
+    try { s.ai = await aiCopy(text); ai = true; } catch { /* the built-in copy is funny enough */ }
+  }
+  if (!session) for (let v = 0; v < variant; v++) juiceBatch(s);
+  return { results: juiceBatch(s), ai, session: s };
+}
+
+async function aiCopy(text: string): Promise<JuiceSession["ai"]> {
+  const tones = RECIPE_ORDER.map((r) => `${r}=${RECIPES[r].name} (${RECIPES[r].vibe})`).join(", ");
+  const sys = `You write poster copy. Given a plain event/announcement line, return JSON with keys ${RECIPE_ORDER.join(", ")}.
+Each value: {"head": <=5 words, "sub": <=9 words}. Tones: ${tones}. nazar and tapri heads must be in Hindi (Devanagari),
+subs in Hinglish. Witty, never mean. No real brands, people or characters. Keep dates/times/places out of heads.`;
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${keys.openai}` },
-    body: JSON.stringify({
-      model: "gpt-4o-mini",
-      response_format: { type: "json_object" },
-      temperature: 0.9,
-      messages: [{ role: "system", content: sys }, { role: "user", content: text }],
-    }),
+    body: JSON.stringify({ model: "gpt-4o-mini", response_format: { type: "json_object" }, temperature: 0.9, messages: [{ role: "system", content: sys }, { role: "user", content: text }] }),
   });
   if (!res.ok) throw new Error(`AI ${res.status}`);
   const data = await res.json();
-  const parsed = JSON.parse(data.choices?.[0]?.message?.content ?? "{}") as Overrides;
-  return parsed;
+  return JSON.parse(data.choices?.[0]?.message?.content ?? "{}");
 }
+
+/** Back-compat for callers that preload fonts by spec list. */
+export const JUICE_FONTS = DNA_FONTS.map(([spec]) => spec);
