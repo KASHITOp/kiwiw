@@ -347,7 +347,7 @@ const neoA: Layout = (x) => {
     hard(hb), card(hb, NB.white),
     T({ x: 110, y: 140, w: 600, h: 50, text: `● ${c.kicker}`, font: F.smono, size: 26, fontWeight: 700, color: NB.ink }),
     h.el,
-    hard({ x: 70, y: 590, w: 560, h: 560 }, -2), photo(x, { x: 70, y: 590, w: 560, h: 560 }, { radius: 26, rotation: -2, cutout: { color: NB.ink, width: 6 }, fx: { riso: { inks: ["#111111", "#FF6FB5"], paper: "#FFE14D" } } }),
+    hard({ x: 70, y: 590, w: 560, h: 560 }, -2), photo(x, { x: 70, y: 590, w: 560, h: 560 }, { radius: 26, rotation: -2, cutout: { color: NB.ink, width: 6 }, fx: { duotone: { dark: "#111111", light: "#FFF4D6" } }, grain: 0.25 }),
     hard({ x: 680, y: 640, w: 330, h: 120 }), card({ x: 680, y: 640, w: 330, h: 120 }, NB.pink),
     T({ x: 680, y: 640, w: 330, h: 120, text: c.cta, font: F.archivo, size: 34, color: NB.ink, align: "center", lineHeight: 1 }),
     hard({ x: 680, y: 800, w: 330, h: 350 }), card({ x: 680, y: 800, w: 330, h: 350 }, NB.lime),
@@ -372,7 +372,7 @@ const neoB: Layout = (x) => {
     T({ x: 80, y: 800, w: 440, h: 140, text: c.cta, font: F.archivo, size: 40, color: NB.ink, align: "center", lineHeight: 1 }),
     hard({ x: 560, y: 800, w: 440, h: 140 }), card({ x: 560, y: 800, w: 440, h: 140 }, NB.white),
     T({ x: 560, y: 800, w: 440, h: 140, text: "OBVIOUSLY", font: F.archivo, size: 40, color: NB.ink, align: "center", lineHeight: 1 }),
-    photo(x, { x: 300, y: 1000, w: 480, h: 300 }, { radius: 26, rotation: 3, cutout: { color: NB.ink, width: 6 }, fx: { riso: { inks: ["#111111", "#B6F23A"], paper: "#FFFFFF" } } }),
+    photo(x, { x: 300, y: 1000, w: 480, h: 300 }, { radius: 26, rotation: 3, cutout: { color: NB.ink, width: 6 }, fx: { duotone: { dark: "#111111", light: "#FFF4D6" } }, grain: 0.25 }),
     S("arrow-loop", { x: 60, y: 1000, w: 220, h: 200, ink: NB.ink, rotation: -10 }),
     S("badge-pill", { x: 790, y: 1060, w: 230, h: 100, fill: NB.pink, ink: NB.ink, rotation: -8 }),
     T({ x: 790, y: 1060, w: 230, h: 100, text: "NEW", font: F.archivo, size: 40, color: NB.ink, align: "center", rotation: -8, lineHeight: 1 }),
@@ -384,7 +384,7 @@ const neoC: Layout = (x) => {
   const h = fit(c.head, F.archivo, { x: 60, y: 70, w: 960, h: 520 }, { size: 210, upper: true, color: NB.yellow, lh: 0.92, lines: 4, extra: { outline: { color: NB.ink, width: 10 }, shadow: { color: NB.ink, x: 14, y: 14 } } });
   return doc(NB.pink, [
     h.el,
-    hard({ x: 150, y: 640, w: 560, h: 540 }, 4), photo(x, { x: 150, y: 640, w: 560, h: 540 }, { radius: 30, rotation: 4, cutout: { color: NB.ink, width: 7 }, fx: { riso: { inks: ["#111111", "#FFE14D"], paper: "#FFFFFF" } } }),
+    hard({ x: 150, y: 640, w: 560, h: 540 }, 4), photo(x, { x: 150, y: 640, w: 560, h: 540 }, { radius: 30, rotation: 4, cutout: { color: NB.ink, width: 7 }, fx: { duotone: { dark: "#111111", light: "#FFF4D6" } }, grain: 0.25 }),
     ...[c.when, c.where || c.noun, c.cta].filter(Boolean).map((t, i) => [
       hard({ x: 650, y: 690 + i * 150, w: 380, h: 110 }, 0, 55), card({ x: 650, y: 690 + i * 150, w: 380, h: 110 }, i === 1 ? NB.lime : NB.white, 0, 55),
       T({ x: 670, y: 690 + i * 150, w: 340, h: 110, text: t.slice(0, 26), font: F.smono, size: 26, fontWeight: 700, color: NB.ink, align: "center", lineHeight: 1.1 }),

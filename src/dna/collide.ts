@@ -39,7 +39,8 @@ function isCover(e: Element, doc: KiwiwDoc, under: TextElement): boolean {
   if (e.w * e.h > doc.width * doc.height * 0.35) return false;
   if (e.type === "sticker") return !e.kind.startsWith("bg-") && !/texture|halftone|grain/.test(e.kind);
   if (e.type === "shape") return e.fill !== "transparent" && !e.frame && !e.fill.includes("gradient");
-  if (e.type === "text") return e.fontSize < under.fontSize * 0.35 && !!e.text.trim();
+  // giant decorative letters (Swiss Drop) are meant to be overlapped by type
+  if (e.type === "text") return under.fontSize < doc.height * 0.25 && e.fontSize < under.fontSize * 0.35 && !!e.text.trim();
   return false;
 }
 
