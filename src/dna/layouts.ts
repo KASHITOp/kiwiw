@@ -19,7 +19,7 @@ interface FO {
   color?: string; align?: "left" | "center" | "right"; valign?: "top" | "center" | "bottom"; extra?: Partial<TextElement>;
 }
 /** A headline fitted into a box. Returns the element and where it really ended. */
-function fit(text: string, font: string, b: Box, o: FO) {
+export function fit(text: string, font: string, b: Box, o: FO) {
   const lh = o.lh ?? 1;
   const f = fitText(text, { family: font, maxW: b.w, maxH: b.h, maxSize: o.size, minSize: o.min ?? 14, lineHeight: lh, maxLines: o.lines ?? 3, uppercase: o.upper, weight: o.weight, italic: o.italic, trackingEm: o.track });
   const h = Math.max(f.h, f.size * lh);
@@ -27,7 +27,7 @@ function fit(text: string, font: string, b: Box, o: FO) {
   const el = T({ x: b.x, y, w: b.w, h, text: f.text, font, size: f.size, lineHeight: lh, color: o.color ?? "#111111", align: o.align ?? "left", fontWeight: o.weight ?? 400, italic: o.italic, letterSpacing: (o.track ?? 0) * f.size, ...o.extra });
   return { el, y, h, size: f.size, w: f.w, bottom: y + h };
 }
-const mono = (x: number, y: number, w: number, text: string, color = "#111111", size = 22, align: "left" | "right" | "center" = "left", font: string = F.smono) =>
+export const mono = (x: number, y: number, w: number, text: string, color = "#111111", size = 22, align: "left" | "right" | "center" = "left", font: string = F.smono) =>
   T({ x, y, w, h: size * 1.6 * Math.max(1, text.split("\n").length), text, font, size, fontWeight: 700, letterSpacing: size * 0.08, color, align, lineHeight: 1.5 });
 const photo = (x: Ctx, b: Box, p: Partial<Element> = {}, which: "photo" | "photo2" = "photo") =>
   I({ ...b, src: x[which].src, focus: x[which].focus, ...(p as object) });

@@ -12,7 +12,15 @@ import ElementContent from "../editor/ElementContent";
 import Thumb from "../editor/Thumb";
 import type { Element, KiwiwDoc } from "../types";
 import { useEffect, useState } from "react";
-import { juiceWithAI, type JuiceResult } from "../juice";
+import { juiceWithAI, ensureJuiceFonts, type JuiceResult } from "../juice";
+import { buildHeroes } from "../dna/heroes";
+
+/** ?dump=heroes: build the hero templates with real fonts and print the JSON. */
+function HeroDump() {
+  const [json, setJson] = useState("");
+  useEffect(() => { ensureJuiceFonts().then(() => setJson(JSON.stringify(buildHeroes()))); }, []);
+  return json ? <pre id="dump">{json}</pre> : null;
+}
 import { FX_PRESETS } from "../effects/presets";
 import { makeSticker } from "../data/presets";
 
@@ -94,6 +102,7 @@ export default function DevKit() {
     return t ? <DocRender doc={t.doc} /> : <div style={wrap}>No template "{one}"</div>;
   }
   if (params.get("view") === "fx") return <FxView />;
+  if (params.get("dump") === "heroes") return <HeroDump />;
   if (params.get("view") === "templates") {
     return (
       <div style={wrap}>
