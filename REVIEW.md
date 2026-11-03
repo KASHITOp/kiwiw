@@ -1,7 +1,7 @@
 # Kiwiw `juice-v2` — overnight REVIEW
 
 Branch: `juice-v2` (main and production untouched).
-Preview: **https://kiwiw-msntoc21w-kartavyaas-projects.vercel.app**
+Preview: **https://kiwiw-46e7wrgon-kartavyaas-projects.vercel.app**
 (Vercel protects previews on the hobby plan, so log in to Vercel to view it. Production at kiwiw.vercel.app is unchanged.)
 
 > Status: all six phases done and committed (one commit per phase). Typecheck and build pass. Zero console errors at 1366×768, 1920×1080 and 390px.
@@ -110,7 +110,7 @@ One input, six posters, no API key. The parser splits the line into headline, da
 
 # Round 3: Style DNA, effects engine, Juice It 2.0 (overnight, 3 Nov)
 
-Preview: **https://kiwiw-msntoc21w-kartavyaas-projects.vercel.app** (Vercel preview, behind login; production untouched, main untouched).
+Preview: **https://kiwiw-46e7wrgon-kartavyaas-projects.vercel.app** (Vercel preview, behind login; production untouched, main untouched).
 
 ## Phase 1 · Style DNA
 `STYLE_DNA.md` defines 10 recipes taken from your board: **Nazar Battu, Tapri Print, Stadium Halftone, Brutal Grid, Swiss Drop, Trippy Window, Neo Brutal Pop, 8-Bit Flex, Sticker Bomb, Glossy Bloom**. Each recipe has a palette, a font pairing, a layout grammar, effects, stickers, a copy tone, 3 headlines and a never-rule. I borrowed techniques only: no celebrity, club, car brand, soft-drink brand or character from the board appears anywhere. Photos are 29 Pexels shots, bundled and credited in LICENSES.md. Six new Google Fonts: Rozha One, Yatra One, Khand, Press Start 2P, Shrikhand, Bagel Fat One.
@@ -203,7 +203,7 @@ This was done in the previous run: 56px rail, tabs, chips, masonry cards, page s
 
 # Round 4: Riso, photos, Glossy rework, collisions, landing, Gemini (3 Nov)
 
-Preview: **https://kiwiw-msntoc21w-kartavyaas-projects.vercel.app** (behind Vercel login; production and main untouched).
+Preview: **https://kiwiw-46e7wrgon-kartavyaas-projects.vercel.app** (behind Vercel login; production and main untouched).
 
 **Juice It quality gate: 55/60** (up from 49). The 5 that still fail:
 - 8-Bit Flex: the fest photo reads as mush.
@@ -245,3 +245,38 @@ Sheets: `docs/review/juice-gate/`.
 - The 5 gate fails listed above.
 - The Riso render runs on the CPU, so a very large upload takes a moment.
 - Gemini is untested against a real key. I tested a mocked response and the no-key path.
+
+---
+
+# Round 5: editor panels, Landing v4, About, ship checks (4 Nov)
+
+Preview: **https://kiwiw-46e7wrgon-kartavyaas-projects.vercel.app** · Gate **55/60** · **0 console errors** in 40 runs (every landing section and editor panel at 1366/1920/390) · tsc + build pass.
+
+**Editor panels.** On the deployed build: a 56px icon rail with tooltips and a lime pill; stickers grouped by Style DNA recipe (click or drag); text presets rendered in their real style; a photo masonry with Halftone/Riso/Duotone on hover; Magic as bold cards; an Uploads drop zone.
+
+**Fixes.** Two found in review:
+- Wave-text headlines in the Juice panel cards were invisible. A `.jp-card span` rule shrank every span inside the thumbnail.
+- The hero juice card overlapped the footer row at 1366, and there was a dead gap at 1080p.
+
+**Landing v4.** Hero with inline burst, ticker, Style DNA, before/after (now side-by-side), effects playground, template wall, roast demo, About (layover story plus a BLR → STV boarding pass), final CTA, footer "Made by Kartavyaa".
+
+**Gemini (new key).** Live on preview. Under current Google load it answered 3 of 10 gate lines within the 25s budget; the rest fell back silently to the built-in copy, and posters never wait for it.
+
+**OG.** A new 1200×630 card from real juiced posters, "by Kartavyaa"; tags verified on the preview.
+
+![OG](docs/review/og.png)
+
+| Editor panel | |
+| --- | --- |
+| Templates ![](docs/review/panels/panel-templates.png) | Juice ![](docs/review/panels/panel-juice.png) |
+| Text ![](docs/review/panels/panel-text.png) | Stickers ![](docs/review/panels/panel-stickers.png) |
+| Photos ![](docs/review/panels/panel-photos.png) | Uploads ![](docs/review/panels/panel-uploads.png) |
+| Magic ![](docs/review/panels/panel-magic.png) | |
+
+| Landing 1366 | | |
+| --- | --- | --- |
+| ![](docs/review/landing/L1366-hero.png) | ![](docs/review/landing/L1366-burst.png) | ![](docs/review/landing/L1366-ticker.png) |
+| ![](docs/review/landing/L1366-ba.png) | ![](docs/review/landing/L1366-effects.png) | ![](docs/review/landing/L1366-wall.png) |
+| ![](docs/review/landing/L1366-roast.png) | ![](docs/review/landing/L1366-about.png) | ![](docs/review/landing/L1366-footer.png) |
+
+All sections at 1920 and 390: `docs/review/landing/`.
