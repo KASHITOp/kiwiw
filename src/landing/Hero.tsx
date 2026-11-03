@@ -132,7 +132,8 @@ export default function Hero({ onJuice }: { onJuice: (text: string) => void }) {
             <Link to="/" className="brand"><KiwiLogo size={30} /><span className="display">Kiwiw</span></Link>
             <div className="nav-links mono">
               <a href="#templates">Templates</a>
-              <a href="#magic">Magic</a>
+              <a href="#effects">Effects</a>
+              <a href="#about">About</a>
               <Link to="/editor">Editor</Link>
               <a href="https://github.com/KASHITOp/kiwiw" target="_blank" rel="noreferrer">GitHub</a>
             </div>

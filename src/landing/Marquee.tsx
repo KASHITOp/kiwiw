@@ -67,7 +67,7 @@ export default function Marquee() {
   return (
     <section id="templates" className="sec mq">
       <div className="sec-head">
-        <div className="mono eyebrow">[04] THE PANTRY · {TEMPLATES.length} TEMPLATES, PRE-SLICED</div>
+        <div className="mono eyebrow">[06] THE PANTRY · {TEMPLATES.length} TEMPLATES, PRE-SLICED</div>
         <h2 className="display sec-h2">Templates, pre&#8209;sliced.</h2>
         <p className="sec-sub">Every tile is a real render of an editable file. Grab the wall and fling it. Click one to start cutting.</p>
       </div>

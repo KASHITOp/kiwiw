@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import KiwiSlice from "../brand/KiwiSlice";
 import { useEditor } from "../store";
+import { ABOUT } from "../content/about";
 
 const REPO = "https://github.com/KASHITOp/kiwiw";
 
@@ -17,7 +18,7 @@ export default function Footer() {
         <div className="ft-cta">
           <KiwiSlice R={120} detail={0.6} pad={12} className="ft-slice" />
           <div>
-            <div className="mono eyebrow">[06] LAST SLICE</div>
+            <div className="mono eyebrow">[09] LAST SLICE</div>
             <h2 className="display ft-h2">Cut it open.</h2>
             <p className="ft-sub">Your plain idea is in there somewhere. Bring it.</p>
             <Link to="/editor" className="k-btn" onClick={() => newDoc(1080, 1080)}>Open the editor →</Link>
@@ -36,13 +37,13 @@ export default function Footer() {
           </div>
           <div>
             <h4>SMALL PRINT</h4>
-            <span>MIT licensed</span><span>AI runs in demo mode</span><span>No keys needed</span>
+            <span>MIT licensed</span><span>Comic Sans is banned</span><span>Fonts by Google, photos by Pexels</span>
           </div>
         </div>
       </div>
       <div className="ft-base mono">
         <span>© {new Date().getFullYear()} KIWIW</span>
-        <span>BUILT WITH CLAUDE CODE</span>
+        <span>{ABOUT.credit.toUpperCase()}</span>
         <span>NO KIWIS WERE HARMED. ONE WAS CUT.</span>
       </div>
     </footer>

@@ -29,7 +29,7 @@ export default function DnaWall() {
       <section id="dna" className="sec dna">
         <div className="dna-top">
           <div className="sec-head">
-            <div className="mono eyebrow">[02] STYLE DNA · 10 RECIPES, 30 LAYOUTS</div>
+            <div className="mono eyebrow">[03] STYLE DNA · 10 RECIPES, 30 LAYOUTS</div>
             <h2 className="display sec-h2">Same line. Ten personalities.</h2>
             <p className="sec-sub">Every card below is your line, juiced live in that recipe. Type something boring. We dare you.</p>
             <input className="dna-inp" value={line} maxLength={60} onChange={(e) => setLine(e.target.value)} aria-label="Your line for the Style DNA wall" />
@@ -82,7 +82,7 @@ function BeforeAfter({ line, ready }: { line: string; ready: boolean }) {
   return (
     <section className="sec ba">
       <div className="sec-head">
-        <div className="mono eyebrow">[03] BEFORE / AFTER · DRAG THE SEED</div>
+        <div className="mono eyebrow">[04] BEFORE / AFTER · DRAG THE SEED</div>
         <h2 className="display sec-h2">From Word doc to wow.</h2>
         <p className="sec-sub">Left: what your uncle would print. Right: what Juice It made from the same line, in 0.2 seconds.</p>
       </div>

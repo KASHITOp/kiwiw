@@ -4,7 +4,8 @@ import Marquee from "../landing/Marquee";
 import DnaWall from "../landing/DnaWall";
 import JuiceBurst from "../landing/JuiceBurst";
 import { useState } from "react";
-import MagicRows from "../landing/MagicRows";
+import { Ticker, Playground, RoastDemo } from "../landing/Sections";
+import About from "../landing/About";
 import Footer, { ZigRule } from "../landing/Footer";
 import Toaster from "../personality/Toaster";
 import { toast } from "../personality/bus";
@@ -20,12 +21,16 @@ export default function Landing() {
       <div className="grain" aria-hidden="true" />
       <Hero onJuice={(text) => setJuice((j) => ({ text, nonce: j.nonce + 1 }))} />
       <JuiceBurst text={juice.text} nonce={juice.nonce} />
-      <ZigRule />
+      <Ticker />
       <DnaWall />
+      <ZigRule />
+      <Playground />
       <ZigRule />
       <Marquee />
       <ZigRule />
-      <MagicRows />
+      <RoastDemo />
+      <ZigRule />
+      <About />
       <Footer />
       <Toaster />
     </div>
