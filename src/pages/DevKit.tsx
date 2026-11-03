@@ -41,6 +41,36 @@ function CollideReport() {
   return rows ? <pre id="collide">{[`${rows.length} collisions`, ...rows].join(String.fromCharCode(10))}</pre> : null;
 }
 
+/** ?view=og: the 1200x630 social card, built from real juiced posters. */
+function OgCard() {
+  const [docs, setDocs] = useState<KiwiwDoc[] | null>(null);
+  useEffect(() => { ensureJuiceFonts().then(() => setDocs([juiceRecipe("bake sale saturday 10am", "sticker", 0).doc, juiceRecipe("chai tapri opening sunday", "nazar", 2).doc, juiceRecipe("wedding save the date", "glossy", 2).doc])); }, []);
+  if (!docs) return null;
+  const card = (d: KiwiwDoc, x: number, y: number, rot: number, w: number) => (
+    <div style={{ position: "absolute", left: x, top: y, width: w, aspectRatio: "1080 / 1350", transform: `rotate(${rot}deg)`, borderRadius: 14, overflow: "hidden", boxShadow: "0 30px 60px rgba(0,0,0,.6)" }}><Thumb doc={d} /></div>
+  );
+  return (
+    <div id="og-ready" style={{ position: "relative", width: 1200, height: 630, overflow: "hidden", background: "#0B0D08", fontFamily: "Inter" }}>
+      <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(rgba(242,245,230,.07) 1.2px, transparent 1.2px)", backgroundSize: "22px 22px" }} />
+      <div style={{ position: "absolute", left: 64, top: 70, width: 560 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 34 }}>
+          <svg width="46" height="46" viewBox="-50 -50 100 100"><circle r="48" fill="#6B4A23" /><circle r="43" fill="#8BD630" /><circle r="34" fill="#B8E85C" /><ellipse rx="12" ry="14" fill="#F4F8D8" />{Array.from({ length: 14 }, (_, i) => { const a = (i / 14) * Math.PI * 2; return <ellipse key={i} cx={Math.cos(a) * 22} cy={Math.sin(a) * 22} rx="2" ry="4" fill="#17140D" transform={`rotate(${(a * 180) / Math.PI + 90} ${Math.cos(a) * 22} ${Math.sin(a) * 22})`} />; })}</svg>
+          <span style={{ fontFamily: "Bricolage Grotesque Variable", fontWeight: 800, fontSize: 40, letterSpacing: "-0.04em", color: "#F2F5E6" }}>Kiwiw</span>
+        </div>
+        <div style={{ fontFamily: "Bricolage Grotesque Variable", fontWeight: 800, fontSize: 82, lineHeight: 0.92, letterSpacing: "-0.045em", color: "#F2F5E6" }}>Plain idea in.<br /><span style={{ color: "#8BD630" }}>Juicy design out.</span></div>
+        <div style={{ marginTop: 30, fontSize: 24, lineHeight: 1.4, color: "#B4BCA2", width: 470 }}>Type one boring line. Get six posters in ten styles. Desi, loud, glossy, never generic.</div>
+        <div style={{ position: "absolute", top: 470, display: "flex", gap: 14, alignItems: "center", fontFamily: "JetBrains Mono", fontWeight: 700, fontSize: 18, letterSpacing: "0.08em" }}>
+          <span style={{ background: "#8BD630", color: "#0B0D08", padding: "10px 16px", borderRadius: 999 }}>KIWIW.VERCEL.APP</span>
+          <span style={{ color: "#D8F27A" }}>BY KARTAVYAA</span>
+        </div>
+      </div>
+      {card(docs[1], 640, 120, -9, 250)}
+      {card(docs[2], 960, 150, 8, 250)}
+      {card(docs[0], 780, 60, 2, 300)}
+    </div>
+  );
+}
+
 /** ?dump=heroes: build the hero templates with real fonts and print the JSON. */
 function HeroDump() {
   const [json, setJson] = useState("");
@@ -133,6 +163,7 @@ export default function DevKit() {
     return t ? <DocRender doc={t.doc} /> : <div style={wrap}>No template "{one}"</div>;
   }
   if (params.get("view") === "fx") return <FxView />;
+  if (params.get("view") === "og") return <OgCard />;
   if (params.get("dump") === "heroes") return <HeroDump />;
   if (params.get("view") === "collide") return <CollideReport />;
   if (params.get("view") === "templates") {
