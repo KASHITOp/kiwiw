@@ -277,3 +277,5 @@ Flat is the enemy. Every effect is data on the element (so it saves, undoes, exp
 | Backgrounds | warped checkerboard, psychedelic swirl, halftone gradient, sunburst rays, pixel grid | Stretchable stickers in the "Backgrounds" category, recolourable with 3 slots. "Use as page background" sizes them to the page and sends them to the back. |
 
 **Panel:** with an element selected, the right panel shows an **Effects** gallery grouped as above. Every tile is a **live preview of the selected element** with that effect applied (not an icon). Clicking a tile toggles the effect, and its controls (sliders, colours) appear under the gallery. Active tiles get the lime ring.
+
+**Collision check (§16):** anything above a text element in z-order (stickers, filled shapes, or text under 35% of its size) must not cover that text's measured ink box. `src/dna/collide.ts` nudges the element up to 30% of the page in 16 directions, or shrinks it to 45% towards its far corner. It runs on every Juice result and every hero at freeze time. Deliberate contact (the Swiss walker, timeline digits) is marked `allowOverlap`. `/dev/kit?view=collide` lists raw collisions.

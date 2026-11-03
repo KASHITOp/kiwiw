@@ -244,7 +244,7 @@ const brutalC: Layout = (x) => {
 const SW = { red: "#E30613", paper: "#EFEDE6", ink: "#141414" };
 const timeline = (y: number, color: string, active: number) => [
   rule(60, y, 960, color, 2),
-  ...Array.from({ length: 12 }, (_, i) => T({ x: 60 + i * 84, y: y + 12, w: 60, h: 30, text: String(i + 1).padStart(2, "0"), font: F.smono, size: 18, fontWeight: 700, color: i === active ? SW.red : color })),
+  ...Array.from({ length: 12 }, (_, i) => T({ x: 60 + i * 84, y: y + 12, w: 60, h: 30, text: String(i + 1).padStart(2, "0"), font: F.smono, size: 18, fontWeight: 700, color: i === active ? SW.red : color, allowOverlap: true })),
 ];
 
 const swissA: Layout = (x) => {
@@ -255,7 +255,7 @@ const swissA: Layout = (x) => {
     T({ x: -60, y: 40, w: 1300, h: 560, text: word.slice(0, half), font: F.archivo, size: 560, color: SW.red, lineHeight: 0.85 }),
     T({ x: 1080 - 1240, y: 720, w: 1300, h: 560, text: word.slice(half) || word, font: F.archivo, size: 560, color: SW.red, lineHeight: 0.85, align: "right" }),
     timeline(640, SW.ink, (x.seed % 12)),
-    S("figure-walker", { x: 470, y: 520, w: 64, h: 128 }),
+    S("figure-walker", { allowOverlap: true, x: 470, y: 520, w: 64, h: 128 }),
     mono(60, 40, 400, c.kicker, SW.ink, 18),
     R({ x: 640, y: 30, w: 400, h: 110, fill: SW.paper }),
     T({ x: 650, y: 36, w: 380, h: 100, text: `${c.plain}\n${c.sub}`, font: F.inter, size: 24, fontWeight: 600, color: SW.ink, align: "right", lineHeight: 1.3 }),
@@ -283,7 +283,7 @@ const swissC: Layout = (x) => {
   const word = (c.head.replace(/[^A-Z ]/gi, "").split(" ").find((w) => w.length >= 3) ?? c.noun).toUpperCase().slice(0, 5);
   return doc(SW.ink, [
     ...[...word].map((ch, i) => T({ x: -30, y: -60 + i * 300, w: 700, h: 340, text: ch, font: F.archivo, size: 380, color: i % 2 ? SW.paper : SW.red, lineHeight: 0.9 })),
-    S("figure-walker", { x: 400, y: 70, w: 70, h: 140, fill: SW.paper }),
+    S("figure-walker", { allowOverlap: true, x: 400, y: 70, w: 70, h: 140, fill: SW.paper }),
     ...Array.from({ length: 10 }, (_, i) => T({ x: 930, y: 60 + i * 120, w: 100, h: 30, text: String(2016 + i), font: F.smono, size: 18, fontWeight: 700, color: i === 9 ? SW.red : "#8A8A8A", align: "right" })),
     rule(900, 60, 2, "#8A8A8A", 1),
     photo(x, { x: 560, y: 520, w: 320, h: 420 }, { fx: { duotone: { dark: SW.ink, light: SW.red } }, frame: { kind: "torn", color: SW.paper } }),

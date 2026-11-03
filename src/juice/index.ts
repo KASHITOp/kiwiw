@@ -9,6 +9,7 @@ import { parseIdea, hash } from "./parse";
 import { RECIPES, RECIPE_ORDER, writeCopy, type Copy, type RecipeKey } from "../dna/recipes";
 import { LAYOUTS, DNA_FONTS } from "../dna/layouts";
 import { photoFor } from "../data/photos";
+import { resolveCollisions } from "../dna/collide";
 
 export type { RecipeKey } from "../dna/recipes";
 export { RECIPES, RECIPE_ORDER } from "../dna/recipes";
@@ -66,7 +67,8 @@ function build(s: JuiceSession, r: RecipeKey, layout = nextLayout(s, r)): JuiceR
   const n = s.shown++;
   const copy = { ...writeCopy(r, idea, angle), ...(s.ai?.[r] ?? {}) };
   const seed = hash(idea.raw) + n * 7;
-  const doc = LAYOUTS[r][layout]({ c: copy, photo: photoFor(idea.raw, n + hash(idea.raw)), photo2: photoFor(idea.raw, n + hash(idea.raw) + 1), seed });
+  const raw = LAYOUTS[r][layout]({ c: copy, photo: photoFor(idea.raw, n + hash(idea.raw)), photo2: photoFor(idea.raw, n + hash(idea.raw) + 1), seed });
+  const doc = typeof document === "undefined" ? raw : resolveCollisions(raw).doc;
   const meta = RECIPES[r];
   return { style: r, name: meta.name, vibe: meta.vibe, joke: meta.jokes[(angle + layout) % meta.jokes.length], layout, copy, doc };
 }

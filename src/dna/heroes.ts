@@ -8,6 +8,7 @@ import { LAYOUTS, fit, mono } from "./layouts";
 import { writeCopy, type RecipeKey } from "./recipes";
 import { parseIdea } from "../juice/parse";
 import { PHOTOS, type Photo } from "../data/photos";
+import { resolveCollisions } from "./collide";
 
 const ph = (name: string): Photo => PHOTOS.find((p) => p.src.includes(name))!;
 const img = (name: string, b: { x: number; y: number; w: number; h: number }, p: Partial<Element> = {}) => I({ ...b, src: ph(name).src, focus: ph(name).focus, ...(p as object) });
@@ -114,13 +115,13 @@ const swissPost = () => {
   const W = 1080, H = 1080;
   return doc(W, H, "#EFEDE6", [
     T({ x: -80, y: -220, w: 1300, h: 1000, text: "JU", font: F.archivo, size: 820, color: "#E30613", lineHeight: 0.9 }),
-    T({ x: 380, y: 520, w: 900, h: 760, text: "NE", font: F.archivo, size: 640, color: "#E30613", lineHeight: 0.9 }),
+    T({ x: 300, y: 600, w: 1000, h: 520, text: "NE", font: F.archivo, size: 520, color: "#E30613", lineHeight: 0.9 }),
     rule(60, 560, 960, "#141414", 2),
-    ...Array.from({ length: 12 }, (_, i) => T({ x: 60 + i * 84, y: 572, w: 60, h: 30, text: String(i + 1).padStart(2, "0"), font: F.smono, size: 18, fontWeight: 700, color: i === 5 ? "#E30613" : "#141414" })),
-    S("figure-walker", { x: 480, y: 432, w: 64, h: 128 }),
-    img("portrait-3979997", { x: 60, y: 700, w: 220, h: 280 }, { fx: { bw: true }, cutout: { color: "#FFFFFF", width: 6 }, rotation: -4 }),
-    T({ x: 300, y: 660, w: 340, h: 120, text: "Summer Sale\n(A Small One)", font: F.inter, size: 34, fontWeight: 700, color: "#141414", lineHeight: 1.3 }),
-    mono(60, 1010, 600, "01—30 JUNE / UP TO 30% / NO DRAMA", "#141414", 18),
+    ...Array.from({ length: 12 }, (_, i) => T({ x: 60 + i * 84, y: 572, w: 60, h: 30, text: String(i + 1).padStart(2, "0"), font: F.smono, size: 18, fontWeight: 700, color: i === 5 ? "#E30613" : "#141414", allowOverlap: true })),
+    S("figure-walker", { allowOverlap: true, x: 480, y: 432, w: 64, h: 128 }),
+    img("portrait-3979997", { x: 60, y: 800, w: 200, h: 220 }, { fx: { bw: true }, cutout: { color: "#FFFFFF", width: 6 }, rotation: -4 }),
+    T({ x: 60, y: 640, w: 250, h: 120, text: "Summer Sale\n(A Small One)", font: F.inter, size: 30, fontWeight: 700, color: "#141414", lineHeight: 1.25 }),
+    mono(60, 1030, 260, "01—30 JUNE\nUP TO 30% / NO DRAMA", "#141414", 16),
   ]);
 };
 
@@ -216,7 +217,7 @@ const OTHERS: [Meta, () => KiwiwDoc][] = [
 /** Build every hero doc (call after fonts load). */
 export function buildHeroes(): Template[] {
   return [...POSTERS, ...OTHERS].map(([m, build]) => {
-    const d = build();
+    const d = resolveCollisions(build()).doc;
     return { id: m.id, name: m.name, description: m.description, style: STYLE[m.recipe], format: m.format, category: m.format, tags: m.tags, thumbBg: d.background, doc: d };
   });
 }

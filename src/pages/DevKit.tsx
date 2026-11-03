@@ -14,6 +14,32 @@ import type { Element, KiwiwDoc } from "../types";
 import { useEffect, useState } from "react";
 import { juiceWithAI, ensureJuiceFonts, juiceRecipe, type JuiceResult, type RecipeKey } from "../juice";
 import { buildHeroes } from "../dna/heroes";
+import { resolveCollisions } from "../dna/collide";
+import { LAYOUTS } from "../dna/layouts";
+import { writeCopy, RECIPE_ORDER } from "../dna/recipes";
+import { parseIdea } from "../juice/parse";
+import { photoFor } from "../data/photos";
+
+const GATE = ["college fest friday 6pm", "chai tapri opening sunday", "hiring designers", "diwali sale 40% off", "my startup launch", "birthday party", "gym new batch", "wedding save the date", "podcast episode 12", "bake sale saturday 10am"];
+
+/** ?view=collide: every template + every layout x gate line, raw (before the resolver). */
+function CollideReport() {
+  const [rows, setRows] = useState<string[] | null>(null);
+  useEffect(() => {
+    ensureJuiceFonts().then(() => {
+      const out: string[] = [];
+      for (const t of TEMPLATES) { const f = resolveCollisions(t.doc).fixes; if (f.length) out.push(`TPL ${t.id}: ${f.map((x) => `${x.name} ${x.action}`).join(", ")}`); }
+      for (const line of GATE) for (const r of RECIPE_ORDER) LAYOUTS[r].forEach((L, i) => {
+        const idea = parseIdea(line);
+        const d = L({ c: writeCopy(r, idea, 0), photo: photoFor(line, 0), photo2: photoFor(line, 1), seed: 7 });
+        const f = resolveCollisions(d).fixes;
+        if (f.length) out.push(`JUICE ${r}#${i + 1} "${line}": ${f.map((x) => `${x.name} ${x.action}`).join(", ")}`);
+      });
+      setRows(out);
+    });
+  }, []);
+  return rows ? <pre id="collide">{[`${rows.length} collisions`, ...rows].join(String.fromCharCode(10))}</pre> : null;
+}
 
 /** ?dump=heroes: build the hero templates with real fonts and print the JSON. */
 function HeroDump() {
@@ -108,6 +134,7 @@ export default function DevKit() {
   }
   if (params.get("view") === "fx") return <FxView />;
   if (params.get("dump") === "heroes") return <HeroDump />;
+  if (params.get("view") === "collide") return <CollideReport />;
   if (params.get("view") === "templates") {
     return (
       <div style={wrap}>

@@ -56,7 +56,7 @@ export const brainrot = [
       S("burst-spiky", { x: 900, y: 40, w: 340, h: 340, fill: ACID }),
       S("kiwi-bird", { x: 860, y: 200, w: 380, h: 345, ink: INK, rotation: -6 }),
       S("scribble-circle", { x: 820, y: 230, w: 460, h: 322, ink: RED, rotation: 6 }),
-      S("arrow-swoop", { x: 640, y: 380, w: 240, h: 150, ink: RED, rotation: 10 }),
+      S("arrow-swoop", { x: 700, y: 430, w: 190, h: 120, ink: RED, rotation: 10 }),
       S("bubble-speech", { x: 760, y: 20, w: 300, h: 240, fill: WHITE, ink: INK, rotation: -6 }),
       T({ x: 776, y: 40, w: 268, h: 150, text: "is that even legal??", font: F.gochi, size: 46, lineHeight: 1, color: INK, align: "center", rotation: -6 }),
       R({ x: 40, y: 610, w: 520, h: 70, fill: ACID, rotation: -2 }),

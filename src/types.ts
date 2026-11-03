@@ -18,6 +18,8 @@ export interface ElementBase {
   userNamed?: boolean;
   /** Elements sharing a groupId select and move together. */
   groupId?: string;
+  /** Deliberately touches text (Swiss walker, timeline digits): the collision check skips it. */
+  allowOverlap?: boolean;
   /** Effects engine (DESIGN.md §16), any element type. */
   frame?: FrameFx | null;
   cutout?: { color: string; width: number } | null;
