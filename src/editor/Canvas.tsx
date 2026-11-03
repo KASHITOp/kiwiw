@@ -6,6 +6,7 @@ import FloatingToolbar from "./FloatingToolbar";
 import { snap, unionBox, type Box, type Guide } from "./snap";
 import { Minus, Plus, Maximize2 } from "lucide-react";
 import { fitZoom } from "./zoom";
+import { useStickerDrop } from "./panels";
 
 type Handle = "nw" | "n" | "ne" | "e" | "se" | "s" | "sw" | "w";
 const HANDLES: Handle[] = ["nw", "n", "ne", "e", "se", "s", "sw", "w"];
@@ -136,6 +137,10 @@ export default function Canvas() {
     drag.current = { mode: "rotate", startX: e.clientX, startY: e.clientY, orig: { ...el }, cx, cy };
   };
 
+  const drop = useStickerDrop((cx, cy) => {
+    const r = canvasRef.current?.getBoundingClientRect();
+    return r ? { x: (cx - r.left) / zoom, y: (cy - r.top) / zoom } : null;
+  });
   const sel = new Set(selectedIds);
   const multi = selectedIds.length > 1 ? unionBox(doc.elements.filter((e) => sel.has(e.id) && !e.hidden)) : null;
 
@@ -143,7 +148,7 @@ export default function Canvas() {
   const hb = 2 / zoom;
 
   return (
-    <div className="stage" onPointerDown={startMarquee}>
+    <div className="stage" onPointerDown={startMarquee} onDragOver={drop.onDragOver} onDrop={drop.onDrop}>
       <div className="sheet" style={{ width: doc.width * zoom, height: doc.height * zoom }}>
       <FloatingToolbar />
       {!doc.elements.length && (

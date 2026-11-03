@@ -40,6 +40,18 @@ export default function Editor() {
   const [cheat, setCheat] = useState(false);
   const phone = useMedia("(max-width: 759px)");
   useKonami(onKonami);
+  // Magic cards jump straight to Roast and the Vibe slider
+  useEffect(() => {
+    const roast = () => { if (useEditor.getState().doc.elements.length) setRoasting(true); else toast("Add something first. Even we can't roast an empty page."); };
+    const vibe = () => {
+      const el = document.querySelector<HTMLElement>(".vibe");
+      el?.querySelector("input")?.focus();
+      el?.classList.remove("flash"); void el?.offsetWidth; el?.classList.add("flash");
+    };
+    window.addEventListener("kiwiw:roast", roast);
+    window.addEventListener("kiwiw:vibe", vibe);
+    return () => { window.removeEventListener("kiwiw:roast", roast); window.removeEventListener("kiwiw:vibe", vibe); };
+  }, []);
 
   // Fit + center whenever the page dimensions change (initial load, template open, resize).
   useEffect(() => { setZoom(fitZoom(doc.width, doc.height)); /* eslint-disable-next-line */ }, [doc.width, doc.height]);

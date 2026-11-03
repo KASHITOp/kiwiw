@@ -449,3 +449,59 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
 .fxp-range label { display: flex; justify-content: space-between; }
 .fxp-range label b { font-family: var(--font-mono); font-weight: 500; color: var(--accent-strong); }
 .fxp-range input[type="range"] { width: 100%; accent-color: var(--accent); padding: 0; height: 18px; }
+
+/* ---------- left panels v3 (DESIGN.md §15) ---------- */
+.stk-group, .pnl-sec { margin-bottom: var(--s-5); }
+.stk-group h5, .pnl-h { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin: 0 0 var(--s-2); font: 700 13px/1.2 "Bricolage Grotesque Variable", var(--font); letter-spacing: -0.01em; color: var(--text); }
+.stk-group h5 span, .pnl-h span { font: 400 10.5px var(--font-mono); color: var(--faint); text-align: right; }
+.stk-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.stk-tile { position: relative; aspect-ratio: 1; padding: 12px; border-radius: 12px; border: 1px solid var(--border); background: #F2EDE1; color: #2A2F22; cursor: grab; transition: transform 160ms cubic-bezier(.2,1.4,.4,1), box-shadow 160ms, border-color 160ms; min-width: 0; }
+.stk-tile.basic { background: var(--g-2); color: var(--muted); }
+.stk-tile svg { width: 100%; height: 100%; display: block; }
+.stk-tile:hover, .stk-tile:focus-visible { transform: rotate(-4deg) scale(1.06); box-shadow: 0 10px 22px rgba(0,0,0,.4); border-color: var(--accent); z-index: 2; animation: stk-wobble 420ms ease-in-out; }
+.stk-tile:nth-child(even):hover { transform: rotate(4deg) scale(1.06); }
+.stk-tile:active { cursor: grabbing; }
+.stk-tile::after { content: attr(data-name); position: absolute; left: 50%; bottom: -4px; transform: translate(-50%, 100%); white-space: nowrap; padding: 3px 7px; border-radius: 6px; background: #050604; border: 1px solid var(--border-2); color: var(--text); font: 10.5px var(--font-mono); opacity: 0; pointer-events: none; transition: opacity 120ms; z-index: 5; }
+.stk-tile:hover::after { opacity: 1; }
+@keyframes stk-wobble { 30% { rotate: 4deg; } 60% { rotate: -3deg; } }
+
+.txp-list { display: grid; gap: 8px; margin-bottom: var(--s-4); }
+.txp { display: flex; flex-direction: column; padding: 0; border-radius: 12px; border: 1px solid var(--border); background: var(--g-2); overflow: hidden; text-align: left; color: var(--text); cursor: pointer; transition: border-color 140ms, transform 140ms; }
+.txp:hover { border-color: var(--accent); transform: translateY(-2px); }
+.txp-art { height: 112px; display: grid; place-items: center; background: #F2EDE1; overflow: hidden; }
+.txp-art.dark { background: #1A1E14; }
+.txp-meta { display: flex; flex-direction: column; gap: 1px; padding: 8px 10px 10px; }
+.txp-meta b { font-size: 13px; font-weight: 650; }
+.txp-meta span { font-size: 11px; color: var(--muted); }
+
+.ph-masonry { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: start; }
+.ph-col { display: grid; gap: 8px; }
+.ph-tile { position: relative; border-radius: 10px; overflow: hidden; background: var(--g-2); }
+.ph-img { display: block; width: 100%; height: 100%; padding: 0; border: 0; background: none; cursor: pointer; }
+.ph-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 200ms; }
+.ph-tile:hover .ph-img img { transform: scale(1.04); }
+.ph-fx { position: absolute; left: 6px; right: 6px; bottom: 6px; display: flex; gap: 4px; opacity: 0; transform: translateY(4px); transition: opacity 140ms, transform 140ms; }
+.ph-tile:hover .ph-fx, .ph-tile:focus-within .ph-fx { opacity: 1; transform: none; }
+.ph-fx button { flex: 1; height: 24px; padding: 0 4px; border: 0; border-radius: 6px; background: rgba(5,6,4,.86); color: var(--text); font: 600 10px var(--font-mono); cursor: pointer; backdrop-filter: blur(4px); }
+.ph-fx button:hover { background: var(--accent); color: #0B0D08; }
+@media (hover: none) { .ph-fx { opacity: 1; transform: none; } }
+
+.mg-list { display: grid; gap: 10px; }
+.mg-card { border-radius: 14px; border: 1px solid var(--border); background: var(--g-2); overflow: hidden; transition: border-color 140ms; }
+.mg-card:hover, .mg-card.open { border-color: var(--border-2); }
+.mg-head { width: 100%; display: flex; align-items: center; gap: 12px; padding: 14px; border: 0; background: none; color: var(--text); text-align: left; cursor: pointer; }
+.mg-ic { width: 40px; height: 40px; flex: none; display: grid; place-items: center; border-radius: 12px; border: 2px solid #0B0D08; box-shadow: 3px 3px 0 #0B0D08; color: #0B0D08; }
+.t-lime .mg-ic { background: #D8F27A; } .t-red .mg-ic { background: #FF7A5C; } .t-pink .mg-ic { background: #FF7AC6; } .t-blue .mg-ic { background: #7FB7FF; }
+.mg-txt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.mg-txt b { font: 800 16px/1.1 "Bricolage Grotesque Variable", var(--font); letter-spacing: -0.02em; }
+.mg-txt span { font-size: 12px; color: var(--muted); line-height: 1.35; }
+.mg-go { font: 700 12px var(--font-mono); color: var(--accent); }
+.mg-body { padding: 0 14px 14px; }
+.mg-body .ai-card { margin: 0; padding: 0; border: 0; background: none; }
+.vibe.flash { animation: vibe-flash 900ms ease-out; }
+@keyframes vibe-flash { 0%, 60% { box-shadow: 0 0 0 3px var(--accent), 0 0 24px rgba(139,214,48,.6); } 100% { box-shadow: none; } }
+@media (prefers-reduced-motion: reduce) { .stk-tile:hover { animation: none; } }
+.chips.scroll { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-right: calc(var(--s-4) * -1); padding-right: var(--s-4); mask-image: linear-gradient(90deg, #000 85%, transparent); }
+.chips.scroll::-webkit-scrollbar { display: none; }
+.chips.scroll .chip { flex: none; }
+.pnl-h { white-space: nowrap; }

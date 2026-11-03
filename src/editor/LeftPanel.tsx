@@ -1,18 +1,14 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LayoutTemplate, Shapes, Type, Image as ImageIcon, Upload, Sparkles, Search, Citrus, X } from "lucide-react";
 import { useEditor } from "../store";
-import { makeShape, makeImage } from "../data/factory";
+import { makeImage } from "../data/factory";
 import { TEMPLATES } from "../data/templates";
-import { TEXT_PRESETS, placeText, makeSticker, type TextPreset } from "../data/presets";
-import { STICKER_CATEGORIES, searchStickers, type StickerCategory } from "../stickers/library";
-import StickerArt from "../stickers/StickerArt";
-import ElementContent from "./ElementContent";
+import { TEXT_PRESETS } from "../data/presets";
 import TemplatesTab from "./TemplatesTab";
 import AIPanel from "./AIPanel";
-import AssetPanel from "./AssetPanel";
+import { StickersTab, TextTab, PhotosTab } from "./panels";
 import JuicePanel from "../juice/JuicePanel";
 import { DEFAULT_IDEA } from "../juice";
-import type { Element, ShapeKind } from "../types";
 
 type Tab = "juice" | "templates" | "text" | "elements" | "photos" | "uploads" | "ai";
 
@@ -24,17 +20,17 @@ const TABS: { id: Tab; icon: React.ReactNode; label: string; placeholder: string
   { id: "elements", icon: <Shapes size={20} strokeWidth={1.75} />, label: "Stickers", placeholder: "Search: burst, tape, diya, kiwi…" },
   { id: "photos", icon: <ImageIcon size={20} strokeWidth={1.75} />, label: "Photos", placeholder: "Search photos: chai, neon, beach…" },
   { id: "uploads", icon: <Upload size={20} strokeWidth={1.75} />, label: "Uploads", placeholder: "Filter your uploads by name" },
-  { id: "ai", icon: <Sparkles size={20} strokeWidth={1.75} />, label: "Magic", placeholder: "Search: write, image, background…" },
+  { id: "ai", icon: <Sparkles size={20} strokeWidth={1.75} />, label: "Magic", placeholder: "Search: write, roast, vibe, background…" },
 ];
 
 const HINTS: Record<Tab, string> = {
-  juice: "6 posters, 0 API keys",
+  juice: "1 line in, 6 posters out",
   templates: `${TEMPLATES.length} originals`,
   text: `${TEXT_PRESETS.length} presets`,
   elements: "all hand-drawn",
   photos: "free to use",
   uploads: "yours, obviously",
-  ai: "keys optional",
+  ai: "4 spells, no wand",
 };
 
 export default function LeftPanel() {
@@ -111,7 +107,7 @@ export default function LeftPanel() {
             {tab === "templates" && <TemplatesTab q={q} />}
             {tab === "elements" && <StickersTab q={q} setQ={setQ} />}
             {tab === "text" && <TextTab q={q} />}
-            {tab === "photos" && <AssetPanel q={q} />}
+            {tab === "photos" && <PhotosTab q={q} />}
             {tab === "uploads" && <UploadTab q={q} />}
             {tab === "ai" && <AIPanel q={q} />}
           </div>
@@ -129,97 +125,6 @@ const match = (q: string, ...hay: (string | undefined)[]) => {
 
 function NoMatch({ q, tryThis }: { q: string; tryThis: string }) {
   return <div className="empty">Nothing matches "{q}". Try {tryThis}. Or don't, we're a panel, not a cop.</div>;
-}
-
-/* ---------------- Text presets ---------------- */
-
-function PresetPreview({ p }: { p: TextPreset }) {
-  // Render the real element, scaled to the tile, so the preview *is* the preset.
-  const s = Math.min(0.32, 250 / p.el.w, 74 / p.el.h);
-  const el = {
-    ...p.el, id: "pv", x: 0, y: 0,
-    w: p.el.w * s, h: p.el.h * s, fontSize: p.el.fontSize * s, letterSpacing: p.el.letterSpacing * s,
-    outline: p.el.outline ? { ...p.el.outline, width: Math.max(1, p.el.outline.width * s) } : p.el.outline,
-    shadow: p.el.shadow ? { ...p.el.shadow, x: p.el.shadow.x * s, y: p.el.shadow.y * s } : p.el.shadow,
-  } as Element;
-  const dark = p.el.color.toUpperCase() === "#FFFFFF";
-  return (
-    <div className={"tp-art" + (dark ? " dark" : "")}>
-      <div style={{ width: el.w, height: el.h, transform: `rotate(${p.el.rotation}deg)`, flex: "none" }}>
-        <ElementContent el={el} />
-      </div>
-    </div>
-  );
-}
-
-function TextTab({ q }: { q: string }) {
-  const { addElement, doc } = useEditor();
-  const list = TEXT_PRESETS.filter((p) => match(q, p.label, p.hint, p.el.fontFamily));
-  return (
-    <>
-      {!list.length && <NoMatch q={q} tryThis={'"headline", "hand" or "desi"'} />}
-      <div className="tp-list">
-        {list.map((p) => (
-          <button key={p.id} className="tp" onClick={() => addElement(placeText(p, doc.width, doc.height))} title={p.hint}>
-            <PresetPreview p={p} />
-            <span className="tp-meta"><b>{p.label}</b><span>{p.hint}</span></span>
-          </button>
-        ))}
-      </div>
-    </>
-  );
-}
-
-/* ---------------- Stickers & shapes ---------------- */
-
-const BASIC: { k: ShapeKind; name: string; svg: React.ReactNode }[] = [
-  { k: "rect", name: "Rectangle", svg: <rect x="14" y="22" width="72" height="56" rx="6" /> },
-  { k: "ellipse", name: "Circle", svg: <circle cx="50" cy="50" r="34" /> },
-  { k: "triangle", name: "Triangle", svg: <path d="M50,16 L86,82 H14Z" /> },
-  { k: "line", name: "Line", svg: <rect x="10" y="46" width="80" height="8" rx="4" /> },
-];
-
-function StickersTab({ q, setQ }: { q: string; setQ: (v: string) => void }) {
-  const { addElement, doc } = useEditor();
-  const [cat, setCat] = useState<StickerCategory | "All">("All");
-  const list = useMemo(() => searchStickers(q, cat), [q, cat]);
-  const showBasic = cat === "All" && !q.trim();
-
-  return (
-    <>
-      <div className="st-cats">
-        {(["All", ...STICKER_CATEGORIES] as const).map((c) => (
-          <button key={c} className={"st-cat" + (cat === c ? " on" : "")} onClick={() => setCat(c)}>{c}</button>
-        ))}
-      </div>
-      {showBasic && (
-        <>
-          <div className="sub-h">Basic shapes</div>
-          <div className="st-grid">
-            {BASIC.map((b) => (
-              <button key={b.k} className="st-tile" title={b.name} onClick={() => addElement(makeShape(b.k, { x: doc.width / 2 - 130, y: doc.height / 2 - 130 }))}>
-                <svg viewBox="0 0 100 100" fill="var(--muted)">{b.svg}</svg>
-              </button>
-            ))}
-          </div>
-        </>
-      )}
-      <div className="sub-h">{cat === "All" ? (q.trim() ? `${list.length} found` : "Stickers") : cat}</div>
-      <div className="st-grid">
-        {list.map((d) => (
-          <button key={d.kind} className="st-tile" title={d.name} onClick={() => addElement(makeSticker(d.kind, doc.width, doc.height))}>
-            <StickerArt kind={d.kind} fit />
-          </button>
-        ))}
-      </div>
-      {!list.length && (
-        <div className="empty">
-          Nothing matches "{q}". We drew 50 stickers by hand and none of them is that.
-          <br /><button className="btn sm" style={{ marginTop: 12 }} onClick={() => setQ("kiwi")}>Show me kiwis</button>
-        </div>
-      )}
-    </>
-  );
 }
 
 // uploads survive tab switches (not reloads: they're data URLs, and localStorage has feelings)

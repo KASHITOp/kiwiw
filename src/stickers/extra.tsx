@@ -167,6 +167,58 @@ export const EXTRA_DEFS: StickerDef[] = [
     ),
   },
 
+
+  /* Truck-art corner, postage stamp, retro OS window (stickers you can drop anywhere) */
+  {
+    kind: "truck-corner", name: "Truck-art corner", category: "Desi", tags: ["truck art", "corner", "border", "ornament", "desi", "tapri"], vb: [100, 100], size: [220, 220],
+    uses: ["fill", "accent", "ink"], colors: { fill: "#D62828", accent: "#F7931E", ink: "#1A1208" },
+    Art: ({ c }) => (
+      <g stroke={c.ink} strokeWidth="1.6" strokeLinejoin="round">
+        <path d="M2,2 H98 V22 H22 V98 H2Z" fill={c.fill} />
+        {[10, 26, 42, 58, 74, 90].map((x, i) => <path key={`t${i}`} d={`M${x - 7},22 L${x},34 L${x + 7},22Z`} fill={["#F7931E", "#0F7C7A", "#FFD23F"][i % 3]} />)}
+        {[34, 50, 66, 82].map((y, i) => <path key={`l${i}`} d={`M22,${y - 7} L34,${y} L22,${y + 7}Z`} fill={["#0F7C7A", "#FFD23F", "#F7931E"][i % 3]} />)}
+        {[30, 50, 70, 90].map((x) => <circle key={`d${x}`} cx={x} cy="11" r="2.6" fill="#FFF3D6" stroke="none" />)}
+        {[30, 50, 70, 90].map((y) => <circle key={`e${y}`} cx="11" cy={y} r="2.6" fill="#FFF3D6" stroke="none" />)}
+        {Array.from({ length: 8 }, (_, i) => <ellipse key={i} cx="12" cy="4" rx="2.4" ry="5.2" fill={i % 2 ? "#FFD23F" : c.accent} transform={`rotate(${i * 45} 12 12)`} />)}
+        <circle cx="12" cy="12" r="3.6" fill="#0F7C7A" />
+      </g>
+    ),
+  },
+  {
+    kind: "stamp-postage", name: "Postage stamp", category: "Badges", tags: ["stamp", "postage", "perforated", "post", "mail", "tapri", "zine"], vb: [100, 120], size: [200, 240],
+    uses: ["fill", "accent", "ink"], colors: { fill: "#FFF3D6", accent: "#D62828", ink: "#1A1208" },
+    Art: ({ c, uid }) => {
+      const holes: JSX.Element[] = [];
+      for (let i = 0; i <= 10; i++) holes.push(<circle key={`a${i}`} cx={i * 10} cy={0} r="3.4" />, <circle key={`b${i}`} cx={i * 10} cy={120} r="3.4" />);
+      for (let i = 0; i <= 12; i++) holes.push(<circle key={`c${i}`} cx={0} cy={i * 10} r="3.4" />, <circle key={`d${i}`} cx={100} cy={i * 10} r="3.4" />);
+      return (
+        <g>
+          <defs><mask id={`sm${uid}`}><rect width="100" height="120" fill="#fff" /><g fill="#000">{holes}</g></mask></defs>
+          <rect width="100" height="120" fill={c.fill} mask={`url(#sm${uid})`} />
+          <rect x="10" y="10" width="80" height="80" fill={c.accent} />
+          <circle cx="50" cy="50" r="24" fill="#8BD630" stroke={c.ink} strokeWidth="2" />
+          <circle cx="50" cy="50" r="9" fill="#F4F8D8" />
+          {Array.from({ length: 12 }, (_, i) => { const a = (i / 12) * Math.PI * 2; return <ellipse key={i} cx={50 + Math.cos(a) * 15} cy={50 + Math.sin(a) * 15} rx="1.3" ry="2.6" fill={c.ink} transform={`rotate(${(a * 180) / Math.PI + 90} ${50 + Math.cos(a) * 15} ${50 + Math.sin(a) * 15})`} />; })}
+          <text x="50" y="108" textAnchor="middle" fontFamily="Space Mono, monospace" fontWeight="700" fontSize="11" fill={c.ink}>₹10 · KIWIW</text>
+        </g>
+      );
+    },
+  },
+  {
+    kind: "os-window", name: "Retro OS window", category: "Bubbles", tags: ["window", "retro", "os", "popup", "y2k", "error", "main character", "trippy"], vb: [200, 130], size: [440, 286], stretch: true,
+    uses: ["fill", "accent", "ink"], colors: { fill: "#FF4FA3", accent: "#FFF1DE", ink: "#111111" },
+    Art: ({ c }) => (
+      <g stroke={c.ink} strokeWidth="3">
+        <rect x="8" y="8" width="188" height="118" fill={c.ink} />
+        <rect x="2" y="2" width="188" height="118" fill={c.accent} />
+        <rect x="2" y="2" width="188" height="26" fill={c.fill} />
+        {[142, 158, 174].map((x) => <rect key={x} x={x - 6} y="8" width="13" height="13" fill="#FFFFFF" strokeWidth="2" />)}
+        <path d="M139,14.5 h7 M155,9.5 h7 v10 h-7z M171,9.5 l7,10 M178,9.5 l-7,10" strokeWidth="1.8" fill="none" />
+        <rect x="14" y="10" width="70" height="10" fill="#FFFFFF" strokeWidth="1.5" opacity=".55" />
+      </g>
+    ),
+  },
+
   /* Style DNA stickers */
   {
     kind: "desi-nimbu-mirchi", name: "Nimbu mirchi", category: "Desi", tags: ["nimbu", "mirchi", "lemon", "chilli", "nazar", "evil eye", "totka", "desi"], vb: [100, 230], size: [180, 414],

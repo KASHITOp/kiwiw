@@ -9,6 +9,9 @@
   "functions": {
     "api/juice-copy.js": {
       "maxDuration": 30
+    },
+    "api/magic-write.js": {
+      "maxDuration": 30
     }
   }
 }
