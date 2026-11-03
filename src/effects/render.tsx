@@ -260,8 +260,9 @@ export function WaveText({ el, style }: { el: TextElement; style: React.CSSPrope
                 <span key={wi} style={{ display: "inline-block", whiteSpace: "nowrap" }}>
                   {graphemes(word).map((ch, ci) => {
                     const t = (i++ / total) * Math.PI * 2 * 1.15;
-                    const y = Math.sin(t) * amp, rot = Math.cos(t) * (amp / el.fontSize) * 38;
-                    return <span key={ci} style={{ display: "inline-block", transform: `translateY(${y.toFixed(1)}px) rotate(${rot.toFixed(1)}deg) scaleY(${(1 + Math.sin(t + 1.2) * 0.1 * Math.sign(amp || 1)).toFixed(3)})` }}>{ch}</span>;
+                    // vertical offset only: per-glyph transforms stop painting at thumbnail scale in Chrome
+                    const y = Math.sin(t) * amp;
+                    return <span key={ci} style={{ display: "inline-block", position: "relative", top: `${y.toFixed(1)}px` }}>{ch}</span>;
                   })}
                 </span>
               ),

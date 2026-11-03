@@ -136,8 +136,9 @@ function UploadTab({ q }: { q: string }) {
   const [imgs, setImgs] = useState(UPLOADS);
   const shown = imgs.filter((i) => match(q, i.name));
 
-  const onFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    Array.from(e.target.files ?? []).forEach((f) => {
+  const [over, setOver] = useState(false);
+  const read = (files: FileList | null) => {
+    Array.from(files ?? []).filter((f) => f.type.startsWith("image/")).forEach((f) => {
       const r = new FileReader();
       r.onload = () => setImgs((p) => (UPLOADS = [{ name: f.name, src: r.result as string }, ...p]));
       r.readAsDataURL(f);
@@ -146,10 +147,18 @@ function UploadTab({ q }: { q: string }) {
 
   return (
     <>
-      <button className="btn primary block" style={{ marginBottom: "var(--s-3)" }} onClick={() => ref.current?.click()}>
-        <Upload size={16} /> Upload image
+      <button
+        className={"up-drop" + (over ? " over" : "")}
+        onClick={() => ref.current?.click()}
+        onDragOver={(e) => { e.preventDefault(); setOver(true); }}
+        onDragLeave={() => setOver(false)}
+        onDrop={(e) => { e.preventDefault(); setOver(false); read(e.dataTransfer.files); }}
+      >
+        <span className="up-ic"><Upload size={22} /></span>
+        <b>{over ? "Drop it like it's hot" : "Drop images here"}</b>
+        <span>or click to browse · PNG, JPG, WebP</span>
       </button>
-      <input ref={ref} type="file" accept="image/*" multiple hidden onChange={onFile} />
+      <input ref={ref} type="file" accept="image/*" multiple hidden onChange={(e) => read(e.target.files)} />
       <div className="asset-grid">
         {shown.map((im, i) => (
           <div key={i} className="asset" onClick={() => add(makeImage(im.src))} title={im.name}>
@@ -157,7 +166,7 @@ function UploadTab({ q }: { q: string }) {
           </div>
         ))}
       </div>
-      {imgs.length === 0 && <div className="empty">Nothing here yet. Upload a photo and we'll make it juicy. Screenshots of the group chat also accepted.</div>}
+      {imgs.length === 0 && <p className="fx-note up-note">Uploads stay in your browser. Screenshots of the group chat also accepted.</p>}
       {imgs.length > 0 && !shown.length && <NoMatch q={q} tryThis="part of a file name" />}
     </>
   );

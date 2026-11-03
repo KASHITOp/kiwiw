@@ -53,7 +53,7 @@
 .jp-card { display: flex; flex-direction: column; gap: 6px; padding: 0; background: none; border: none; color: var(--text, #F2F5E6); text-align: left; cursor: pointer; animation: jp-pop 420ms cubic-bezier(.2,.9,.25,1) backwards; }
 .jp-card .jz-art { aspect-ratio: 1080 / 1350; }
 .jp-card:hover .jz-art { transform: translateY(-3px); border-color: var(--accent, #8BD630); }
-.jp-card span { font-family: var(--font-mono, monospace); font-size: 10px; letter-spacing: 0.06em; color: var(--muted, #9AA28A); }
+.jp-card > span { font-family: var(--font-mono, monospace); font-size: 10px; letter-spacing: 0.06em; color: var(--muted, #9AA28A); }
 @keyframes jp-pop { from { transform: scale(.4) rotate(-8deg); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .jp-card { animation: none; } }
 
