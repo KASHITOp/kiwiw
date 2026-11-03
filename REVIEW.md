@@ -1,7 +1,7 @@
 # Kiwiw `juice-v2` — overnight REVIEW
 
 Branch: `juice-v2` (main and production untouched).
-Preview: **https://kiwiw-b6oxkmx7s-kartavyaas-projects.vercel.app**
+Preview: **https://kiwiw-f3k7pcu44-kartavyaas-projects.vercel.app**
 (Vercel protects previews on the hobby plan, so log in to Vercel to view it. Production at kiwiw.vercel.app is unchanged.)
 
 > Status: all six phases done and committed (one commit per phase). Typecheck and build pass. Zero console errors at 1366×768, 1920×1080 and 390px.
@@ -105,3 +105,86 @@ One input, six posters, no API key. The parser splits the line into headline, da
 3. **Roast leaderboard / share card**: export the roast score card as an image ("My poster scored 34. Kiwi-adjacent.").
 4. **Magic Resize for real**: reflow one design to post, story and banner using the same `fitText` + layout roles Juice It already uses.
 5. **Brand kit from a photo**: pick a palette and font pair from an uploaded image, then apply it to any template in one click.
+
+---
+
+# Round 3: Style DNA, effects engine, Juice It 2.0 (overnight, 3 Nov)
+
+Preview: **https://kiwiw-f3k7pcu44-kartavyaas-projects.vercel.app** (Vercel preview, behind login; production untouched, main untouched).
+
+## Phase 1 · Style DNA
+`STYLE_DNA.md` defines 10 recipes taken from your board: **Nazar Battu, Tapri Print, Stadium Halftone, Brutal Grid, Swiss Drop, Trippy Window, Neo Brutal Pop, 8-Bit Flex, Sticker Bomb, Glossy Bloom**. Each recipe has a palette, a font pairing, a layout grammar, effects, stickers, a copy tone, 3 headlines and a never-rule. I borrowed techniques only: no celebrity, club, car brand, soft-drink brand or character from the board appears anywhere. Photos are 29 Pexels shots, bundled and credited in LICENSES.md. Six new Google Fonts: Rozha One, Yatra One, Khand, Press Start 2P, Shrikhand, Bagel Fat One.
+
+The Pinterest link couldn't be fetched (the scraper refuses Pinterest), so I worked from your written summary plus the board screenshots you pasted.
+
+## Phase 2 · Effects engine
+- **Image effects:** halftone (dot size, can invert), duotone, posterize and B&W punch. They render on a canvas and are cached, so exports match the screen.
+- **Frames:** postage stamp with real perforations, torn paper, polaroid, retro OS window, truck-art border and evil-eye ring.
+- **Finish:** a sticker cutout border and paper grain clipped to the element.
+- **Type:** wave (safe for Devanagari matras), arch, outline + hard shadow, stacked caps, glossy bubble, and Devanagari display faces.
+- **Backgrounds:** warped checkerboard, psychedelic swirl, halftone gradient, sunburst and pixel grid.
+- **Right panel:** an Effects gallery where every tile is a live render of *your selected element* with that effect applied. Page backgrounds appear when nothing is selected.
+
+![Effects showcase](docs/review/effects-showcase.png)
+![Effects panel](docs/review/effects-panel.png)
+
+## Phase 3 · Juice It 2.0
+- **30 layouts:** each recipe has 3 layout grammars, built on the effects engine.
+- **One juice:** you get 6 *different* recipes.
+- **No repeats:** the session tracks every recipe+layout it has shown. **Re-juice all** brings unseen recipes first and never repeats a combination.
+- **Per card:** **Open** · **Re-juice** (a different recipe in that slot) · **More like this** (same recipe, with a new layout, photo and copy angle). Each card shows the recipe name and a one-line joke.
+- **Copy without an API:** banks for 10 topics, with Hindi and Hinglish lines ("BAKED. NOT HALF-BAKED.", "गरम गरम", "Diet kal se, cake aaj se", "नौकरी हाज़िर है"). With an OpenAI key, the AI rewrites the copy in each recipe's tone.
+- **Photos:** picked from the bundled Pexels set by keyword, with the recipe's effect applied.
+
+**Quality gate: 49/60 post-worthy.** I ran the 10 test lines through 4 critique-and-fix rounds. Sheets: `docs/review/juice-gate/q00…q09.jpg`. The 11 that still fail:
+- Swiss Drop layout 1 with long words ("STARTUP", "DIWALI"): the cropped letters turn into a jumble (2).
+- 8-Bit Flex layout 3: the headline stays small for long topics (2).
+- Trippy Window layout 3: the top half feels empty when the headline is short (2).
+- Stadium Halftone layout 3: the inverted halftone reads as noise on dark photos (2).
+- Glossy Bloom layout 1: the paragraph is cramped on long lines (1).
+- Brutal Grid layout 2: the photo crop is weak on landscape photos (1).
+- Neo Brutal Pop layout 2: the small photo is posterized into mush (1).
+
+**12 best results:**
+![Best 12](docs/review/juice-best12.jpg)
+
+| Overlay | Re-juice all (new recipes) |
+| --- | --- |
+| ![](docs/review/juice2-overlay.png) | ![](docs/review/juice2-rejuice.png) |
+
+## Phase 4 · 20 hero templates
+There are 2 heroes per recipe. One is a poster from a Juice layout with curated copy. The other is hand-built as a story, post, YouTube thumbnail or LinkedIn banner. Every hero uses at least 2 effects. They're built with real font metrics and frozen to `heroes.json`. **16 of the old 24 templates were retired** because they looked flat next to these. The 8 I kept are Basement Rave, Long Read, Garage Gig, Fest Poster, Chai Menu, Investor Bait, Clickbait But Honest and the Résumé, which is the only one in the Resumes category. That leaves 28 templates.
+
+**Best 8 heroes:** Nimbu Mirchi Fest Poster, Tapri Rate List, Nazar Na Lage Story, Shaadi Soft Launch, main_character.exe, Bake Sale Limited Drop, Open To Work Loudly, Boss Fight: My Inbox.
+
+![Template wall](docs/review/templates-wall.png)
+![Editor with a hero](docs/review/editor-hero.png)
+
+## Phase 6 · Editor chrome
+This was done in the previous run: 56px rail, tabs, chips, masonry cards, page shadow, zoom pill, real layer thumbnails and human names. I re-verified it here.
+
+## Phase 7 · Verification
+- `tsc` is clean and `npm run build` exits 0.
+- I tested the production build in headless Chrome: landing page, Juice overlay and editor (with a hero template and an element selected) at 1366×768, 1920×1080 and 390px. **0 console errors and 0 warnings.**
+
+![Landing 1366](docs/review/landing-1366.png) ![Juice on a phone](docs/review/juice-390.png)
+
+## Bold calls (round 3)
+- **I retired 16 of the original 24 templates.** Keeping them next to the heroes made the library feel uneven.
+- **Templates are frozen JSON.** Measuring fonts at import time gives wrong sizes, so templates are built in a real browser and saved. `node scripts/dump-heroes.mjs` regenerates them.
+- **The Photos tab uses the bundled Pexels set without a key.** No more random placeholder photos in demos.
+- **Nazar Battu leads with Devanagari headlines**, with English as the small kicker.
+- **Full-bleed textures got cutouts.** The nimbu-mirchi gets a cream sticker border so it pops against the stripes.
+
+## Unfinished
+- **Phase 5 (Landing v3)** is not built: no Style DNA wall, before/after slider or draggable template wall. The landing hero does already run the new Juice It, with the kiwi burst and six recipes. This was last in your priority order.
+- **11 of the 60 Juice results** are still below the bar (see the list above).
+- **Effects untested in some places:** the image effects re-render on the CPU, so very large uploads (over 4k) take a second, and PNG export with grain and cutout isn't verified in Safari.
+- **AI paths untested:** the per-recipe AI copy is untested without a key.
+
+## Top 5 next ideas
+1. Landing v3: a Style DNA wall where hovering any recipe re-renders *your* line in that style live (the engine already supports it).
+2. "Juice my template": run any open design through the 10 recipes, keeping its copy.
+3. Cutout with real subject masking (background removal) for the Stadium and Sticker Bomb recipes.
+4. A recipe editor: tweak a recipe's palette and fonts and save it as "My DNA".
+5. An animated export (MP4 or GIF) of the kiwi burst plus the chosen poster, for LinkedIn.
