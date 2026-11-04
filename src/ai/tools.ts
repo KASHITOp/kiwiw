@@ -30,7 +30,7 @@ const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const trimEnd = (s: string) => s.trim().replace(/[.!?]+$/, "");
 const HING: [RegExp, string][] = [[/\bvery\b/gi, "bahut"], [/\bfriends?\b/gi, "yaar log"], [/\bcome\b/gi, "aao"], [/\bnow\b/gi, "abhi"], [/\bfood\b/gi, "khana"], [/\btea\b/gi, "chai"], [/\bgood\b/gi, "mast"], [/\bfun\b/gi, "maza"], [/\beveryone\b/gi, "sab log"], [/\bdon'?t\b/gi, "mat"]];
 
-function builtinTone(text: string, tone: Tone): string {
+export function builtinTone(text: string, tone: Tone): string {
   const t = trimEnd(text);
   switch (tone) {
     case "corporate": return `Per my last email: ${t.toLowerCase()}. Let's align on this.`;

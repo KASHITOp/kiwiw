@@ -59,7 +59,7 @@ export default function JuiceCard({ posterRef, full, onJuice }: Props) {
           </div>
           <div className="jc-go">
             <button className="k-btn sm" onClick={() => onJuice(text.trim())} disabled={!text.trim()}>Juice it →</button>
-            <span className="mono mini-lbl" style={{ margin: 0 }}>1 LINE · 6 POSTERS · 10 STYLES</span>
+            <span className="mono mini-lbl" style={{ margin: 0 }}>1 LINE · 6 POSTERS · 11 STYLES</span>
           </div>
         </div>
       </div>
