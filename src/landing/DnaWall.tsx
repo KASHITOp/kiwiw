@@ -10,12 +10,14 @@ const SWATCH: Record<RecipeKey, string[]> = {
   swiss: ["#E30613", "#EFEDE6", "#141414"], trippy: ["#FF4FA3", "#FFC72C", "#6B3FD8", "#3FA9FF"],
   neo: ["#FFE14D", "#111111", "#FF6FB5", "#B6F23A"], pixel: ["#120B2E", "#FF3EA5", "#FFD400", "#5CFF5C"],
   sticker: ["#2443FF", "#C6F432", "#FF7AC6", "#FFFFFF"], glossy: ["#1C1C1E", "#F7F3EC", "#FFE58A", "#FFC2D1"],
+  quotes: ["#E8402A", "#F4E6D0", "#1D3FD8", "#E9B23A"],
 };
 const FACE: Record<RecipeKey, { font: string; text: string }> = {
   nazar: { font: "Rozha One", text: "नज़र" }, tapri: { font: "Yatra One", text: "टपरी" }, stadium: { font: "Anton", text: "STADIUM" },
   brutal: { font: "Archivo Black", text: "GRID." }, swiss: { font: "Archivo Black", text: "SW—" }, trippy: { font: "Shrikhand", text: "Trippy" },
   neo: { font: "Archivo Black", text: "POP!" }, pixel: { font: "Press Start 2P", text: "8BIT" }, sticker: { font: "Bagel Fat One", text: "BOMB" },
   glossy: { font: "Bagel Fat One", text: "Gloss" },
+  quotes: { font: "Big Shoulders Display Variable", text: "LOUD" },
 };
 
 export default function DnaWall() {

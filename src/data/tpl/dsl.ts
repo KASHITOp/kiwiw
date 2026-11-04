@@ -31,6 +31,18 @@ export const F = {
   press: "Press Start 2P",
   shri: "Shrikhand",
   bagel: "Bagel Fat One",
+  // v3: Loud Quotes + scrapbook
+  shoulders: "Big Shoulders Display Variable",
+  bowlby: "Bowlby One",
+  crisis: "Climate Crisis Variable",
+  capra: "Caprasimo",
+  gloock: "Gloock",
+  playfair: "Playfair Display Variable",
+  kalam: "Kalam",
+  vibes: "Great Vibes",
+  wet: "Rubik Wet Paint",
+  glitch: "Rubik Glitch",
+  tight: "Inter Tight Variable",
 } as const;
 
 type Box = { x: number; y: number; w: number; h: number };

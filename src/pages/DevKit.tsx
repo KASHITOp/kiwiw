@@ -65,6 +65,20 @@ function StickerSheet({ cat }: { cat: string }) {
   );
 }
 
+/** ?view=lq&lines=a|b: every Loud Quotes layout for each line. */
+function LoudSheet({ lines }: { lines: string[] }) {
+  const [ready, setReady] = useState(false);
+  useEffect(() => { ensureJuiceFonts().then(() => setTimeout(() => setReady(true), 400)); }, []);
+  if (!ready) return null;
+  return (
+    <div id="lq-ready" style={{ background: "#222", padding: 16, display: "grid", gridTemplateColumns: "repeat(6, 220px)", gap: 12, width: 6 * 220 + 5 * 12 + 32 }}>
+      {lines.flatMap((l) => [0, 1, 2, 3, 4, 5].map((i) => (
+        <div key={l + i} style={{ position: "relative", width: 220, height: 275, overflow: "hidden", borderRadius: 4 }}><Thumb doc={juiceRecipe(l, "quotes", i).doc} /></div>
+      )))}
+    </div>
+  );
+}
+
 /** ?view=og: the 1200x630 social card, built from real juiced posters. */
 function OgCard() {
   const [docs, setDocs] = useState<KiwiwDoc[] | null>(null);
@@ -188,6 +202,7 @@ export default function DevKit() {
   }
   if (params.get("view") === "fx") return <FxView />;
   if (params.get("view") === "og") return <OgCard />;
+  if (params.get("view") === "lq") return <LoudSheet lines={(params.get("lines") ?? "jugaad is a lifestyle").split("|")} />;
   if (params.get("view") === "stickers") return <StickerSheet cat={params.get("cat") ?? "Coquette"} />;
   if (params.get("dump") === "heroes") return <HeroDump />;
   if (params.get("view") === "collide") return <CollideReport />;

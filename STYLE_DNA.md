@@ -128,3 +128,41 @@ Effect names refer to the effects engine (DESIGN.md §16): `halftone`, `duotone`
 - **Sample headlines:** "Save the date" · "Sweet things, slowly" · "Diwali Sale"
 - **Never:** flat fills on the headline, square photo corners, neon, or more than three chrome stickers.
 - **Rework log (round 4):** I reworked it twice against Nazar Battu, and it now matches it, so it stays in Juice It.
+
+## 11 · LOUD QUOTES (type-only)
+
+There are no photos: the type is the design. It's for statements, mantras,
+house rules and bilingual one-liners.
+
+- **Palettes** (paper / ink / second ink): tomato red on cream, hot pink with
+  red, mustard with maroon, cobalt with cream, cream with black.
+- **Riso finish on every poster:**
+  - paper grain overlay (`texture-grain` in the ink colour);
+  - misregistration, as a hard offset shadow in the second ink;
+  - ink bleed (`TextElement.bleed`, a soft halo);
+  - element grain.
+- **Type effects:**
+  - vertical stretch (`TextElement.stretch`);
+  - melt/drip (Rubik Wet Paint);
+  - stacked condensed caps edge to edge (Big Shoulders 900);
+  - 70s groovy (Caprasimo + wave);
+  - retro italic serif (Playfair 800 italic);
+  - script (Great Vibes);
+  - ransom-note letters (the `ty-ransom-*` stickers);
+  - one word highlighted.
+- **Fonts:** Bowlby One, Climate Crisis, Big Shoulders Display, Playfair
+  Display Italic, Caprasimo, Gloock, Kalam, Great Vibes, Rubik Wet Paint,
+  Rubik Glitch, Tiro Devanagari Hindi, Rozha One.
+- **Layouts** (`src/dna/quotes.ts`):
+  - **A** giant single word, stretched or melting;
+  - **B** full-bleed stacked manifesto;
+  - **C** House Rules (ransom header, 5 numbered rules);
+  - **D** sentence with one word shouting;
+  - **E** quote + tiny attribution;
+  - **F** Hindi / English bilingual.
+- **Juice It:** when the line reads like a statement (no date, time, place or
+  price, no event word, and either 4+ words, punctuation or Devanagari), 2 of
+  the 6 results are Loud Quotes.
+- **Copy:** the user's own words are the headline. Attributions are made up
+  and obviously fake ("— probably your mum"). Never quote real people,
+  lyrics or films.

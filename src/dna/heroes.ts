@@ -17,7 +17,7 @@ const doc = (width: number, height: number, background: string, els: (Element | 
 interface Meta { id: string; name: string; description: string; recipe: RecipeKey; format: string; tags: string[] }
 const STYLE: Record<RecipeKey, string> = {
   nazar: "Nazar Battu", tapri: "Tapri Print", stadium: "Stadium Halftone", brutal: "Brutal Grid", swiss: "Swiss Drop",
-  trippy: "Trippy Window", neo: "Neo Brutal Pop", pixel: "8-Bit Flex", sticker: "Sticker Bomb", glossy: "Glossy Bloom",
+  trippy: "Trippy Window", neo: "Neo Brutal Pop", pixel: "8-Bit Flex", sticker: "Sticker Bomb", glossy: "Glossy Bloom", quotes: "Loud Quotes",
 };
 
 /** A poster from a Juice layout with curated copy. */

@@ -7,6 +7,7 @@ import { T, R, S, I, rule, F } from "../data/tpl/dsl";
 import { fitText } from "../juice/fit";
 import type { Photo } from "../data/photos";
 import type { Copy, RecipeKey } from "./recipes";
+import { QUOTE_LAYOUTS } from "./quotes";
 
 const W = 1080, H = 1350;
 export interface Ctx { c: Copy; photo: Photo; photo2: Photo; seed: number }
@@ -572,6 +573,7 @@ export const LAYOUTS: Record<RecipeKey, Layout[]> = {
   pixel: [pixelA, pixelB, pixelC],
   sticker: [stickerA, stickerB, stickerC],
   glossy: [glossyA, glossyB, glossyC],
+  quotes: QUOTE_LAYOUTS,
 };
 
 /** Fonts the layouts measure with (loaded before juicing). Devanagari faces need Devanagari text to fetch that subset. */
@@ -581,4 +583,7 @@ export const DNA_FONTS: [string, string?][] = [
   ['400 100px "Permanent Marker"'], ['800 100px "Baloo 2 Variable"'], ['700 100px "Khand"'], ['600 100px "Caveat Variable"'],
   ['400 100px "Rozha One"', "अआइकखगघचछजटठडतथदनपफबमयरलवशसहज़ड़ड़ािीुूेैोौंँ्"], ['400 100px "Yatra One"', "अआइकखगघचछजटठडतथदनपफबमयरलवशसहज़ड़ािीुूेैोौंँ्"],
   ['700 100px "Khand"', "अआइकखगघचछजटठडतथदनपफबमयरलवशसहािीुूेैोौंँ्"], ['400 100px "Rozha One"', "NO बुरी"], ['400 100px "Yatra One"', "ABC"],
+  ['900 100px "Big Shoulders Display Variable"'], ['400 100px "Bowlby One"'], ['400 100px "Caprasimo"'], ['400 100px "Gloock"'], ['400 100px "Climate Crisis Variable"'],
+  ['italic 800 100px "Playfair Display Variable"'], ['700 100px "Kalam"'], ['700 100px "Kalam"', "चाय पहले"], ['400 100px "Great Vibes"'], ['400 100px "Rubik Wet Paint"'], ['400 100px "Rubik Glitch"'],
+  ['400 100px "Tiro Devanagari Hindi"', "अआइकखगघचछजटठडतथदनपफबमयरलवशसहािीुूेैोौंँ्"],
 ];

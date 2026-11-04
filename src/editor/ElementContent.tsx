@@ -60,7 +60,10 @@ function effectStyle(el: TextElement): React.CSSProperties {
     s.WebkitTextStroke = `${el.outline.width}px ${el.outline.color}`;
     s.paintOrder = "stroke fill";
   }
-  if (el.shadow) s.textShadow = `${el.shadow.x}px ${el.shadow.y}px 0 ${el.shadow.color}`;
+  const sh: string[] = [];
+  if (el.shadow) sh.push(`${el.shadow.x}px ${el.shadow.y}px 0 ${el.shadow.color}`);
+  if (el.bleed) sh.push(`0 0 ${(el.fontSize * 0.018).toFixed(1)}px ${el.bleed}`, `0 0 ${(el.fontSize * 0.05).toFixed(1)}px ${el.bleed}66`);
+  if (sh.length) s.textShadow = sh.join(", ");
   return s;
 }
 
@@ -79,8 +82,9 @@ function textStyle(el: TextElement): React.CSSProperties {
 }
 
 function TextContent({ el }: { el: TextElement }) {
+  const st = el.stretch && el.stretch !== 1 ? { transform: `scaleY(${el.stretch})`, transformOrigin: "top center", height: `${100 / el.stretch}%` } : undefined;
   return (
-    <div style={textStyle(el)}>
+    <div style={{ ...textStyle(el), ...st }}>
       {/* block wrapper keeps the highlight span inline, so it breaks per line */}
       <div>
         {el.highlight ? (
