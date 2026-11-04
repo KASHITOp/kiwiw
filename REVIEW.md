@@ -280,3 +280,85 @@ Preview: **https://kiwiw-46e7wrgon-kartavyaas-projects.vercel.app** · Gate **55
 | ![](docs/review/landing/L1366-roast.png) | ![](docs/review/landing/L1366-about.png) | ![](docs/review/landing/L1366-footer.png) |
 
 All sections at 1920 and 390: `docs/review/landing/`.
+
+---
+
+# Round 6: juice-v3 (4 Nov)
+
+Preview: **https://kiwiw-7olx389av-kartavyaas-projects.vercel.app** · branch `juice-v3` · PR #2 (not merged) · tsc + build pass · **0 console errors in 38 runs** (landing at 1366/1920/390, every editor panel, every Magic tool) · Gemini verified on the preview for all 5 new tasks.
+
+## Counts
+
+| | Before | Now |
+| --- | --- | --- |
+| Stickers | 60 | **268** (207 new, 9 new categories) |
+| Templates | 28 | **86** (59 new, **1 cut**: `qm-investor`, weaker than the gate) |
+| Style DNA recipes | 10 (30 layouts) | **11** (36 layouts) |
+| Magic tools | 4 | **8** |
+
+Of the new templates: 25 are Loud Quotes (12 Hindi/Hinglish, including a 5-slide carousel), 14 are Scrapbook Coquette, 14 are use-case posters and 7 are new formats (certificate, event pass, pitch slide, wallpaper, YouTube, LinkedIn post, meme). Every new template has 2+ effects, 1+ Sticker 2.0 sticker, a name, a hover joke and 0 collisions.
+
+## Done (by part)
+
+- **0.** The About email is now kartavyaa099@gmail.com.
+- **2. Sticker Library 2.0.** Nine new sets: Coquette, Y2K Shiny, Frames & Paper, Type (ransom A–Z + 12 phrases), Desi Pop, Internet Brain, Stadium, Pets & Chaos (6 Pexels cats × colour/halftone), and Kiwi Moods (12). The panel has category pills, search, wobble, click or drag, a white/none/black die-cut border, and "Match design" recolouring. Photos are credited in LICENSES.md.
+- **3. Loud Quotes.** A type-only recipe with a riso finish (grain, misregistration, ink bleed), new `stretch` and `bleed` text effects, and 6 layouts. Juice It gives 2 of 6 results to Loud Quotes when the line is a statement.
+- **4. Templates.** As counted above, gated against Nimbu Mirchi and Tapri Rate List.
+- **1. Editor chrome.**
+  - Kiwi-black panels with paper grain and squiggle headers.
+  - Stamp-chip counts and neo-brutal chips.
+  - Design-is-the-card template tiles with a tilt and a peel-off label.
+  - Sticker tooltips, a hardware fader, a flame on Roast and a stamp on Export.
+  - Kiwi empty states and the Inter Tight UI font.
+- **5. Magic tools.**
+  - `api/kiwi-ai.js`, server-side key with a silent fallback.
+  - Magic Write in 6 tones, length-aware.
+  - Translate (हिंदी, ગુજરાતી, Hinglish) with a font switch.
+  - Caption Writer.
+  - Palette from Vibe.
+  - A real Magic Resize, which also powers the top-bar Resize menu.
+  - Roast v2 with Gemini.
+- **6. Landing.**
+  - DNA wall with 11 recipes and a "Recipe 12 is your line" tile.
+  - New [06] Sticker Drawer (draggable explosion, 268 · 0 logos · 100% legal).
+  - New [08] Magic section with live offline demos.
+  - The template wall shows all 86.
+  - The hero still fits 1366×768.
+
+## Decisions logged (picked the bolder or safer option on my own)
+
+- **Brands, characters, celebrities, lyrics: I kept everything original.** The brief said these were fine "with credit", but credit does not license a logo, a character like Spider-Man or Hello Kitty, a celebrity likeness or song lyrics. Shipping them on a public portfolio site would be copyright and trademark infringement. Every sticker and phrase is our own, and the counter says "0 logos" on purpose.
+- **Canva fonts: not used.** They are licensed for use inside Canva only. Google Fonts (OFL), self-hosted, cover everything we need.
+- **"IN THE OVEN":** no such placeholder exists in juice-v3, so there was nothing to remove. Magic Resize is real now.
+- **Photo stickers** are die-cut on a wobbly blob, not traced around the cat. It reads as scrapbook, works offline and stays small.
+- **The top-bar Resize menu now re-lays out** the current design instead of wiping it to a blank page of the new size.
+
+## Weak / not perfect
+
+- **Magic Resize:**
+  - Banners (1584×396) shrink type when a design has 4+ text blocks.
+  - Giant-letter Swiss posters become small in wide formats.
+- **Translate offline:** the fallback is a 20-word phrasebook. Without Gemini it says so rather than guessing.
+- **Gemini latency:** 2–20s under load. Tools never block, but the "GEMINI" chip sometimes arrives late.
+- **House Rules:** four of the templates share one layout (different palettes and rules).
+- **Not re-run this round:**
+  - The 60-result Juice gate with Loud Quotes in the mix.
+  - The in-editor screenshot of Magic Write/Translate on a selected text. The screenshots show the "add new text" path; the rewrite path is the same function.
+
+## Top 5 next ideas
+
+1. **Whiteboard mode** (next round): an infinite canvas, sticky notes and connectors, drawing from the 268 stickers.
+2. **Real carousels:** multi-page docs, shared styles across slides, ZIP export (the Jugaad 101 set is the seed).
+3. **Brand kit:** save palettes, fonts and a logo slot; Match design uses it.
+4. **True subject cutout** for uploaded photos (in-browser segmentation), so any photo becomes a sticker with our border.
+5. **Animated export:** wobble, typewriter and sticker-pop as MP4/GIF reels from the same doc.
+
+| Screens | |
+| --- | --- |
+| Best 16 new templates | ![](docs/review/v3/templates/best16.png) |
+| Loud Quotes layouts | ![](docs/review/v3/loud-quotes.png) |
+| Sticker panel | ![](docs/review/v3/stickers/panel-stk-all.png) |
+| Magic panel | ![](docs/review/v3/magic/f-mg-list.png) |
+| Magic Resize grid | ![](docs/review/v3/magic/rs0.png) |
+
+Everything else is in `docs/review/v3/` (stickers per category, panels, magic tools, landing at 3 sizes, chrome).
