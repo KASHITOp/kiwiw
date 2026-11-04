@@ -412,3 +412,14 @@ border margin), then frames are composited on a canvas.
 - **GIF:** 12fps at half size, encoded with gifenc.
 
 A striped progress bar shows jokes while it works.
+
+## 21 — Share link
+
+Share (top bar) packs the whole design into the URL hash with lz-string:
+`/view#d=…`. The hash never reaches a server, so there is no backend and
+no account. The `/view` page is read-only: the design in a hard-shadow
+frame, a "Made with Kiwiw 🥝" badge, "Remix this" (loads a copy into the
+editor) and "Juice your own". A broken or chopped link gets a friendly
+error. Links over 12k characters (usually uploaded photos stored as
+data: URLs) are refused with the reason and an "Export PNG instead"
+button.

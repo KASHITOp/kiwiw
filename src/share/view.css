@@ -1,0 +1,19 @@
+.vw { min-height: 100vh; background: #0B0D08; color: #F2F5E6; font-family: "Inter Tight Variable", "Inter", sans-serif; background-image: radial-gradient(rgba(242,245,230,.06) 1.2px, transparent 1.2px); background-size: 22px 22px; }
+.vw-top { display: flex; justify-content: space-between; align-items: center; padding: 18px clamp(16px, 4vw, 48px); }
+.vw-brand { font: 800 26px "Bricolage Grotesque Variable", sans-serif; letter-spacing: -0.04em; color: #F2F5E6; text-decoration: none; }
+.vw-ro { font: 700 11px "JetBrains Mono", monospace; letter-spacing: .1em; color: #D8F27A; padding: 4px 8px; border: 1.5px dashed #D8F27A; border-radius: 4px; transform: rotate(-2deg); }
+.vw-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 380px); gap: clamp(24px, 4vw, 56px); align-items: center; padding: 8px clamp(16px, 4vw, 48px) 48px; max-width: 1400px; margin: 0 auto; }
+@media (max-width: 860px) { .vw-main { grid-template-columns: 1fr; } }
+.vw-stage { position: relative; height: calc(100vh - 140px); width: auto; max-width: 100%; margin: 0 auto; border: 3px solid #050604; border-radius: 8px; box-shadow: 10px 10px 0 #050604, 0 0 0 1px rgba(216,242,122,.15); overflow: hidden; }
+@media (max-width: 860px) { .vw-stage { height: auto; width: 100%; } }
+.vw-badge { display: inline-block; padding: 6px 12px; border: 2px solid #050604; border-radius: 999px; background: #8BD630; color: #0B0D08; font-weight: 800; box-shadow: 3px 3px 0 #050604; transform: rotate(-3deg); }
+.vw-side h1 { font: 800 clamp(30px, 3.2vw, 44px)/1 "Bricolage Grotesque Variable", sans-serif; letter-spacing: -0.03em; margin: 18px 0 12px; }
+.vw-side p { color: #B4BCA2; line-height: 1.5; margin: 0 0 18px; }
+.vw-cta { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+.vw-btn { display: inline-flex; align-items: center; height: 46px; padding: 0 20px; border: 2px solid #050604; border-radius: 999px; background: #8BD630; color: #0B0D08; font: 800 16px "Inter Tight Variable", sans-serif; text-decoration: none; box-shadow: 3px 3px 0 #050604; cursor: pointer; }
+.vw-btn.ghost { background: #F2F5E6; }
+.vw-btn:active { transform: translate(3px, 3px); box-shadow: none; }
+.vw-meta { font: 11px "JetBrains Mono", monospace !important; color: #6E775C !important; }
+.vw-empty { display: grid; place-items: center; min-height: 70vh; grid-template-columns: 1fr; text-align: center; }
+.vw-empty h1 { font: 800 48px "Bricolage Grotesque Variable", sans-serif; letter-spacing: -0.03em; }
+.vw-empty p { color: #B4BCA2; margin-bottom: 20px; }
