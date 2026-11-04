@@ -386,3 +386,29 @@ answered.
 - **Roast v2.** The rule-based roasts and one-click fixes show instantly.
   Gemini adds three design-specific roasts when it arrives. The OpenAI call
   is gone.
+
+## 20 — Animated export
+
+Animate (top bar) opens "Export, but make it move". The design assembles
+itself in 5s plus a 1.2s hold:
+
+1. The background wipes in.
+2. Photos bounce.
+3. The headline slams.
+4. The other texts follow.
+5. Stickers pop.
+6. The CTA (a text on a pill, or `role: cta`) stamps last.
+
+Presets:
+- **Slam:** overshoot and shake.
+- **Peel:** rotate and stretch in from the corner.
+- **Typewriter:** character-stepped clip with a blinking caret.
+
+Sizes are current, 1080×1080 or 1080×1920 (via Magic Resize). Each element
+is rasterised once with html-to-image (cropped to its rotated box plus a
+border margin), then frames are composited on a canvas.
+- **Video:** MediaRecorder captures `canvas.captureStream(30)`, as MP4
+  (avc1) where supported, otherwise WebM.
+- **GIF:** 12fps at half size, encoded with gifenc.
+
+A striped progress bar shows jokes while it works.
