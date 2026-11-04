@@ -28,6 +28,10 @@ function prompt(task, b) {
       return `Write social captions for this design. Design text: "${text}". Style: ${String(b.style ?? "").slice(0, 60)}. Return JSON {"instagram": string (2 short lines, playful, Hinglish allowed), "linkedin": string (3 short lines, professional but human, one light joke), "hashtags": string[] (8 lowercase tags without spaces)}. ${RULES}`;
     case "palette":
       return `Create a 5-colour poster palette for the vibe "${text}". Order: background, main ink, accent, second accent, highlight. Ensure the main ink is readable on the background (contrast 4.5:1+). Return JSON {"name": string (2-4 funny words), "colors": string[5] (hex like #A1B2C3)}.`;
+    case "carousel": {
+      const kind = { stadium: "a sports-commentary '5 things I learned' list", jugaad: "desi jugaad life hacks (Hinglish welcome)", lessons: "short punchy life lessons" }[b.style] ?? "short punchy lessons";
+      return `Write a LinkedIn carousel about "${text}" as ${kind}. Return JSON {"title": string (max 8 words), "points": string[5] (each max 14 words, specific, a little funny), "cta": string (max 6 words)}. ${RULES}`;
+    }
     case "roast":
       return `You roast graphic designs, never people. Here is a design: ${String(b.summary ?? "").slice(0, 1500)}. Write 3 short, specific, funny roasts (max 18 words each) about typography, colour, layout or spacing. Desi humour welcome. ${RULES} Return JSON {"roasts": string[3]}.`;
   }

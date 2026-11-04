@@ -423,3 +423,20 @@ editor) and "Juice your own". A broken or chopped link gets a friendly
 error. Links over 12k characters (usually uploaded photos stored as
 data: URLs) are refused with the reason and an "Export PNG instead"
 button.
+
+## 22 — LinkedIn carousel
+
+The Magic card "LinkedIn Carousel" takes one topic line and builds a
+1080×1350 set: a cover, 5 points (up to 8) and an end slide, 10 slides at
+most. Three styles:
+
+- **Loud Quotes lessons:** riso layouts, ending on a House Rules slide.
+- **Stadium "5 things I learned":** flip-digit numbers and a FULL TIME end
+  slide.
+- **Desi Jugaad tips:** nazar stripes, numbered tips and "बस इतना ही!".
+
+The points come from Gemini (`kiwi-ai` task `carousel`), with built-in copy
+when it is away. A slim page strip under the canvas picks, adds, duplicates,
+reorders and deletes slides; deleting the last slide leaves carousel mode.
+Exports: one PDF (JPEG pages, about 0.9 MB for 7 slides) or a ZIP of PNGs.
+Pages render offscreen at full size with the same element renderer.
