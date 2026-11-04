@@ -606,3 +606,33 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
 .empty.loading { color: var(--muted); font-family: var(--font-mono); font-size: 12px; }
 @media (prefers-reduced-motion: reduce) { .roast-btn .flame, .editor .empty::before { animation: none !important; } .tcard { transform: none; } }
 .tcard-label b { white-space: normal !important; overflow: visible !important; }
+
+/* ---------- Magic tools v3 (DESIGN.md §19) ---------- */
+.mg-tones { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
+.mg-tone { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 9px 10px; border: 2px solid #050604; border-radius: 10px; background: var(--g-2); color: var(--text); box-shadow: 2px 2px 0 #050604; text-align: left; cursor: pointer; transition: transform 80ms, box-shadow 80ms, background 120ms; }
+.mg-tone b { font: 800 13px "Bricolage Grotesque Variable", var(--font); }
+.mg-tone span { font: 10.5px var(--font-mono); color: var(--faint); }
+.mg-tone:hover:not(:disabled) { background: #22281A; }
+.mg-tone:active { transform: translate(2px, 2px); box-shadow: none; }
+.mg-tone:disabled { opacity: .5; cursor: wait; }
+.mg-brew { display: flex; align-items: center; gap: 8px; margin: 10px 0 0; font: 12px var(--font-mono); color: var(--accent); }
+.mg-done { margin: 10px 0 0; font: 11px var(--font-mono); color: var(--muted); }
+.mg-via { display: inline-block; margin-left: 4px; padding: 2px 6px; border-radius: 4px; border: 1.5px dashed var(--faint); font: 800 9.5px var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--faint); }
+.mg-via.ai { border-color: var(--accent); color: var(--accent); }
+.mg-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 12px; }
+.mg-caps { display: grid; gap: 10px; margin-top: 12px; }
+.mg-cap { padding: 10px; border: 2px solid #050604; border-radius: 10px; background: #FFF4DE; color: #0B0D08; box-shadow: 2px 2px 0 #050604; }
+.mg-cap b { display: block; font: 800 12px "Bricolage Grotesque Variable", var(--font); margin-bottom: 4px; }
+.mg-cap p { margin: 0 0 8px; font-size: 12.5px; line-height: 1.45; white-space: pre-line; }
+.mg-cap p.mono { font: 11px var(--font-mono); color: #3A2E10; }
+.mg-cap .btn { background: #0B0D08; color: #FFF4DE; border-color: #0B0D08; }
+.mg-pal { margin-top: 12px; font-size: 13px; }
+.mg-pal b { font-family: "Bricolage Grotesque Variable", var(--font); font-weight: 800; }
+.mg-pal .sw { display: flex; margin-top: 8px; border: 2px solid #050604; border-radius: 8px; overflow: hidden; box-shadow: 2px 2px 0 #050604; }
+.mg-pal .sw i { flex: 1; height: 34px; }
+.mg-sizes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+.mg-size { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; padding: 8px; border: 2px solid #050604; border-radius: 10px; background: var(--g-2); color: var(--text); box-shadow: 2px 2px 0 #050604; cursor: pointer; text-align: left; transition: transform 120ms; }
+.mg-size:hover { transform: rotate(-1.5deg) translateY(-2px); }
+.mg-size-art { position: relative; width: 100%; max-height: 120px; display: block; overflow: hidden; border-radius: 4px; outline: 1.5px solid #050604; }
+.mg-size b { font: 800 12px "Bricolage Grotesque Variable", var(--font); }
+.mg-size span:last-child { font: 10px var(--font-mono); color: var(--faint); }

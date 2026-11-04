@@ -30,7 +30,7 @@ const HINTS: Record<Tab, string> = {
   elements: "all hand-drawn",
   photos: "free to use",
   uploads: "yours, obviously",
-  ai: "4 spells, no wand",
+  ai: "8 spells, no wand",
 };
 
 export default function LeftPanel() {

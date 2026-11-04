@@ -348,3 +348,41 @@ shops, stickers and hardware.
 - **Empty and loading states.** Each one shows the bobbing kiwi
   (`/kiwi-mini.svg`, or `KiwiMini` for a mood) plus a joke.
 - **Motion.** All of it respects `prefers-reduced-motion`.
+
+## 19 — Magic tools v3
+
+Every tool is a bold card in the Magic panel with a one-line joke and a
+rotating loading line. None of them blocks the UI. Each one asks
+`/api/kiwi-ai` (Gemini, with the key server-side only, 22s budget, and the
+same model fallback chain as Juice). Any failure (204) silently uses the
+built-in version. A small "GEMINI" or "BUILT-IN" chip says which one
+answered.
+
+- **Magic Write.** Six tones: Corporate, Unhinged, Hinglish, Gen-Z, Desi
+  Uncle, Shark Tank. It rewrites the selected text (or adds a new one) and
+  is length-aware: a word budget comes from the original, then `fitText`
+  shrinks the new copy to stay inside its box.
+- **Translate.** Hindi, Gujarati or Hinglish. The font switches
+  automatically: Rozha One for Hindi headlines, Tiro Devanagari for Hindi
+  body, Mukta Vaani for Gujarati. The offline fallback is a 20-word poster
+  phrasebook; when that isn't enough, it says so instead of guessing.
+- **Caption Writer.** An Instagram caption, a LinkedIn post and 8 hashtags,
+  written from the design's own text. Copy buttons.
+- **Palette from Vibe.** "Monsoon in Mumbai" gives 5 colours (background,
+  ink, three accents), applied by role. The fallback is 10 named vibe
+  palettes plus a hash-seeded harmony. It can be undone.
+- **Magic Resize.** Post, portrait, story, LinkedIn banner, YouTube
+  thumbnail and LinkedIn post, each with a live preview (`src/ai/resize.ts`):
+  - Backdrops and edge-to-edge strips stretch to the new page.
+  - Texts group with the pill or badge behind them; same-row texts and
+    same-size sticker clusters (ransom words) move as one unit.
+  - A similar aspect ratio scales each unit around its anchor.
+  - A big aspect jump reflows: the hero (photo, else largest sticker) gets
+    a zone, its riders travel with it, and the type is re-stacked beside or
+    below it.
+  - Stacking order is preserved, then collisions are resolved.
+  - The top-bar Resize menu uses the same function when the page has
+    content.
+- **Roast v2.** The rule-based roasts and one-click fixes show instantly.
+  Gemini adds three design-specific roasts when it arrives. The OpenAI call
+  is gone.

@@ -1,3 +1,4 @@
+import { smartResize } from "../ai/resize";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toPng } from "html-to-image";
@@ -28,9 +29,10 @@ const onKonami = () => { squeezeKiwis(); react("squeeze", "↑↑↓↓←→←
 
 const SIZES = [
   { label: "Square 1080", w: 1080, h: 1080 },
-  { label: "Story 1080×1920", w: 1080, h: 1920 },
-  { label: "Slide 1280×720", w: 1280, h: 720 },
   { label: "Poster 1080×1350", w: 1080, h: 1350 },
+  { label: "Story 1080×1920", w: 1080, h: 1920 },
+  { label: "YouTube 1280×720", w: 1280, h: 720 },
+  { label: "LinkedIn banner 1584×396", w: 1584, h: 396 },
   { label: "A4 794×1123", w: 794, h: 1123 },
 ];
 
@@ -160,7 +162,12 @@ export default function Editor() {
         <select
           className="btn sm"
           style={{ width: "auto", paddingRight: "var(--s-6)" }}
-          onChange={(e) => { const s = SIZES[+e.target.value]; if (s) newDoc(s.w, s.h); }}
+          onChange={(e) => {
+            const s = SIZES[+e.target.value];
+            if (!s) return;
+            // Magic Resize: a page with content gets re-laid out, an empty one just changes size
+            if (doc.elements.length) { useEditor.getState().commit(); useEditor.getState().replaceDoc(smartResize(doc, s.w, s.h), true); } else newDoc(s.w, s.h);
+          }}
           value=""
         >
           <option value="" disabled>Resize…</option>

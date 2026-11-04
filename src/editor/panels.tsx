@@ -2,7 +2,7 @@
 // recipe, text presets rendered in their real style, a photo masonry with
 // one-hover effects, and Magic as bold cards.
 import { useEffect, useMemo, useState } from "react";
-import { Flame, Gauge, PenLine, Eraser } from "lucide-react";
+import { Flame, Gauge, PenLine, Eraser, Languages, MessageSquareText, Palette, Scaling } from "lucide-react";
 import { useEditor } from "../store";
 import { makeImage, makeShape } from "../data/factory";
 import { makeSticker, placeText, TEXT_PRESETS, type TextPreset } from "../data/presets";
@@ -260,12 +260,18 @@ export function PhotosTab({ q }: { q: string }) {
 
 /* ------------------------------ Magic ------------------------------ */
 
-export function MagicCards({ q, children }: { q: string; children: { write: React.ReactNode; bg: React.ReactNode } }) {
+type SpellBodies = { write: React.ReactNode; translate: React.ReactNode; caption: React.ReactNode; palette: React.ReactNode; resize: React.ReactNode; bg: React.ReactNode };
+
+export function MagicCards({ q, children }: { q: string; children: SpellBodies }) {
   const [open, setOpen] = useState<string | null>(null);
   useEffect(() => { if (q.trim()) setOpen(null); }, [q]);
   const cards = [
-    { id: "write", icon: <PenLine size={18} />, title: "Magic Write", joke: "Writes copy so you can pretend you did.", tone: "lime", words: "magic write copy text rephrase" },
-    { id: "roast", icon: <Flame size={18} />, title: "Roast my design", joke: "Brutally honest. One-click fixes. No therapy included.", tone: "red", words: "roast critique feedback fix" },
+    { id: "write", icon: <PenLine size={18} />, title: "Magic Write", joke: "Six tones, from Corporate to Desi Uncle. Fits the box.", tone: "lime", words: "magic write copy text rephrase tone hinglish genz corporate uncle shark" },
+    { id: "translate", icon: <Languages size={18} />, title: "Translate", joke: "Hindi, Gujarati, Hinglish. The font follows.", tone: "blue", words: "translate hindi gujarati hinglish language font" },
+    { id: "caption", icon: <MessageSquareText size={18} />, title: "Caption Writer", joke: "Instagram, LinkedIn, hashtags. Humility not included.", tone: "pink", words: "caption instagram linkedin hashtags post" },
+    { id: "palette", icon: <Palette size={18} />, title: "Palette from Vibe", joke: "\"Monsoon in Mumbai\" → five colours → whole design.", tone: "lime", words: "palette colour color vibe mood theme" },
+    { id: "resize", icon: <Scaling size={18} />, title: "Magic Resize", joke: "Post to story to banner. Re-laid out, never stretched.", tone: "blue", words: "resize format story banner youtube thumbnail post size" },
+    { id: "roast", icon: <Flame size={18} />, title: "Roast my design", joke: "Gemini roasts. One-click fixes. No therapy included.", tone: "red", words: "roast critique feedback fix" },
     { id: "vibe", icon: <Gauge size={18} />, title: "Vibe slider", joke: "Corporate to Unhinged in one drag.", tone: "pink", words: "vibe slider corporate unhinged tone" },
     { id: "bg", icon: <Eraser size={18} />, title: "Background remover", joke: "Deletes backgrounds, not memories.", tone: "blue", words: "background remover remove bg cutout" },
   ].filter((c) => match(q, c.title, c.words));
@@ -283,10 +289,10 @@ export function MagicCards({ q, children }: { q: string; children: { write: Reac
             <span className="mg-txt"><b>{c.title}</b><span>{c.joke}</span></span>
             <span className="mg-go">{c.id === "roast" || c.id === "vibe" ? "Go →" : open === c.id ? "–" : "+"}</span>
           </button>
-          {open === c.id && <div className="mg-body">{c.id === "write" ? children.write : children.bg}</div>}
+          {open === c.id && <div className="mg-body">{children[c.id as keyof SpellBodies]}</div>}
         </div>
       ))}
-      {!cards.length && <div className="empty">No spell called "{q}". We have four: write, roast, vibe, background.</div>}
+      {!cards.length && <div className="empty">No spell called "{q}". We have eight. None of them is that.</div>}
     </div>
   );
 }

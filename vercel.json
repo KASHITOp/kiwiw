@@ -12,6 +12,9 @@
     },
     "api/magic-write.js": {
       "maxDuration": 30
+    },
+    "api/kiwi-ai.js": {
+      "maxDuration": 30
     }
   }
 }

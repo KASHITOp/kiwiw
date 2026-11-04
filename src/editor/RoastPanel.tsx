@@ -1,16 +1,16 @@
 // Roast My Design (DESIGN.md §13): score, roasts, a Fix it on each.
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Flame, X, Wand2 } from "lucide-react";
 import { useEditor } from "../store";
 import { roastDesign, verdict, type Roast } from "../personality/roast";
 import { react, toast } from "../personality/bus";
-import { keys } from "../ai/provider";
+import { aiRoasts } from "../ai/tools";
 import type { KiwiwDoc } from "../types";
 
 export default function RoastPanel({ onClose }: { onClose: () => void }) {
   const doc = useEditor((s) => s.doc);
   const { score, roasts } = useMemo(() => roastDesign(doc), [doc]);
-  const [bonus, setBonus] = useState<string | null>(null);
+  const [ai, setAi] = useState<string[] | null>(null);
   const [busy, setBusy] = useState(false);
   const fixable = roasts.filter((r) => r.fix);
 
@@ -25,28 +25,14 @@ export default function RoastPanel({ onClose }: { onClose: () => void }) {
     react("proud", "Fixed everything. I'd frame it.");
   };
 
-  const aiRoast = async () => {
+  // Roast v2: Gemini writes the jokes about this exact design; the rule-based
+  // roasts (and their one-click fixes) show instantly and never wait for it.
+  useEffect(() => {
+    let live = true;
     setBusy(true);
-    try {
-      const summary = doc.elements.map((e) => e.type === "text" ? `text "${e.text.slice(0, 40)}" ${e.fontFamily} ${Math.round(e.fontSize)}px ${e.color}` : e.type).join("; ");
-      const res = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${keys.openai}` },
-        body: JSON.stringify({
-          model: "gpt-4o-mini", temperature: 1,
-          messages: [
-            { role: "system", content: "You roast graphic designs in one funny sentence under 20 words. Roast the design, never the person. Be specific." },
-            { role: "user", content: `Background ${doc.background}, ${doc.width}x${doc.height}. Elements: ${summary}` },
-          ],
-        }),
-      });
-      if (!res.ok) throw new Error(`OpenAI ${res.status}`);
-      const data = await res.json();
-      setBonus(data.choices?.[0]?.message?.content?.trim() ?? null);
-    } catch (e) {
-      toast(`The AI roaster choked on a seed. Rule-based roasts still work. (${(e as Error).message})`);
-    } finally { setBusy(false); }
-  };
+    aiRoasts(useEditor.getState().doc).then((r) => { if (live) { setAi(r); setBusy(false); } });
+    return () => { live = false; };
+  }, []);
 
   return (
     <aside className="roast" role="dialog" aria-label="Roast my design">
@@ -70,11 +56,11 @@ export default function RoastPanel({ onClose }: { onClose: () => void }) {
             {r.fix && <button className="btn sm" onClick={() => fix(r)}><Wand2 size={14} /> Fix it</button>}
           </li>
         ))}
-        {bonus && <li className="roast-bonus"><b>Bonus roast (AI)</b><p>{bonus}</p></li>}
+        {busy && <li className="roast-bonus"><b>Gemini is warming the tandoor…</b><p className="mg-brew"><span className="spinner" /> Extra-crispy roasts loading. The fixes above already work.</p></li>}
+        {ai?.map((line, i) => <li key={i} className="roast-bonus"><b>Gemini says</b><p>{line}</p></li>)}
       </ul>
       <footer className="roast-foot">
         {fixable.length > 1 && <button className="btn primary sm" onClick={fixAll}><Wand2 size={14} /> Fix all {fixable.length}</button>}
-        {keys.openai && <button className="btn sm" onClick={aiRoast} disabled={busy}>{busy ? <span className="spinner" /> : <><Flame size={14} /> Extra crispy (AI)</>}</button>}
       </footer>
     </aside>
   );

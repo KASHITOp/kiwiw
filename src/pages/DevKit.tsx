@@ -79,6 +79,24 @@ function LoudSheet({ lines }: { lines: string[] }) {
   );
 }
 
+/** ?view=resize&from=0&n=6: Magic Resize of templates into every format. */
+function ResizeSheet({ from, n }: { from: number; n: number }) {
+  const [ready, setReady] = useState(false);
+  useEffect(() => { ensureJuiceFonts().then(() => setTimeout(() => setReady(true), 400)); }, []);
+  if (!ready) return null;
+  return (
+    <div id="rs-ready" style={{ background: "#222", padding: 16, display: "grid", gap: 16, width: 1500 }}>
+      {TEMPLATES.slice(from, from + n).map((t) => (
+        <div key={t.id} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+          {[t.doc, ...FORMATS.filter((f) => f.w !== t.doc.width || f.h !== t.doc.height).map((f) => smartResize(t.doc, f.w, f.h))].map((d, i) => (
+            <div key={i} style={{ position: "relative", height: 220, aspectRatio: `${d.width} / ${d.height}`, maxWidth: 560, flex: "none", outline: i ? "none" : "3px solid #8BD630" }}><Thumb doc={d} /></div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 /** ?view=og: the 1200x630 social card, built from real juiced posters. */
 function OgCard() {
   const [docs, setDocs] = useState<KiwiwDoc[] | null>(null);
@@ -117,6 +135,7 @@ function HeroDump() {
 }
 import { FX_PRESETS } from "../effects/presets";
 import { makeSticker } from "../data/presets";
+import { FORMATS, smartResize } from "../ai/resize";
 
 /** ?view=fx: every effect on a sample photo / headline, plus the backgrounds. */
 function FxView() {
@@ -202,6 +221,7 @@ export default function DevKit() {
   }
   if (params.get("view") === "fx") return <FxView />;
   if (params.get("view") === "og") return <OgCard />;
+  if (params.get("view") === "resize") return <ResizeSheet from={+(params.get("from") ?? 0)} n={+(params.get("n") ?? 6)} />;
   if (params.get("view") === "lq") return <LoudSheet lines={(params.get("lines") ?? "jugaad is a lifestyle").split("|")} />;
   if (params.get("view") === "stickers") return <StickerSheet cat={params.get("cat") ?? "Coquette"} />;
   if (params.get("dump") === "heroes") return <HeroDump />;
