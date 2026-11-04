@@ -9,13 +9,15 @@ import { writeCopy, type RecipeKey } from "./recipes";
 import { parseIdea } from "../juice/parse";
 import { PHOTOS, type Photo } from "../data/photos";
 import { resolveCollisions } from "./collide";
+import { V3_TEMPLATES } from "./heroesV3";
 
 const ph = (name: string): Photo => PHOTOS.find((p) => p.src.includes(name))!;
 const img = (name: string, b: { x: number; y: number; w: number; h: number }, p: Partial<Element> = {}) => I({ ...b, src: ph(name).src, focus: ph(name).focus, ...(p as object) });
 const doc = (width: number, height: number, background: string, els: (Element | Element[])[]): KiwiwDoc => ({ width, height, background, elements: els.flat() });
 
-interface Meta { id: string; name: string; description: string; recipe: RecipeKey; format: string; tags: string[] }
-const STYLE: Record<RecipeKey, string> = {
+interface Meta { id: string; name: string; description: string; recipe: RecipeKey | "coquette"; format: string; tags: string[] }
+const STYLE: Record<RecipeKey | "coquette", string> = {
+  coquette: "Scrapbook Coquette",
   nazar: "Nazar Battu", tapri: "Tapri Print", stadium: "Stadium Halftone", brutal: "Brutal Grid", swiss: "Swiss Drop",
   trippy: "Trippy Window", neo: "Neo Brutal Pop", pixel: "8-Bit Flex", sticker: "Sticker Bomb", glossy: "Glossy Bloom", quotes: "Loud Quotes",
 };
@@ -216,7 +218,7 @@ const OTHERS: [Meta, () => KiwiwDoc][] = [
 
 /** Build every hero doc (call after fonts load). */
 export function buildHeroes(): Template[] {
-  return [...POSTERS, ...OTHERS].map(([m, build]) => {
+  return [...POSTERS, ...OTHERS, ...V3_TEMPLATES].map(([m, build]) => {
     const d = resolveCollisions(build()).doc;
     return { id: m.id, name: m.name, description: m.description, style: STYLE[m.recipe], format: m.format, category: m.format, tags: m.tags, thumbBg: d.background, doc: d };
   });

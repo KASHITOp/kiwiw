@@ -60,13 +60,16 @@ const manifesto: Layout = ({ c, seed }) => {
   const rows = lines.slice(0, 7);
   const deva = DEVA.test(c.head);
   const slot = Math.min(380, 1120 / rows.length);
-  let y = 70 + Math.max(0, (1120 - slot * rows.length) / 2);
+  let y = 0;
   const els = rows.map((line, i) => {
     const f = fit(line, deva ? F.rozha : F.shoulders, { x: 40, y, w: 1000, h: slot }, { size: slot * 1.4, upper: !deva, align: "center", color: i % 2 ? p.ink2 : p.ink, lh: 0.86, lines: 1, weight: 900, extra: i % 2 ? { bleed: p.ink2, grain: 0.35 } : ink(p, 5) });
     y = f.bottom + 6;
     return f.el;
   });
-  return doc(p.bg, [els, by(c, p, Math.max(y + 20, 1240)), riso(p)]);
+  // centre the stack as it really came out, in the space above the attribution
+  const dy = 40 + Math.max(0, (1170 - y) / 2);
+  const placed = els.map((e) => ({ ...e, y: e.y + dy }) as Element);
+  return doc(p.bg, [placed, by(c, p), riso(p)]);
 };
 
 /* C · House Rules: ransom-note header + numbered list */

@@ -211,7 +211,7 @@ export default function DevKit() {
       <div style={wrap}>
         <div style={h2}>{TEMPLATES.length} TEMPLATES</div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 24 }}>
-          {TEMPLATES.map((t) => (
+          {TEMPLATES.filter((_, i) => i >= +(params.get("from") ?? 0) && i < +(params.get("from") ?? 0) + +(params.get("n") ?? 999)).map((t) => (
             <figure key={t.id} data-tpl={t.id} style={{ margin: 0, width: 300 }}>
               <div style={{ position: "relative", width: 300, aspectRatio: `${t.doc.width}/${t.doc.height}`, maxHeight: 420 }}><Thumb doc={t.doc} /></div>
               <figcaption style={{ fontSize: 12, marginTop: 6 }}><b>{t.name}</b> <span style={{ color: "#9AA28A" }}>· {t.style} · {t.format}</span><br /><span style={{ color: "#9AA28A" }}>{t.description}</span></figcaption>
