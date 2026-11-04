@@ -1,8 +1,10 @@
+import AnimateDialog from "../export/AnimateDialog";
+import ShareDialog from "../share/ShareDialog";
 import { smartResize } from "../ai/resize";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toPng } from "html-to-image";
-import { Undo2, Redo2, Download, Braces, Flame, Keyboard } from "lucide-react";
+import { Undo2, Redo2, Download, Clapperboard, Share2, Braces, Flame, Keyboard } from "lucide-react";
 import { fitZoom } from "../editor/zoom";
 import KiwiLogo from "../brand/KiwiLogo";
 import { useEditor } from "../store";
@@ -40,6 +42,8 @@ export default function Editor() {
   const { setZoom, undo, redo, newDoc, doc } = useEditor();
   const [roasting, setRoasting] = useState(false);
   const [cheat, setCheat] = useState(false);
+  const [animating, setAnimating] = useState(false);
+  const [sharing, setSharing] = useState(false);
   const phone = useMedia("(max-width: 759px)");
   useKonami(onKonami);
   // Magic cards jump straight to Roast and the Vibe slider
@@ -184,9 +188,13 @@ export default function Editor() {
         <button className="icon-btn" title="Shortcuts (?)" onClick={() => setCheat(true)}><Keyboard size={18} /></button>
         <span className="sep" />
         <button className="btn sm" onClick={exportJson} title="Download the design as JSON"><Braces size={16} /> Save</button>
+        <button className="btn sm" onClick={() => setSharing((s) => !s)} disabled={!doc.elements.length} title="Share a read-only link (no account)"><Share2 size={16} /> Share</button>
+        <button className="btn sm" onClick={() => setAnimating(true)} disabled={!doc.elements.length} title="Export as video or GIF: the design assembles itself"><Clapperboard size={16} /> Animate</button>
         <button className="btn primary sm stamp-btn" onClick={exportPng} title="Stamp it, ship it"><Download size={16} /> Export PNG</button>
       </div>
 
+      {animating && <AnimateDialog doc={doc} onClose={() => setAnimating(false)} />}
+      {sharing && <ShareDialog doc={doc} onClose={() => setSharing(false)} onExport={exportPng} />}
       <div className="editor-body">
         <LeftPanel />
         <Canvas />

@@ -8,6 +8,8 @@ import { FORMATS, smartResize } from "../ai/resize";
 import { oops, toast } from "../personality/bus";
 import { MagicCards } from "./panels";
 import Thumb from "./Thumb";
+import { useCarousel } from "../carousel/store";
+import { buildCarousel, aiPoints, builtinPoints, CAROUSEL_STYLES, type CarouselStyle } from "../carousel/build";
 import type { TextElement } from "../types";
 
 // Magic is a stack of bold cards (DESIGN.md §19). Every tool asks Gemini on
@@ -15,7 +17,7 @@ import type { TextElement } from "../types";
 export default function AIPanel({ q = "" }: { q?: string }) {
   return (
     <MagicCards q={q}>
-      {{ write: <MagicWrite />, translate: <Translate />, caption: <CaptionWriter />, palette: <VibePalette />, resize: <MagicResize />, bg: <MagicBgRemove /> }}
+      {{ carousel: <CarouselMaker />, write: <MagicWrite />, translate: <Translate />, caption: <CaptionWriter />, palette: <VibePalette />, resize: <MagicResize />, bg: <MagicBgRemove /> }}
     </MagicCards>
   );
 }
@@ -32,6 +34,33 @@ function useSelectedText() {
   const { doc, selectedId } = useEditor();
   const el = doc.elements.find((e) => e.id === selectedId);
   return el?.type === "text" ? (el as TextElement) : null;
+}
+
+function CarouselMaker() {
+  const [topic, setTopic] = useState("my first year of college");
+  const [busy, setBusy] = useState<string | null>(null);
+  const [via, setVia] = useState<boolean | null>(null);
+  const run = async (style: CarouselStyle) => {
+    setBusy(style);
+    try {
+      const ai = await aiPoints(topic, style);
+      const pages = buildCarousel(style, ai ?? builtinPoints(topic, style));
+      useCarousel.getState().start(pages);
+      setVia(!!ai);
+      toast(`${pages.length} slides ready. Edit any slide from the strip under the page.`);
+    } catch (e) { oops("Carousel", e); } finally { setBusy(null); }
+  };
+  return (
+    <div className="ai-card">
+      <p className="hint">One topic line. Magic Write fills every slide. 1080×1350, exports as one PDF or a PNG zip.</p>
+      <div className="field"><input value={topic} onChange={(e) => setTopic(e.target.value)} placeholder="my first year of college" /></div>
+      <div className="mg-tones">
+        {CAROUSEL_STYLES.map((s) => <button key={s.id} className="mg-tone" disabled={!!busy || !topic.trim()} onClick={() => run(s.id)}><b>{s.name}</b><span>{s.joke}</span></button>)}
+      </div>
+      {busy && <Brewing lines={["Drafting thought leadership…", "Adding 'Agree?' (removing it)…", "Numbering the lessons…", "Making slide 4 the spicy one…"]} />}
+      {via !== null && !busy && <p className="mg-done">Slides written {viaLabel(via)}</p>}
+    </div>
+  );
 }
 
 function MagicWrite() {

@@ -66,3 +66,17 @@
 .jz-acts.sm button:first-child { background: rgba(242, 245, 230, 0.04); color: var(--paper, #F2F5E6); border-color: rgba(242, 245, 230, 0.18); font-weight: 400; }
 .jz-meta span { text-transform: none; letter-spacing: 0; line-height: 1.35; }
 .jp-card .jz-art { animation: jp-pop 320ms cubic-bezier(.2,.9,.25,1); }
+
+/* Juice from a photo (DESIGN.md §23) */
+.jp-photo { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; padding: 10px; border: 2px dashed var(--border-2); border-radius: 10px; cursor: pointer; transition: border-color .15s, background .15s; }
+.jp-photo:hover { border-color: var(--accent); background: rgba(139,214,48,.05); }
+.jp-photo.has { border-style: solid; border-color: #050604; background: var(--g-2); box-shadow: 2px 2px 0 #050604; }
+.jp-photo img { width: 44px; height: 44px; object-fit: cover; border-radius: 6px; outline: 2px solid #050604; flex: none; }
+.jp-photo-ic { width: 44px; height: 44px; display: grid; place-items: center; font-size: 22px; flex: none; }
+.jp-photo > span:nth-of-type(2), .jp-photo > span:not(.jp-photo-ic):not(.jp-sw) { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.jp-photo b { font: 800 13px "Bricolage Grotesque Variable", sans-serif; }
+.jp-photo small { font: 10.5px var(--font-mono); color: var(--faint); }
+.jp-sw { display: flex; gap: 2px; }
+.jp-sw i { width: 6px; height: 22px; border-radius: 2px; outline: 1px solid rgba(0,0,0,.4); }
+.jc-photo { cursor: pointer; font-size: 11px; letter-spacing: .06em; color: #D8F27A; border-bottom: 1.5px dashed #D8F27A; padding-bottom: 1px; white-space: nowrap; }
+.jc-photo:hover { color: #8BD630; border-color: #8BD630; }

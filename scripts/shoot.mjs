@@ -27,6 +27,7 @@ for (const s of spec) {
     if (st.eval) await page.evaluate(st.eval);
     if (st.click) await page.click(st.click);
     if (st.press) await page.keyboard.press(st.press);
+    if (st.upload) await page.setInputFiles(st.upload[0], st.upload[1]);
     if (st.type) await page.keyboard.type(st.type);
     if (st.wait) await page.waitForTimeout(st.wait);
     // mouse: [["move", x, y, steps?], ["down"], ["up"]], with optional "shift"/"alt" held

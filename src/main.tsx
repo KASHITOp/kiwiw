@@ -18,6 +18,7 @@ import Editor from "./pages/Editor";
 const router = createBrowserRouter([
   { path: "/", element: <Landing /> },
   { path: "/editor", element: <Editor /> },
+  { path: "/view", HydrateFallback: () => null, lazy: async () => ({ Component: (await import("./pages/View")).default }) },
   // dev-only review surface; dead-code-eliminated from production builds
   ...(import.meta.env.DEV
     ? [{ path: "/dev/kit", HydrateFallback: () => null, lazy: async () => ({ Component: (await import("./pages/DevKit")).default }) }]

@@ -386,3 +386,68 @@ answered.
 - **Roast v2.** The rule-based roasts and one-click fixes show instantly.
   Gemini adds three design-specific roasts when it arrives. The OpenAI call
   is gone.
+
+## 20 — Animated export
+
+Animate (top bar) opens "Export, but make it move". The design assembles
+itself in 5s plus a 1.2s hold:
+
+1. The background wipes in.
+2. Photos bounce.
+3. The headline slams.
+4. The other texts follow.
+5. Stickers pop.
+6. The CTA (a text on a pill, or `role: cta`) stamps last.
+
+Presets:
+- **Slam:** overshoot and shake.
+- **Peel:** rotate and stretch in from the corner.
+- **Typewriter:** character-stepped clip with a blinking caret.
+
+Sizes are current, 1080×1080 or 1080×1920 (via Magic Resize). Each element
+is rasterised once with html-to-image (cropped to its rotated box plus a
+border margin), then frames are composited on a canvas.
+- **Video:** MediaRecorder captures `canvas.captureStream(30)`, as MP4
+  (avc1) where supported, otherwise WebM.
+- **GIF:** 12fps at half size, encoded with gifenc.
+
+A striped progress bar shows jokes while it works.
+
+## 21 — Share link
+
+Share (top bar) packs the whole design into the URL hash with lz-string:
+`/view#d=…`. The hash never reaches a server, so there is no backend and
+no account. The `/view` page is read-only: the design in a hard-shadow
+frame, a "Made with Kiwiw 🥝" badge, "Remix this" (loads a copy into the
+editor) and "Juice your own". A broken or chopped link gets a friendly
+error. Links over 12k characters (usually uploaded photos stored as
+data: URLs) are refused with the reason and an "Export PNG instead"
+button.
+
+## 22 — LinkedIn carousel
+
+The Magic card "LinkedIn Carousel" takes one topic line and builds a
+1080×1350 set: a cover, 5 points (up to 8) and an end slide, 10 slides at
+most. Three styles:
+
+- **Loud Quotes lessons:** riso layouts, ending on a House Rules slide.
+- **Stadium "5 things I learned":** flip-digit numbers and a FULL TIME end
+  slide.
+- **Desi Jugaad tips:** nazar stripes, numbered tips and "बस इतना ही!".
+
+The points come from Gemini (`kiwi-ai` task `carousel`), with built-in copy
+when it is away. A slim page strip under the canvas picks, adds, duplicates,
+reorders and deletes slides; deleting the last slide leaves carousel mode.
+Exports: one PDF (JPEG pages, about 0.9 MB for 7 slides) or a ZIP of PNGs.
+Pages render offscreen at full size with the same element renderer.
+
+## 23 — Juice from a photo
+
+An "Or drop a photo" zone in the Juice panel and an "or drop a photo 📷"
+link in the hero card. The photo is downscaled to 1200px JPEG, and 5
+dominant colours come from a 48×48 k-means. Six photo recipes (never Loud
+Quotes) use it in place of stock photos, each with its own photo effect.
+The recipe's loudest colours are re-hued to the photo's, with lightness
+kept so contrast holds. The line is optional; when empty, a witty line is
+picked ("main character moment", "no caption needed", …). Gemini copy still
+swaps in later if it is quick.

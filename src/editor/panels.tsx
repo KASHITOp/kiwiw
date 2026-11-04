@@ -2,7 +2,7 @@
 // recipe, text presets rendered in their real style, a photo masonry with
 // one-hover effects, and Magic as bold cards.
 import { useEffect, useMemo, useState } from "react";
-import { Flame, Gauge, PenLine, Eraser, Languages, MessageSquareText, Palette, Scaling } from "lucide-react";
+import { Flame, Gauge, PenLine, Eraser, GalleryHorizontal, Languages, MessageSquareText, Palette, Scaling } from "lucide-react";
 import { useEditor } from "../store";
 import { makeImage, makeShape } from "../data/factory";
 import { makeSticker, placeText, TEXT_PRESETS, type TextPreset } from "../data/presets";
@@ -260,12 +260,13 @@ export function PhotosTab({ q }: { q: string }) {
 
 /* ------------------------------ Magic ------------------------------ */
 
-type SpellBodies = { write: React.ReactNode; translate: React.ReactNode; caption: React.ReactNode; palette: React.ReactNode; resize: React.ReactNode; bg: React.ReactNode };
+type SpellBodies = { carousel: React.ReactNode; write: React.ReactNode; translate: React.ReactNode; caption: React.ReactNode; palette: React.ReactNode; resize: React.ReactNode; bg: React.ReactNode };
 
 export function MagicCards({ q, children }: { q: string; children: SpellBodies }) {
   const [open, setOpen] = useState<string | null>(null);
   useEffect(() => { if (q.trim()) setOpen(null); }, [q]);
   const cards = [
+    { id: "carousel", icon: <GalleryHorizontal size={18} />, title: "LinkedIn Carousel", joke: "One topic line in, 7 slides out. Thought leadership, automated.", tone: "pink", words: "carousel linkedin slides pdf deck pages lessons" },
     { id: "write", icon: <PenLine size={18} />, title: "Magic Write", joke: "Six tones, from Corporate to Desi Uncle. Fits the box.", tone: "lime", words: "magic write copy text rephrase tone hinglish genz corporate uncle shark" },
     { id: "translate", icon: <Languages size={18} />, title: "Translate", joke: "Hindi, Gujarati, Hinglish. The font follows.", tone: "blue", words: "translate hindi gujarati hinglish language font" },
     { id: "caption", icon: <MessageSquareText size={18} />, title: "Caption Writer", joke: "Instagram, LinkedIn, hashtags. Humility not included.", tone: "pink", words: "caption instagram linkedin hashtags post" },
@@ -292,7 +293,7 @@ export function MagicCards({ q, children }: { q: string; children: SpellBodies }
           {open === c.id && <div className="mg-body">{children[c.id as keyof SpellBodies]}</div>}
         </div>
       ))}
-      {!cards.length && <div className="empty">No spell called "{q}". We have eight. None of them is that.</div>}
+      {!cards.length && <div className="empty">No spell called "{q}". We have nine. None of them is that.</div>}
     </div>
   );
 }

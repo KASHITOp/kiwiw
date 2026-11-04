@@ -1,3 +1,4 @@
+import { loadPhoto, type UserPhoto } from "../juice/photo";
 import { useEffect, useMemo, useState } from "react";
 import { juice, DEFAULT_IDEA, EXAMPLE_IDEAS, ensureJuiceFonts } from "../juice";
 import Thumb from "../editor/Thumb";
@@ -7,7 +8,7 @@ interface Props {
   posterRef: React.RefObject<HTMLDivElement | null>;
   full: boolean;
   /** Juice inline under the hero (no overlay). */
-  onJuice: (text: string) => void;
+  onJuice: (text: string, photo?: UserPhoto) => void;
 }
 
 // The hero demo: type a boring line, watch it get juiced live, then burst it into six.
@@ -59,7 +60,10 @@ export default function JuiceCard({ posterRef, full, onJuice }: Props) {
           </div>
           <div className="jc-go">
             <button className="k-btn sm" onClick={() => onJuice(text.trim())} disabled={!text.trim()}>Juice it →</button>
-            <span className="mono mini-lbl" style={{ margin: 0 }}>1 LINE · 6 POSTERS · 11 STYLES</span>
+            <label className="jc-photo mono" title="Drop or pick a photo: 6 posters built around it">
+              <input type="file" accept="image/*" hidden onChange={async (e) => { const f = e.target.files?.[0]; if (f) onJuice(text.trim(), await loadPhoto(f)); }} />
+              or drop a photo 📷
+            </label>
           </div>
         </div>
       </div>

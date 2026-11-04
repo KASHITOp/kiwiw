@@ -3,6 +3,7 @@ import { Citrus, RefreshCw, Shuffle, Sparkles } from "lucide-react";
 import { useEditor } from "../store";
 import Thumb from "../editor/Thumb";
 import { juiceWithAI, juiceBatch, rejuiceOne, moreLikeThis, EXAMPLE_IDEAS, type JuiceResult, type JuiceSession } from ".";
+import { loadPhoto, type UserPhoto } from "./photo";
 import "./juice.css";
 
 // Juice It inside the editor: same engine, results load straight onto the canvas.
@@ -14,10 +15,16 @@ export default function JuicePanel({ text, setText }: { text: string; setText: (
   const [results, setResults] = useState<JuiceResult[] | null>(null);
   const session = useRef<JuiceSession | null>(null);
 
-  const run = async () => {
-    if (!text.trim()) return;
+  const [photo, setPhoto] = useState<UserPhoto | null>(null);
+  const pickPhoto = async (f?: File | null) => {
+    if (!f || !f.type.startsWith("image/")) return;
     setBusy(true);
-    const r = await juiceWithAI(text);
+    try { const p = await loadPhoto(f); setPhoto(p); await run(p); } finally { setBusy(false); }
+  };
+  const run = async (p: UserPhoto | null = photo) => {
+    if (!text.trim() && !p) return;
+    setBusy(true);
+    const r = await juiceWithAI(text, 0, undefined, p ?? undefined);
     session.current = r.session;
     setResults(r.results);
     setBatch((b) => b + 1);
@@ -38,8 +45,15 @@ export default function JuicePanel({ text, setText }: { text: string; setText: (
   return (
     <>
       <p className="fx-note" style={{ marginTop: 0, marginBottom: 12 }}>Type one boring line in the box above. Six posters come out. Click one to drop it on the canvas.</p>
+      <label className={"jp-photo" + (photo ? " has" : "")} onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); pickPhoto(e.dataTransfer.files[0]); }}>
+        <input type="file" accept="image/*" hidden onChange={(e) => pickPhoto(e.target.files?.[0])} />
+        {photo ? <img src={photo.src} alt="" /> : <span className="jp-photo-ic">📷</span>}
+        <span><b>{photo ? "Juicing your photo" : "Or drop a photo"}</b><small>{photo ? "colours tuned to it" : "6 posters built around it"}</small></span>
+        {photo && <span className="jp-sw">{photo.palette.slice(0, 5).map((c) => <i key={c} style={{ background: c }} />)}</span>}
+        {photo && <button className="icon-btn" onClick={(e) => { e.preventDefault(); setPhoto(null); }} title="Back to stock photos">×</button>}
+      </label>
       <div className="row" style={{ marginBottom: 12 }}>
-        <button className="btn primary sm" onClick={() => run()} disabled={busy || !text.trim()}>
+        <button className="btn primary sm" onClick={() => run()} disabled={busy || (!text.trim() && !photo)}>
           {busy ? <span className="spinner" /> : <><Citrus size={15} /> Juice it</>}
         </button>
         <button className="btn sm" onClick={again} disabled={busy || !results}><RefreshCw size={14} /> Re-juice all</button>

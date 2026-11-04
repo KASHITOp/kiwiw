@@ -1,3 +1,4 @@
+import PageStrip from "../carousel/PageStrip";
 import { useEffect, useRef, useState } from "react";
 import { useEditor } from "../store";
 import type { Element } from "../types";
@@ -261,6 +262,7 @@ export default function Canvas() {
           })()}
       </div>
       </div>
+      <PageStrip />
       {/* zoom pill (DESIGN.md §15): bottom-centre, clear of the mascot */}
       <div className="zoom-pill" onPointerDown={(e) => e.stopPropagation()}>
         <button onClick={() => setZoom(zoom / 1.2)} title="Zoom out" aria-label="Zoom out"><Minus size={15} /></button>

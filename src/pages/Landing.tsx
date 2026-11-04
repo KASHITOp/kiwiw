@@ -1,3 +1,4 @@
+import type { UserPhoto } from "../juice/photo";
 import { StickerDrawer, MagicTools } from "../landing/V3Sections";
 import "../landing/landing.css";
 import Hero from "../landing/Hero";
@@ -16,12 +17,12 @@ const onKonami = () => { squeezeKiwis(); toast("↑↑↓↓←→←→BA. Kiwi
 
 export default function Landing() {
   useKonami(onKonami);
-  const [juice, setJuice] = useState({ text: "", nonce: 0 });
+  const [juice, setJuice] = useState<{ text: string; nonce: number; photo?: UserPhoto }>({ text: "", nonce: 0 });
   return (
     <div className="land">
       <div className="grain" aria-hidden="true" />
-      <Hero onJuice={(text) => setJuice((j) => ({ text, nonce: j.nonce + 1 }))} />
-      <JuiceBurst text={juice.text} nonce={juice.nonce} />
+      <Hero onJuice={(text, photo) => setJuice((j) => ({ text, photo, nonce: j.nonce + 1 }))} />
+      <JuiceBurst text={juice.text} nonce={juice.nonce} photo={juice.photo} />
       <Ticker />
       <DnaWall />
       <ZigRule />
