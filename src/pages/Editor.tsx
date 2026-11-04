@@ -170,14 +170,14 @@ export default function Editor() {
         <div className="spacer" />
         <VibeBar />
         <button className={"btn sm roast-btn" + (roasting ? " on" : "")} onClick={() => setRoasting((r) => !r)} title="Roast my design. Honest feedback, one-click fixes." disabled={!doc.elements.length}>
-          <Flame size={16} /> Roast
+          <Flame size={16} className="flame" /> Roast
         </button>
         <div className="spacer" />
 
         <button className="icon-btn" title="Shortcuts (?)" onClick={() => setCheat(true)}><Keyboard size={18} /></button>
         <span className="sep" />
         <button className="btn sm" onClick={exportJson} title="Download the design as JSON"><Braces size={16} /> Save</button>
-        <button className="btn primary sm" onClick={exportPng}><Download size={16} /> Export PNG</button>
+        <button className="btn primary sm stamp-btn" onClick={exportPng} title="Stamp it, ship it"><Download size={16} /> Export PNG</button>
       </div>
 
       <div className="editor-body">

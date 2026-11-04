@@ -319,3 +319,32 @@ borders.
     LICENSES.md.
   - Text inside a sticker must fit its shape at 160px tile size; check it
     with `/dev/kit?view=stickers&cat=…`.
+
+## 18 — Editor chrome v3: personality
+
+The editor chrome should look tidy but never generic: it borrows from print
+shops, stickers and hardware.
+
+- **UI fonts.** Bricolage Grotesque for headings, Inter Tight for UI (scoped
+  to `.editor`), JetBrains Mono for labels and numbers.
+- **Panels.** Deep kiwi-black (#0E110B) with a subtle paper grain (an inline
+  SVG noise texture). Section headers use Bricolage 800 with a hand-drawn
+  lime squiggle underline. Counts are dashed postage-stamp chips tilted −2°
+  ("86 ORIGINALS", "25 ORIGINALS").
+- **Chips.** Chunky neo-brutal pills with a 2px ink outline and a hard 2px
+  offset shadow. Pressed state pushes in by 2px; active is a lime fill.
+- **Template cards.** There is no grey frame: the design is the card.
+  - It gets a 2px ink outline and a 4px hard offset shadow.
+  - Each card is tilted −1°, +1° or +0.5°, and straightens and lifts on hover.
+  - A peel-off cream sticker label (dog-eared corner, tilted −3°) shows the
+    funny name and the hover joke.
+- **Tooltips.** Sticker labels: cream, black outline, hard shadow, tilted −2°.
+- **Top bar.**
+  - Corporate↔Unhinged is a hardware fader: a grooved slot with tick marks
+    and a ridged rectangular cap.
+  - Roast's flame flickers, faster on hover or when open.
+  - Export is a rubber stamp with a double inset border, tilted −1.5°, that
+    presses in when clicked.
+- **Empty and loading states.** Each one shows the bobbing kiwi
+  (`/kiwi-mini.svg`, or `KiwiMini` for a mood) plus a joke.
+- **Motion.** All of it respects `prefers-reduced-motion`.

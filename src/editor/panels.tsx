@@ -133,13 +133,19 @@ export function StickersTab({ q, setQ }: { q: string; setQ: (v: string) => void 
       )}
       {!groups.length && (
         <div className="empty">
-          <KiwiMini mood="judging" />
           Nothing matches "{q}". We drew {total} stickers by hand and none of them is that.
           <br /><button className="btn sm" style={{ marginTop: 12 }} onClick={() => setQ("kiwi")}>Show me kiwis</button>
         </div>
       )}
     </>
   );
+}
+
+const LOADING = ["Squeezing pixels…", "Asking the photos to hold still…", "Peeling the kiwi…", "Convincing the server it's a good idea…", "Steeping, like chai…"];
+/** Loading state: the bobbing kiwi plus a joke that changes every visit. */
+export function LoadingJoke() {
+  const [line] = useState(() => LOADING[Math.floor(Math.random() * LOADING.length)]);
+  return <div className="empty loading"><KiwiMini mood="chai" />{line}</div>;
 }
 
 /** Tiny kiwi for empty / loading states. */

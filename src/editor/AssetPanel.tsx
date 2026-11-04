@@ -1,3 +1,4 @@
+import { LoadingJoke } from "./panels";
 import { useEffect, useState } from "react";
 import { useEditor } from "../store";
 import { makeImage } from "../data/factory";
@@ -41,7 +42,7 @@ export default function AssetPanel({ q: query }: { q: string }) {
     <>
       <p className="fx-note" style={{ marginTop: 0 }}>{PEXELS ? <><span className="badge live">Pexels</span> Real stock, properly licensed.</> : <><span className="badge mock">demo</span> 29 bundled Pexels photos. Add a Pexels key for the whole internet.</>}</p>
       {loading ? (
-        <div className="empty"><span className="spinner" /></div>
+        <LoadingJoke />
       ) : (
         <div className="asset-grid">
           {photos.map((src, i) => (
