@@ -7,13 +7,17 @@ import {
   wobble, arrowHead, tornEdge, zigX,
 } from "./geometry";
 import { EXTRA_DEFS } from "./extra";
+import { V2_DEFS } from "./v2";
 
 export interface StickerColors { fill: string; accent: string; ink: string }
 export type ColorSlot = keyof StickerColors;
+export type StickerBorder = "white" | "black" | "none";
 
 export const STICKER_CATEGORIES = [
   "Blobs", "Bursts", "Badges", "Scribbles", "Arrows", "Tape & paper",
   "Bubbles", "Lines", "Texture", "Kiwi", "Desi", "Pixel", "Backgrounds",
+  // Sticker Library 2.0
+  "Coquette", "Y2K", "Frames & Paper", "Type", "Desi Pop", "Internet", "Sport", "Pets", "Kiwi Moods",
 ] as const;
 export type StickerCategory = (typeof STICKER_CATEGORIES)[number];
 
@@ -30,6 +34,8 @@ export interface StickerDef {
   stretch?: boolean;
   uses: ColorSlot[];
   colors: StickerColors;
+  /** Default die-cut border when added (2.0 stickers ship with white). */
+  border?: StickerBorder;
   Art: (p: { c: StickerColors; uid: string }) => JSX.Element;
 }
 
@@ -492,7 +498,7 @@ const DEFS: StickerDef[] = [
   },
 ];
 
-DEFS.push(...EXTRA_DEFS);
+DEFS.push(...EXTRA_DEFS, ...V2_DEFS);
 
 export const STICKERS = DEFS;
 export const STICKER_MAP: Record<string, StickerDef> = Object.fromEntries(DEFS.map((d) => [d.kind, d]));

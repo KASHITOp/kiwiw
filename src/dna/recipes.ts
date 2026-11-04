@@ -5,7 +5,7 @@ import { topicFor } from "../data/photos";
 
 export type RecipeKey =
   | "nazar" | "tapri" | "stadium" | "brutal" | "swiss"
-  | "trippy" | "neo" | "pixel" | "sticker" | "glossy";
+  | "trippy" | "neo" | "pixel" | "sticker" | "glossy" | "quotes";
 
 export interface Recipe { key: RecipeKey; name: string; vibe: string; jokes: string[] }
 
@@ -20,10 +20,29 @@ export const RECIPES: Record<RecipeKey, Recipe> = {
   pixel: { key: "pixel", name: "8-Bit Flex", vibe: "8-BIT", jokes: ["Achievement unlocked: posting this.", "Press start to attend."] },
   sticker: { key: "sticker", name: "Sticker Bomb", vibe: "STREETWEAR", jokes: ["Limited drop. Unlimited stickers.", "No refunds on vibes."] },
   glossy: { key: "glossy", name: "Glossy Bloom", vibe: "GLOSSY", jokes: ["Soft launch, hard flex.", "Shiny enough to see your future in."] },
+  quotes: { key: "quotes", name: "Loud Quotes", vibe: "TYPE ONLY", jokes: ["No photos. Just opinions, printed loudly.", "Riso ink, zero chill.", "Your mum's advice, now in 300pt."] },
 };
 
 /** First batch order: the six that show the range best, then the rest. */
-export const RECIPE_ORDER: RecipeKey[] = ["stadium", "nazar", "trippy", "sticker", "glossy", "tapri", "brutal", "swiss", "neo", "pixel"];
+export const RECIPE_ORDER: RecipeKey[] = ["stadium", "nazar", "trippy", "sticker", "glossy", "tapri", "brutal", "swiss", "neo", "pixel", "quotes"];
+
+const EVENTY = /\b(sale|launch|party|fest|festival|batch|hiring|wedding|save the date|episode|ep\.?|opening|workshop|meetup|webinar|class|event|invite|birthday|concert|match|drop|offer|discount|open mic|tournament|hackathon)\b/i;
+/** A statement, not an event: no date, time, place or price, and reads like a sentence. */
+export function isQuoteLike(idea: Idea): boolean {
+  if (idea.time || idea.day || idea.date || idea.place || idea.price) return false;
+  const raw = idea.raw.trim();
+  if (/^["“‘'].+["”’']$/.test(raw)) return true;
+  if (EVENTY.test(raw)) return false;
+  const words = raw.split(/\s+/).length;
+  return words >= 4 || /[,.!?]/.test(raw) || /[\u0900-\u097F]/.test(raw);
+}
+
+const QUOTE_HI = ["चाय पहले, बाकी बाद में", "जुगाड़ ज़िंदाबाद", "सब ठीक हो जाएगा", "दिल से, दिमाग से नहीं", "पहले खुद को चुनो", "थोड़ा और, बस थोड़ा"];
+const QUOTE_BY = ["— probably your mum", "— a wise uncle, 2026", "— the group chat", "— kiwi, unprompted", "— someone who has had chai", "— you, at 2 a.m."];
+const HOUSE_RULES = [
+  "Chai before chat.", "Shoes off. Ego off.", "\"Just 5 minutes\" is a lie we respect.", "Mummy is always right. Even when she isn't.",
+  "Leftovers are a lifestyle.", "Jugaad allowed. Excuses not.", "Reply to the family group. Once a week minimum.", "No spoilers before Sunday.",
+];
 
 type Topic = "bake" | "chai" | "crowd" | "diwali" | "gym" | "launch" | "party" | "podcast" | "work" | "wedding" | "other";
 
@@ -83,6 +102,11 @@ export interface Copy {
   topic: Topic;
   /** Episode / batch / percentage, when the line has a number worth shouting */
   number?: string;
+  /** Loud Quotes extras: the word that shouts, a Hindi line, house rules, attribution. */
+  word?: string;
+  hi?: string;
+  rules?: string[];
+  by?: string;
 }
 
 /** Copy for one recipe; `angle` rotates the pun so re-juice never repeats a line. */
@@ -112,6 +136,16 @@ export function writeCopy(recipe: RecipeKey, idea: Idea, angle: number): Copy {
     case "neo": return { ...base, kicker: pick(["1 new event", "You've been invited", "Reminder"]), head: pick([title(H), ...b.soft]), sub: pick(b.hing), cta: pick(["TAP TO ATTEND", "I'M IN", "COUNT ME IN"]) };
     case "pixel": return { ...base, kicker: pick(["LEVEL 01", "STAGE 02", "WORLD 1-1"]), head: pick([`LEVEL UP: ${b.noun}`, `PLAYER 1: ${b.noun}`, `${b.noun} UNLOCKED`]), sub: pick(["PRESS START", "INSERT COIN", "CONTINUE? YES"]) };
     case "sticker": return { ...base, kicker: pick(["LIMITED DROP", "NEW DROP", "COLLAB"]), head: pick(b.loud, 2), sub: pick(b.hing, 1), cta: idea.price ?? pick(["NO REFUNDS ON VIBES", "SOLD OUT SOON", "GOOD MOOD ONLY"]) };
+    case "quotes": {
+      const q = isQuoteLike(idea);
+      const clean = (s: string) => { const t = s.replace(/^["\u201C\u2018']+|["\u201D\u2019']+$/g, "").trim(); return t[0].toUpperCase() + t.slice(1); };
+      const head = q ? clean(idea.raw) : title(pick(b.loud).toLowerCase()).replace(/\.$/, "") + ".";
+      const ws = head.replace(/[^\p{L}\p{M}\p{N}' ]/gu, " ").split(/\s+/).filter((w) => w.length > 2 && !/^(the|and|for|you|your|are|but|not|with|this|that|its|it's|is)$/i.test(w));
+      const word = [...ws].sort((x, y) => y.length - x.length)[0] ?? b.noun;
+      const hi = /[\u0900-\u097F]/.test(head) ? head : topic === "other" ? pick(QUOTE_HI) : pick(b.hi);
+      const rules = [...b.hing.map((x) => x.replace(/([^.!?])$/, "$1.")), ...HOUSE_RULES].sort((x, y) => ((x.length * 7 + angle) % 5) - ((y.length * 7 + angle) % 5)).slice(0, 5);
+      return { ...base, kicker: pick(["PUBLIC NOTICE", "RULE NO. 1", "PRINTED LOUDLY", "TODAY'S REMINDER"]), head, sub: pick(b.hing), word, hi, rules, by: pick(QUOTE_BY) };
+    }
     case "glossy": {
       // glossy wants two or three words, never a phrase cut in half
       const heads = [title(short(H, 3)), ...b.soft.filter((x) => x.split(/\s+/).length <= 3)];

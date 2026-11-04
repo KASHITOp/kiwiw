@@ -13,14 +13,16 @@ import heroes from "./tpl/heroes.json";
 // were retired: next to the heroes they looked flat (REVIEW.md).
 const HEROES = heroes as unknown as Template[];
 
-const KEEP = ["bc-rave", "si-longread", "cp-gig", "bt-fest", "bt-chai", "qm-investor", "br-clickbait", "si-resume"];
+// qm-investor cut in round 6: tiny text, mostly empty next to the v3 set (REVIEW.md)
+const KEEP = ["bc-rave", "si-longread", "cp-gig", "bt-fest", "bt-chai", "br-clickbait", "si-resume"];
 const ALL_OLD = [blockCapitals, sundayIssue, cutPaste, bombay, quietMoney, brainrot].flat();
 const CLASSICS = KEEP.map((id) => ALL_OLD.find((t) => t.id === id)!).map((t) => ({ ...t, tags: [...(t.tags ?? []), ...(t.id === "si-resume" ? ["resume"] : [])] }));
 
 // heroes first, alternating poster / other format so neighbours differ
 const posters = HEROES.filter((t) => t.format === "Poster");
 const others = HEROES.filter((t) => t.format !== "Poster");
-export const TEMPLATES: Template[] = [...posters.flatMap((p, i) => [p, others[i]].filter(Boolean)), ...CLASSICS];
+const mixed = Array.from({ length: Math.max(posters.length, others.length) }, (_, i) => [posters[i], others[i]]).flat().filter(Boolean) as Template[];
+export const TEMPLATES: Template[] = [...mixed, ...CLASSICS];
 
 export const STYLE_SETS = { blockCapitals, sundayIssue, cutPaste, bombay, quietMoney, brainrot };
 export const TEMPLATE_CATEGORIES = Array.from(new Set(TEMPLATES.map((t) => t.category)));

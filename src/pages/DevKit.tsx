@@ -41,6 +41,62 @@ function CollideReport() {
   return rows ? <pre id="collide">{[`${rows.length} collisions`, ...rows].join(String.fromCharCode(10))}</pre> : null;
 }
 
+/** ?view=stickers&cat=Coquette: one category as it renders on the canvas (border included). */
+function StickerSheet({ cat }: { cat: string }) {
+  const [ready, setReady] = useState(false);
+  useEffect(() => { document.fonts.ready.then(() => setTimeout(() => setReady(true), 300)); }, []);
+  const list = STICKERS.filter((d) => d.category === cat);
+  return (
+    <div id={ready ? "sheet-ready" : undefined} style={{ background: "#2A2A2A", padding: 24, display: "grid", gridTemplateColumns: "repeat(6, 190px)", gap: 14, width: 6 * 190 + 5 * 14 + 48 }}>
+      {list.map((d) => {
+        const el = { ...(makeSticker(d.kind, 190, 190) as Element), id: "s" } as Element;
+        const k = 160 / Math.max(el.w, el.h);
+        const w = el.w * k, h = el.h * k;
+        return (
+          <div key={d.kind} style={{ fontFamily: "JetBrains Mono", fontSize: 10, color: "#ddd" }}>
+            <div style={{ width: 190, height: 190, borderRadius: 8, background: "#F4E7D7", position: "relative" }}>
+              <div style={{ position: "absolute", left: (190 - w) / 2, top: (190 - h) / 2, width: w, height: h }}><ElementContent el={{ ...el, w, h } as Element} /></div>
+            </div>
+            <div style={{ marginTop: 4, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{d.name}</div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/** ?view=lq&lines=a|b: every Loud Quotes layout for each line. */
+function LoudSheet({ lines }: { lines: string[] }) {
+  const [ready, setReady] = useState(false);
+  useEffect(() => { ensureJuiceFonts().then(() => setTimeout(() => setReady(true), 400)); }, []);
+  if (!ready) return null;
+  return (
+    <div id="lq-ready" style={{ background: "#222", padding: 16, display: "grid", gridTemplateColumns: "repeat(6, 220px)", gap: 12, width: 6 * 220 + 5 * 12 + 32 }}>
+      {lines.flatMap((l) => [0, 1, 2, 3, 4, 5].map((i) => (
+        <div key={l + i} style={{ position: "relative", width: 220, height: 275, overflow: "hidden", borderRadius: 4 }}><Thumb doc={juiceRecipe(l, "quotes", i).doc} /></div>
+      )))}
+    </div>
+  );
+}
+
+/** ?view=resize&from=0&n=6: Magic Resize of templates into every format. */
+function ResizeSheet({ from, n }: { from: number; n: number }) {
+  const [ready, setReady] = useState(false);
+  useEffect(() => { ensureJuiceFonts().then(() => setTimeout(() => setReady(true), 400)); }, []);
+  if (!ready) return null;
+  return (
+    <div id="rs-ready" style={{ background: "#222", padding: 16, display: "grid", gap: 16, width: 1500 }}>
+      {TEMPLATES.slice(from, from + n).map((t) => (
+        <div key={t.id} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+          {[t.doc, ...FORMATS.filter((f) => f.w !== t.doc.width || f.h !== t.doc.height).map((f) => smartResize(t.doc, f.w, f.h))].map((d, i) => (
+            <div key={i} style={{ position: "relative", height: 220, aspectRatio: `${d.width} / ${d.height}`, maxWidth: 560, flex: "none", outline: i ? "none" : "3px solid #8BD630" }}><Thumb doc={d} /></div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 /** ?view=og: the 1200x630 social card, built from real juiced posters. */
 function OgCard() {
   const [docs, setDocs] = useState<KiwiwDoc[] | null>(null);
@@ -79,6 +135,7 @@ function HeroDump() {
 }
 import { FX_PRESETS } from "../effects/presets";
 import { makeSticker } from "../data/presets";
+import { FORMATS, smartResize } from "../ai/resize";
 
 /** ?view=fx: every effect on a sample photo / headline, plus the backgrounds. */
 function FxView() {
@@ -164,6 +221,9 @@ export default function DevKit() {
   }
   if (params.get("view") === "fx") return <FxView />;
   if (params.get("view") === "og") return <OgCard />;
+  if (params.get("view") === "resize") return <ResizeSheet from={+(params.get("from") ?? 0)} n={+(params.get("n") ?? 6)} />;
+  if (params.get("view") === "lq") return <LoudSheet lines={(params.get("lines") ?? "jugaad is a lifestyle").split("|")} />;
+  if (params.get("view") === "stickers") return <StickerSheet cat={params.get("cat") ?? "Coquette"} />;
   if (params.get("dump") === "heroes") return <HeroDump />;
   if (params.get("view") === "collide") return <CollideReport />;
   if (params.get("view") === "templates") {
@@ -171,7 +231,7 @@ export default function DevKit() {
       <div style={wrap}>
         <div style={h2}>{TEMPLATES.length} TEMPLATES</div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 24 }}>
-          {TEMPLATES.map((t) => (
+          {(params.get("ids") ? params.get("ids")!.split(",").map((id) => TEMPLATES.find((t) => t.id === id)!).filter(Boolean) : TEMPLATES.filter((_, i) => i >= +(params.get("from") ?? 0) && i < +(params.get("from") ?? 0) + +(params.get("n") ?? 999))).map((t) => (
             <figure key={t.id} data-tpl={t.id} style={{ margin: 0, width: 300 }}>
               <div style={{ position: "relative", width: 300, aspectRatio: `${t.doc.width}/${t.doc.height}`, maxHeight: 420 }}><Thumb doc={t.doc} /></div>
               <figcaption style={{ fontSize: 12, marginTop: 6 }}><b>{t.name}</b> <span style={{ color: "#9AA28A" }}>· {t.style} · {t.format}</span><br /><span style={{ color: "#9AA28A" }}>{t.description}</span></figcaption>

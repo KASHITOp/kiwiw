@@ -6,7 +6,7 @@
 import type { KiwiwDoc } from "../types";
 import { keys } from "../ai/provider";
 import { parseIdea, hash } from "./parse";
-import { RECIPES, RECIPE_ORDER, writeCopy, type Copy, type RecipeKey } from "../dna/recipes";
+import { RECIPES, RECIPE_ORDER, writeCopy, isQuoteLike, type Copy, type RecipeKey } from "../dna/recipes";
 import { LAYOUTS, DNA_FONTS } from "../dna/layouts";
 import { photoFor } from "../data/photos";
 import { resolveCollisions } from "../dna/collide";
@@ -91,6 +91,12 @@ export function juiceBatch(s: JuiceSession): JuiceResult[] {
   // the default line opens with the curated six; any other line rotates the deck
   const rot = (s.batch * 6 + (s.text.trim().toLowerCase() === DEFAULT_IDEA ? 0 : hash(s.text.toLowerCase()))) % RECIPE_ORDER.length;
   const order = [...RECIPE_ORDER.slice(rot), ...RECIPE_ORDER.slice(0, rot)];
+  // a statement ("jugaad is a lifestyle") gets Loud Quotes twice, up front
+  if (isQuoteLike(parseIdea(s.text.trim() || DEFAULT_IDEA))) {
+    const rest: RecipeKey[] = order.filter((r) => r !== "quotes").sort((a, b) => usedFor(s, a) - usedFor(s, b)).slice(0, 4);
+    s.batch++;
+    return [build(s, "quotes"), ...order.filter((r) => rest.includes(r)).slice(0, 2).map((r) => build(s, r)), build(s, "quotes"), ...order.filter((r) => rest.includes(r)).slice(2).map((r) => build(s, r))];
+  }
   const pick = [...order].sort((a, b) => usedFor(s, a) - usedFor(s, b)).slice(0, 6);
   s.batch++;
   return order.filter((r) => pick.includes(r)).map((r) => build(s, r));

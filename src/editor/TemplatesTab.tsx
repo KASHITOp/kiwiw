@@ -161,7 +161,7 @@ function TemplateGrid({ items, mine }: { items: Item[]; mine?: boolean }) {
           key={it.id}
           role="button"
           tabIndex={0}
-          className={"tcard" + (mine && it.id === current ? " current" : "")}
+          className={"tcard" + (mine ? " mine" : "") + (mine && it.id === current ? " current" : "")}
           style={{ left: x, top: y, width: w, height: h }}
           onClick={() => loadDoc(it.doc, mine ? it.id : undefined)}
           onKeyDown={(e) => e.key === "Enter" && loadDoc(it.doc, mine ? it.id : undefined)}
@@ -170,7 +170,7 @@ function TemplateGrid({ items, mine }: { items: Item[]; mine?: boolean }) {
           <div className="tcard-frame" style={{ inset: pad }}><Thumb doc={it.doc} /></div>
           <div className="tcard-label">
             <b>{it.name}</b>
-            <span>{sizeLabel(it.doc)}</span>
+            <span>{!mine && it.title ? it.title : sizeLabel(it.doc)}</span>
           </div>
           {mine && it.updated && <span className="tcard-time">{mine && it.id === current ? "editing now" : ago(it.updated)}</span>}
           {mine && (

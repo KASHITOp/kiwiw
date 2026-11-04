@@ -137,6 +137,22 @@ They are resized to 900px and re-encoded.
 | `public/photos/work-12662877.jpg` | work | [pexels.com/photo/12662877](https://www.pexels.com/photo/12662877/) |
 | `public/photos/work-6893890.jpg` | work | [pexels.com/photo/6893890](https://www.pexels.com/photo/6893890/) |
 
+## Photo stickers (Pexels License)
+
+The six cat cutouts in the Pets sticker set are crops of Pexels photos (free to
+use and modify under the [Pexels License](https://www.pexels.com/license/)).
+We cropped each one, made a halftone B&W version, and die-cut it with our own
+sticker border.
+
+| File | Use | Source |
+| --- | --- | --- |
+| `public/stickers/cat-yawn.jpg` (+ `-ht` halftone) | sticker cutout | [pexels.com/photo/16260944](https://www.pexels.com/photo/16260944/) |
+| `public/stickers/cat-tux.jpg` (+ `-ht` halftone) | sticker cutout | [pexels.com/photo/16260946](https://www.pexels.com/photo/16260946/) |
+| `public/stickers/cat-kitten.jpg` (+ `-ht` halftone) | sticker cutout | [pexels.com/photo/16260952](https://www.pexels.com/photo/16260952/) |
+| `public/stickers/cat-bengal.jpg` (+ `-ht` halftone) | sticker cutout | [pexels.com/photo/16761419](https://www.pexels.com/photo/16761419/) |
+| `public/stickers/cat-ginger.jpg` (+ `-ht` halftone) | sticker cutout | [pexels.com/photo/18688874](https://www.pexels.com/photo/18688874/) |
+| `public/stickers/cat-patch.jpg` (+ `-ht` halftone) | sticker cutout | [pexels.com/photo/4386125](https://www.pexels.com/photo/4386125/) |
+
 ## Fonts
 
 Every typeface is from [Google Fonts](https://fonts.google.com), self-hosted via
@@ -144,7 +160,18 @@ Every typeface is from [Google Fonts](https://fonts.google.com), self-hosted via
 Anton, Archivo Black, Bagel Fat One, Baloo 2, Bricolage Grotesque, Caveat,
 DM Serif Display, Fraunces, Gochi Hand, Instrument Serif, Inter, JetBrains Mono,
 Khand, Mukta, Permanent Marker, Press Start 2P, Rozha One, Rubik Mono One,
-Shrikhand, Space Mono, Syne, Tiro Devanagari Hindi, Unbounded, Yatra One.
+Shrikhand, Space Mono, Syne, Tiro Devanagari Hindi, Unbounded, Yatra One,
+Big Shoulders Display, Bowlby One, Caprasimo, Climate Crisis, Gloock,
+Great Vibes, Inter Tight, Kalam, Mukta Vaani, Playfair Display, Rubik Glitch,
+Rubik Wet Paint.
+
+## Stickers
+
+Every illustrated sticker (268 and counting) is original SVG drawn in
+`src/stickers/`. No brand logos, product names, celebrities, film titles,
+lyrics or copyrighted characters are used, and every phrase on a sticker or
+template is written for Kiwiw. The only photo stickers are the Pexels cats
+listed above.
 
 ## Style references
 

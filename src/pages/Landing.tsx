@@ -1,3 +1,4 @@
+import { StickerDrawer, MagicTools } from "../landing/V3Sections";
 import "../landing/landing.css";
 import Hero from "../landing/Hero";
 import Marquee from "../landing/Marquee";
@@ -26,7 +27,11 @@ export default function Landing() {
       <ZigRule />
       <Playground />
       <ZigRule />
+      <StickerDrawer />
+      <ZigRule />
       <Marquee />
+      <ZigRule />
+      <MagicTools />
       <ZigRule />
       <RoastDemo />
       <ZigRule />

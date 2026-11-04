@@ -2,12 +2,13 @@
 // recipe, text presets rendered in their real style, a photo masonry with
 // one-hover effects, and Magic as bold cards.
 import { useEffect, useMemo, useState } from "react";
-import { Flame, Gauge, PenLine, Eraser } from "lucide-react";
+import { Flame, Gauge, PenLine, Eraser, Languages, MessageSquareText, Palette, Scaling } from "lucide-react";
 import { useEditor } from "../store";
 import { makeImage, makeShape } from "../data/factory";
 import { makeSticker, placeText, TEXT_PRESETS, type TextPreset } from "../data/presets";
 import { STICKER_MAP, STICKERS } from "../stickers/library";
 import StickerArt from "../stickers/StickerArt";
+import { docPalette, recolor } from "../stickers/recolor";
 import ElementContent from "./ElementContent";
 import { PHOTOS, searchPhotos, type Photo } from "../data/photos";
 import type { Element, ImageFx, ShapeKind } from "../types";
@@ -20,19 +21,6 @@ const match = (q: string, ...hay: (string | undefined)[]) => {
 
 /* ------------------------------ Stickers ------------------------------ */
 
-/** Stickers by Style DNA recipe (STYLE_DNA.md), then the general drawer. */
-const STICKER_SETS: { id: string; name: string; joke: string; kinds: string[] }[] = [
-  { id: "nazar", name: "Nazar Battu", joke: "bad vibes, bounced", kinds: ["desi-nimbu-mirchi", "desi-evil-eye", "desi-marigold", "desi-diya", "desi-rangoli", "desi-toran"] },
-  { id: "tapri", name: "Tapri Print", joke: "horn OK please", kinds: ["truck-corner", "stamp-postage", "badge-seal", "badge-ribbon", "badge-ticket", "badge-rosette"] },
-  { id: "stadium", name: "Stadium Halftone", joke: "stats made up, energy real", kinds: ["burst-seal", "scribble-x", "arrow-straight", "texture-halftone", "texture-halftone-radial", "line-double"] },
-  { id: "trippy", name: "Trippy Window", joke: "your laptop believes in you", kinds: ["os-window", "burst-sparkle", "scribble-star", "bubble-thought", "scribble-spiral", "line-squiggle"] },
-  { id: "neo", name: "Neo Brutal Pop", joke: "thick outlines, thicker confidence", kinds: ["badge-pill", "burst-12", "arrow-loop", "badge-tag", "bubble-speech", "arrow-drop"] },
-  { id: "pixel", name: "8-Bit Flex", joke: "press start to stick", kinds: ["pixel-heart", "pixel-star", "bg-pixel", "burst-sparkle"] },
-  { id: "sticker", name: "Sticker Bomb", joke: "more is more", kinds: ["burst-spiky", "burst-boom", "bubble-shout", "tape-masking", "tape-clear", "scribble-circle", "arrow-swoop", "kiwi-happy"] },
-  { id: "glossy", name: "Glossy Bloom", joke: "shiny enough to see your future", kinds: ["chrome-star", "chrome-heart", "chrome-blob", "blob-cloud", "blob-jelly"] },
-  { id: "kiwi", name: "Kiwi", joke: "we're legally required to", kinds: ["kiwi-slice", "kiwi-half", "kiwi-bird", "kiwi-happy", "figure-walker"] },
-];
-
 const BASIC: { k: ShapeKind; name: string; svg: React.ReactNode }[] = [
   { k: "rect", name: "Rectangle", svg: <rect x="14" y="22" width="72" height="56" rx="6" /> },
   { k: "ellipse", name: "Circle", svg: <circle cx="50" cy="50" r="34" /> },
@@ -40,30 +28,98 @@ const BASIC: { k: ShapeKind; name: string; svg: React.ReactNode }[] = [
   { k: "line", name: "Line", svg: <rect x="10" y="46" width="80" height="8" rx="4" /> },
 ];
 
+/** Sticker Library 2.0 tabs (DESIGN.md §17). "Classics" = the v1 drawer. */
+const TABS: { id: string; name: string; joke: string; cats: string[] }[] = [
+  { id: "Coquette", name: "Coquette", joke: "lips, cherries, bows. no notes", cats: ["Coquette"] },
+  { id: "Y2K", name: "Y2K Shiny", joke: "chrome is a personality", cats: ["Y2K"] },
+  { id: "Frames & Paper", name: "Frames & Paper", joke: "scrapbook, but make it legal", cats: ["Frames & Paper"] },
+  { id: "Type", name: "Type", joke: "ransom notes, minus the crime", cats: ["Type"] },
+  { id: "Desi Pop", name: "Desi Pop", joke: "horn OK please", cats: ["Desi Pop", "Desi"] },
+  { id: "Internet", name: "Internet Brain", joke: "too many tabs open", cats: ["Internet"] },
+  { id: "Sport", name: "Stadium", joke: "stats made up, energy real", cats: ["Sport"] },
+  { id: "Pets", name: "Pets & Chaos", joke: "real cats from Pexels, drawn ones from us", cats: ["Pets"] },
+  { id: "Kiwi Moods", name: "Kiwi Moods", joke: "12 moods, 0 chill", cats: ["Kiwi Moods", "Kiwi"] },
+  { id: "Classics", name: "Classics", joke: "blobs, bursts, scribbles, tape", cats: ["Blobs", "Bursts", "Badges", "Scribbles", "Arrows", "Tape & paper", "Bubbles", "Lines", "Texture", "Pixel"] },
+];
+
+type Border = "white" | "none" | "black";
+
 export function StickersTab({ q, setQ }: { q: string; setQ: (v: string) => void }) {
-  const { addElement, doc } = useEditor();
-  const [set, setSet] = useState("all");
-  const add = (kind: string, at?: { x: number; y: number }) => {
-    const el = makeSticker(kind, doc.width, doc.height);
-    addElement(at ? { ...el, x: at.x - el.w / 2, y: at.y - el.h / 2 } : el);
+  const { addElement, doc, selectedId, updateElement } = useEditor();
+  const [tab, setTab] = useState("all");
+  const [border, setBorder] = useState<Border>("white");
+  const [matchOn, setMatchOn] = useState(false);
+  const sel = doc.elements.find((e) => e.id === selectedId);
+  const selSticker = sel?.type === "sticker" ? sel : null;
+  const palette = useMemo(() => docPalette(doc), [doc]);
+
+  const add = (kind: string) => {
+    let el = makeSticker(kind, doc.width, doc.height) as Element;
+    if (el.type === "sticker") {
+      el = { ...el, border: border === "none" ? undefined : border };
+      if (matchOn && palette && STICKER_MAP[kind].uses.length) el = { ...el, ...recolor(el, palette) };
+    }
+    addElement(el);
+  };
+  const pickBorder = (b: Border) => {
+    setBorder(b);
+    if (selSticker) updateElement(selSticker.id, { border: b === "none" ? undefined : b });
+  };
+  const toggleMatch = () => {
+    setMatchOn(!matchOn);
+    if (!matchOn && selSticker && palette) updateElement(selSticker.id, recolor(selSticker, palette));
   };
 
+  const total = STICKERS.filter((d) => !d.kind.startsWith("bg-")).length;
   const groups = useMemo(() => {
-    const known = new Set(STICKER_SETS.flatMap((g) => g.kinds));
-    const rest = { id: "more", name: "Everything else", joke: "the junk drawer, lovingly", kinds: STICKERS.map((s) => s.kind).filter((k) => !known.has(k) && !k.startsWith("bg-")) };
-    return [...STICKER_SETS, rest]
-      .filter((g) => set === "all" || g.id === set)
-      .map((g) => ({ ...g, kinds: g.kinds.filter((k) => STICKER_MAP[k] && match(q, STICKER_MAP[k].name, STICKER_MAP[k].category, ...STICKER_MAP[k].tags, g.name)) }))
-      .filter((g) => g.kinds.length);
-  }, [q, set]);
+    const list = STICKERS.filter((d) => !d.kind.startsWith("bg-"));
+    return TABS.filter((t) => tab === "all" || t.id === tab)
+      .map((t) => ({ ...t, defs: list.filter((d) => t.cats.includes(d.category) && match(q, d.name, d.category, t.name, ...d.tags)) }))
+      .filter((g) => g.defs.length);
+  }, [q, tab]);
 
   return (
     <>
+      <div className="stk-count mono"><b>{total}</b> stickers · <b>0</b> logos · 100% ours</div>
       <div className="chips scroll">
-        <button className={"chip" + (set === "all" ? " on" : "")} onClick={() => setSet("all")}>All</button>
-        {STICKER_SETS.map((g) => <button key={g.id} className={"chip" + (set === g.id ? " on" : "")} onClick={() => setSet(g.id)}>{g.name}</button>)}
+        <button className={"chip nb" + (tab === "all" ? " on" : "")} onClick={() => setTab("all")}>All</button>
+        {TABS.map((t) => <button key={t.id} className={"chip nb" + (tab === t.id ? " on" : "")} onClick={() => setTab(t.id)}>{t.name}</button>)}
       </div>
-      {set === "all" && !q.trim() && (
+      <div className="stk-tools">
+        <div className="seg" role="group" aria-label="Sticker border">
+          {(["white", "none", "black"] as Border[]).map((b) => (
+            <button key={b} className={border === b ? "on" : ""} onClick={() => pickBorder(b)} title={`${b} sticker border`}>
+              <i className={"bd-" + b} />{b === "none" ? "None" : b === "white" ? "White" : "Black"}
+            </button>
+          ))}
+        </div>
+        <button className={"stk-match" + (matchOn ? " on" : "")} onClick={toggleMatch} disabled={!palette} title="Recolour stickers to this design's palette">
+          {palette && <span className="sw">{palette.map((c, i) => <i key={i} style={{ background: c }} />)}</span>}
+          Match design
+        </button>
+      </div>
+      {groups.map((g) => (
+        <section key={g.id} className="stk-group">
+          <h5>{g.name} <span className="stamp-chip">{g.defs.length} ORIGINALS</span></h5>
+          <p className="stk-joke">{g.joke}</p>
+          <div className="stk-grid">
+            {g.defs.map((d) => (
+              <button
+                key={d.kind}
+                className="stk-tile"
+                data-name={d.name}
+                title={`${d.name}: click or drag onto the page`}
+                draggable
+                onDragStart={(e) => { e.dataTransfer.setData("application/x-kiwiw-sticker", d.kind); e.dataTransfer.effectAllowed = "copy"; }}
+                onClick={() => add(d.kind)}
+              >
+                <StickerArt kind={d.kind} fit {...(matchOn && palette && d.uses.length ? { fill: palette[0], accent: palette[1], ink: palette[2] } : {})} />
+              </button>
+            ))}
+          </div>
+        </section>
+      ))}
+      {tab === "all" && !q.trim() && (
         <section className="stk-group">
           <h5>Basic shapes <span>for when you're feeling minimal</span></h5>
           <div className="stk-grid">
@@ -75,34 +131,26 @@ export function StickersTab({ q, setQ }: { q: string; setQ: (v: string) => void 
           </div>
         </section>
       )}
-      {groups.map((g) => (
-        <section key={g.id} className="stk-group">
-          <h5>{g.name} <span>{g.joke}</span></h5>
-          <div className="stk-grid">
-            {g.kinds.map((k) => (
-              <button
-                key={k}
-                className="stk-tile"
-                data-name={STICKER_MAP[k].name}
-                title={`${STICKER_MAP[k].name}: click or drag onto the page`}
-                draggable
-                onDragStart={(e) => { e.dataTransfer.setData("application/x-kiwiw-sticker", k); e.dataTransfer.effectAllowed = "copy"; }}
-                onClick={() => add(k)}
-              >
-                <StickerArt kind={k} fit />
-              </button>
-            ))}
-          </div>
-        </section>
-      ))}
       {!groups.length && (
         <div className="empty">
-          Nothing matches "{q}". We drew 60+ stickers by hand and none of them is that.
+          Nothing matches "{q}". We drew {total} stickers by hand and none of them is that.
           <br /><button className="btn sm" style={{ marginTop: 12 }} onClick={() => setQ("kiwi")}>Show me kiwis</button>
         </div>
       )}
     </>
   );
+}
+
+const LOADING = ["Squeezing pixels…", "Asking the photos to hold still…", "Peeling the kiwi…", "Convincing the server it's a good idea…", "Steeping, like chai…"];
+/** Loading state: the bobbing kiwi plus a joke that changes every visit. */
+export function LoadingJoke() {
+  const [line] = useState(() => LOADING[Math.floor(Math.random() * LOADING.length)]);
+  return <div className="empty loading"><KiwiMini mood="chai" />{line}</div>;
+}
+
+/** Tiny kiwi for empty / loading states. */
+export function KiwiMini({ mood = "judging" }: { mood?: string }) {
+  return <div className="kiwi-mini"><StickerArt kind={`km-${mood}`} fit /></div>;
 }
 
 /** Canvas drop target for dragged stickers (mounted by the Canvas). */
@@ -212,12 +260,18 @@ export function PhotosTab({ q }: { q: string }) {
 
 /* ------------------------------ Magic ------------------------------ */
 
-export function MagicCards({ q, children }: { q: string; children: { write: React.ReactNode; bg: React.ReactNode } }) {
+type SpellBodies = { write: React.ReactNode; translate: React.ReactNode; caption: React.ReactNode; palette: React.ReactNode; resize: React.ReactNode; bg: React.ReactNode };
+
+export function MagicCards({ q, children }: { q: string; children: SpellBodies }) {
   const [open, setOpen] = useState<string | null>(null);
   useEffect(() => { if (q.trim()) setOpen(null); }, [q]);
   const cards = [
-    { id: "write", icon: <PenLine size={18} />, title: "Magic Write", joke: "Writes copy so you can pretend you did.", tone: "lime", words: "magic write copy text rephrase" },
-    { id: "roast", icon: <Flame size={18} />, title: "Roast my design", joke: "Brutally honest. One-click fixes. No therapy included.", tone: "red", words: "roast critique feedback fix" },
+    { id: "write", icon: <PenLine size={18} />, title: "Magic Write", joke: "Six tones, from Corporate to Desi Uncle. Fits the box.", tone: "lime", words: "magic write copy text rephrase tone hinglish genz corporate uncle shark" },
+    { id: "translate", icon: <Languages size={18} />, title: "Translate", joke: "Hindi, Gujarati, Hinglish. The font follows.", tone: "blue", words: "translate hindi gujarati hinglish language font" },
+    { id: "caption", icon: <MessageSquareText size={18} />, title: "Caption Writer", joke: "Instagram, LinkedIn, hashtags. Humility not included.", tone: "pink", words: "caption instagram linkedin hashtags post" },
+    { id: "palette", icon: <Palette size={18} />, title: "Palette from Vibe", joke: "\"Monsoon in Mumbai\" → five colours → whole design.", tone: "lime", words: "palette colour color vibe mood theme" },
+    { id: "resize", icon: <Scaling size={18} />, title: "Magic Resize", joke: "Post to story to banner. Re-laid out, never stretched.", tone: "blue", words: "resize format story banner youtube thumbnail post size" },
+    { id: "roast", icon: <Flame size={18} />, title: "Roast my design", joke: "Gemini roasts. One-click fixes. No therapy included.", tone: "red", words: "roast critique feedback fix" },
     { id: "vibe", icon: <Gauge size={18} />, title: "Vibe slider", joke: "Corporate to Unhinged in one drag.", tone: "pink", words: "vibe slider corporate unhinged tone" },
     { id: "bg", icon: <Eraser size={18} />, title: "Background remover", joke: "Deletes backgrounds, not memories.", tone: "blue", words: "background remover remove bg cutout" },
   ].filter((c) => match(q, c.title, c.words));
@@ -235,10 +289,10 @@ export function MagicCards({ q, children }: { q: string; children: { write: Reac
             <span className="mg-txt"><b>{c.title}</b><span>{c.joke}</span></span>
             <span className="mg-go">{c.id === "roast" || c.id === "vibe" ? "Go →" : open === c.id ? "–" : "+"}</span>
           </button>
-          {open === c.id && <div className="mg-body">{c.id === "write" ? children.write : children.bg}</div>}
+          {open === c.id && <div className="mg-body">{children[c.id as keyof SpellBodies]}</div>}
         </div>
       ))}
-      {!cards.length && <div className="empty">No spell called "{q}". We have four: write, roast, vibe, background.</div>}
+      {!cards.length && <div className="empty">No spell called "{q}". We have eight. None of them is that.</div>}
     </div>
   );
 }

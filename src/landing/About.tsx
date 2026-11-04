@@ -18,7 +18,7 @@ export default function About() {
         </div>
       </div>
       <div className="ab-text">
-        <div className="mono eyebrow">[08] ABOUT THE MAKER</div>
+        <div className="mono eyebrow">[10] ABOUT THE MAKER</div>
         <h2 className="display sec-h2">{ABOUT.heading}</h2>
         <div className="ab-body">{ABOUT.body.map((para, i) => <p key={i}>{para}</p>)}</div>
         <div className="ab-links">

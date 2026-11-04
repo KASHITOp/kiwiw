@@ -34,6 +34,22 @@ import "@fontsource/khand/700.css";
 import "@fontsource/press-start-2p/400.css";
 import "@fontsource/shrikhand/400.css";
 import "@fontsource/bagel-fat-one/400.css";
+// v3: Loud Quotes, scrapbook script, Gujarati, UI chrome
+import "@fontsource/rubik-wet-paint/400.css";
+import "@fontsource/rubik-glitch/400.css";
+import "@fontsource/bowlby-one/400.css";
+import "@fontsource-variable/climate-crisis";
+import "@fontsource-variable/big-shoulders-display/wght";
+import "@fontsource-variable/playfair-display/wght";
+import "@fontsource-variable/playfair-display/wght-italic";
+import "@fontsource/caprasimo/400.css";
+import "@fontsource/gloock/400.css";
+import "@fontsource/kalam/400.css";
+import "@fontsource/kalam/700.css";
+import "@fontsource/great-vibes/400.css";
+import "@fontsource-variable/inter-tight/wght";
+import "@fontsource/mukta-vaani/600.css";
+import "@fontsource/mukta-vaani/800.css";
 
 export type FontGroup = "Display" | "Serif" | "Hand" | "Desi" | "Mono" | "Clean";
 
@@ -70,9 +86,19 @@ export const FONT_KIT: FontDef[] = [
   { family: "Bagel Fat One", label: "Bagel Fat One", group: "Display", weights: [400], defaultWeight: 400, sample: "Glossy Bloom" },
   { family: "Shrikhand", label: "Shrikhand", group: "Display", weights: [400], defaultWeight: 400, sample: "Groovy, baby" },
   { family: "Press Start 2P", label: "Press Start 2P", group: "Display", weights: [400], defaultWeight: 400, sample: "LEVEL 01" },
+  { family: "Bowlby One", label: "Bowlby One", group: "Display", weights: [400], defaultWeight: 400, sample: "FAT CHANCE" },
+  { family: "Climate Crisis Variable", label: "Climate Crisis", group: "Display", weights: [400], defaultWeight: 400, sample: "MELTING" },
+  { family: "Big Shoulders Display Variable", label: "Big Shoulders Display", group: "Display", weights: range(100, 900), defaultWeight: 900, sample: "STACKED CAPS" },
+  { family: "Caprasimo", label: "Caprasimo", group: "Display", weights: [400], defaultWeight: 400, sample: "Groovy Sunday" },
+  { family: "Rubik Wet Paint", label: "Rubik Wet Paint", group: "Display", weights: [400], defaultWeight: 400, sample: "DRIP DRIP" },
+  { family: "Rubik Glitch", label: "Rubik Glitch", group: "Display", weights: [400], defaultWeight: 400, sample: "ERROR 404" },
   { family: "Instrument Serif", label: "Instrument Serif", group: "Serif", weights: [400], defaultWeight: 400, italic: true, sample: "A quiet headline" },
   { family: "Fraunces Variable", label: "Fraunces", group: "Serif", weights: range(100, 900), defaultWeight: 400, italic: true, sample: "Fancy, but fun" },
   { family: "DM Serif Display", label: "DM Serif Display", group: "Serif", weights: [400], defaultWeight: 400, italic: true, sample: "The Sunday Issue" },
+  { family: "Playfair Display Variable", label: "Playfair Display", group: "Serif", weights: range(400, 900), defaultWeight: 700, italic: true, sample: "Darling, no." },
+  { family: "Gloock", label: "Gloock", group: "Serif", weights: [400], defaultWeight: 400, sample: "Old Money" },
+  { family: "Great Vibes", label: "Great Vibes", group: "Hand", weights: [400], defaultWeight: 400, sample: "favorite person" },
+  { family: "Kalam", label: "Kalam", group: "Hand", weights: [400, 700], defaultWeight: 700, sample: "चाय पहले" },
   { family: "Caveat Variable", label: "Caveat", group: "Hand", weights: range(400, 700), defaultWeight: 600, sample: "note to self" },
   { family: "Permanent Marker", label: "Permanent Marker", group: "Hand", weights: [400], defaultWeight: 400, sample: "FRESH PAINT" },
   { family: "Gochi Hand", label: "Gochi Hand", group: "Hand", weights: [400], defaultWeight: 400, sample: "lol ok", comicEnergy: true },
@@ -82,8 +108,10 @@ export const FONT_KIT: FontDef[] = [
   { family: "Yatra One", label: "Yatra One", group: "Desi", weights: [400], defaultWeight: 400, sample: "चाय टपरी" },
   { family: "Khand", label: "Khand", group: "Desi", weights: [500, 600, 700], defaultWeight: 700, sample: "धमाकेदार SALE" },
   { family: "Tiro Devanagari Hindi", label: "Tiro Devanagari Hindi", group: "Desi", weights: [400], defaultWeight: 400, italic: true, sample: "शुभ दीपावली" },
+  { family: "Mukta Vaani", label: "Mukta Vaani (ગુજરાતી)", group: "Desi", weights: [600, 800], defaultWeight: 800, sample: "કેમ છો?" },
   { family: "JetBrains Mono", label: "JetBrains Mono", group: "Mono", weights: range(400, 800), defaultWeight: 600, sample: "SEEDS 072" },
   { family: "Space Mono", label: "Space Mono", group: "Mono", weights: [400, 700], defaultWeight: 700, italic: true, sample: "ISSUE 07" },
+  { family: "Inter Tight Variable", label: "Inter Tight", group: "Clean", weights: range(400, 900), defaultWeight: 600, sample: "Tight and tidy" },
   { family: "Inter", label: "Inter", group: "Clean", weights: range(400, 800), defaultWeight: 600, sample: "Plain and clear" },
 ];
 

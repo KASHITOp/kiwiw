@@ -71,6 +71,10 @@ export interface TextElement extends ElementBase {
   curve?: number;
   /** Wave warp, −100…100 (% of a third of the font size). */
   wave?: number;
+  /** Vertical stretch (>1) or squash (<1) of the glyphs, Loud Quotes. */
+  stretch?: number;
+  /** Riso ink bleed: a soft halo in this colour around the glyphs. */
+  bleed?: string;
   /** Glossy bubble fill: vertical gradient with an ink outline layer. */
   glossy?: { from: string; to: string; ink: string } | null;
   /** Role hint used by Juice It, the Vibe slider and Roast. */
@@ -106,6 +110,8 @@ export interface StickerElement extends ElementBase {
   accent: string;
   ink: string;
   flipX?: boolean;
+  /** Die-cut sticker border (Sticker Library 2.0). */
+  border?: "white" | "black" | "none";
 }
 
 export type Element = TextElement | ShapeElement | ImageElement | StickerElement;

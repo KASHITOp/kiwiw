@@ -279,3 +279,110 @@ Flat is the enemy. Every effect is data on the element (so it saves, undoes, exp
 **Panel:** with an element selected, the right panel shows an **Effects** gallery grouped as above. Every tile is a **live preview of the selected element** with that effect applied (not an icon). Clicking a tile toggles the effect, and its controls (sliders, colours) appear under the gallery. Active tiles get the lime ring.
 
 **Collision check (§16):** anything above a text element in z-order (stickers, filled shapes, or text under 35% of its size) must not cover that text's measured ink box. `src/dna/collide.ts` nudges the element up to 30% of the page in 16 directions, or shrinks it to 45% towards its far corner. It runs on every Juice result and every hero at freeze time. Deliberate contact (the Swiss walker, timeline digits) is marked `allowOverlap`. `/dev/kit?view=collide` lists raw collisions.
+
+## 17 — Sticker Library 2.0
+
+The aesthetic mixes a coquette/Y2K scrapbook with desi pop: crimson, pink,
+cream, silver chrome and yellow-black signboards, all with white die-cut
+borders.
+
+- **Sets.** There are 9 new categories on top of the classics:
+  - Coquette, Y2K Shiny, Frames & Paper.
+  - Type: ransom letters A–Z plus phrases.
+  - Desi Pop, Internet Brain, Stadium.
+  - Pets & Chaos: Pexels cat cutouts, line art, pixel pets.
+  - Kiwi Moods: 12 moods.
+  - Total: **268 stickers** (`src/stickers/v2/*`).
+- **Builder.** `S(kind, name, category, tags, [fill, accent, ink], Art, opts)`
+  lives in `v2/kit.tsx`. Shared paths: `HEART`, `sparkle()`, lips, `Gloss`,
+  `Chrome`, `Dots`, and `T` for SVG text.
+- **Border.** `StickerElement.border` is `white`, `black` or `none`. It renders
+  as stacked drop-shadows (`cutoutFilter`), so it hugs the real silhouette and
+  survives export. 2.0 stickers default to white; flat badges, paper and
+  stamps default to none.
+- **Match design.** `docPalette(doc)` picks the loudest colour, a contrasting
+  second and the darkest ink from the page. It powers the panel toggle and the
+  "Match my design's colours" action in Properties.
+- **Panel.** It has:
+  - a count line ("268 stickers · 0 logos");
+  - neo-brutal category pills;
+  - a border segmented control;
+  - a Match design toggle with swatches;
+  - postage-stamp count chips ("25 ORIGINALS");
+  - a one-line joke per set;
+  - wobble on hover;
+  - click to add, or drag onto the page.
+- **Rules.**
+  - No logos, brands, celebrities, characters, film titles or lyrics.
+  - Every phrase is our own.
+  - Photo stickers come only from Pexels/Unsplash and are credited in
+    LICENSES.md.
+  - Text inside a sticker must fit its shape at 160px tile size; check it
+    with `/dev/kit?view=stickers&cat=…`.
+
+## 18 — Editor chrome v3: personality
+
+The editor chrome should look tidy but never generic: it borrows from print
+shops, stickers and hardware.
+
+- **UI fonts.** Bricolage Grotesque for headings, Inter Tight for UI (scoped
+  to `.editor`), JetBrains Mono for labels and numbers.
+- **Panels.** Deep kiwi-black (#0E110B) with a subtle paper grain (an inline
+  SVG noise texture). Section headers use Bricolage 800 with a hand-drawn
+  lime squiggle underline. Counts are dashed postage-stamp chips tilted −2°
+  ("86 ORIGINALS", "25 ORIGINALS").
+- **Chips.** Chunky neo-brutal pills with a 2px ink outline and a hard 2px
+  offset shadow. Pressed state pushes in by 2px; active is a lime fill.
+- **Template cards.** There is no grey frame: the design is the card.
+  - It gets a 2px ink outline and a 4px hard offset shadow.
+  - Each card is tilted −1°, +1° or +0.5°, and straightens and lifts on hover.
+  - A peel-off cream sticker label (dog-eared corner, tilted −3°) shows the
+    funny name and the hover joke.
+- **Tooltips.** Sticker labels: cream, black outline, hard shadow, tilted −2°.
+- **Top bar.**
+  - Corporate↔Unhinged is a hardware fader: a grooved slot with tick marks
+    and a ridged rectangular cap.
+  - Roast's flame flickers, faster on hover or when open.
+  - Export is a rubber stamp with a double inset border, tilted −1.5°, that
+    presses in when clicked.
+- **Empty and loading states.** Each one shows the bobbing kiwi
+  (`/kiwi-mini.svg`, or `KiwiMini` for a mood) plus a joke.
+- **Motion.** All of it respects `prefers-reduced-motion`.
+
+## 19 — Magic tools v3
+
+Every tool is a bold card in the Magic panel with a one-line joke and a
+rotating loading line. None of them blocks the UI. Each one asks
+`/api/kiwi-ai` (Gemini, with the key server-side only, 22s budget, and the
+same model fallback chain as Juice). Any failure (204) silently uses the
+built-in version. A small "GEMINI" or "BUILT-IN" chip says which one
+answered.
+
+- **Magic Write.** Six tones: Corporate, Unhinged, Hinglish, Gen-Z, Desi
+  Uncle, Shark Tank. It rewrites the selected text (or adds a new one) and
+  is length-aware: a word budget comes from the original, then `fitText`
+  shrinks the new copy to stay inside its box.
+- **Translate.** Hindi, Gujarati or Hinglish. The font switches
+  automatically: Rozha One for Hindi headlines, Tiro Devanagari for Hindi
+  body, Mukta Vaani for Gujarati. The offline fallback is a 20-word poster
+  phrasebook; when that isn't enough, it says so instead of guessing.
+- **Caption Writer.** An Instagram caption, a LinkedIn post and 8 hashtags,
+  written from the design's own text. Copy buttons.
+- **Palette from Vibe.** "Monsoon in Mumbai" gives 5 colours (background,
+  ink, three accents), applied by role. The fallback is 10 named vibe
+  palettes plus a hash-seeded harmony. It can be undone.
+- **Magic Resize.** Post, portrait, story, LinkedIn banner, YouTube
+  thumbnail and LinkedIn post, each with a live preview (`src/ai/resize.ts`):
+  - Backdrops and edge-to-edge strips stretch to the new page.
+  - Texts group with the pill or badge behind them; same-row texts and
+    same-size sticker clusters (ransom words) move as one unit.
+  - A similar aspect ratio scales each unit around its anchor.
+  - A big aspect jump reflows: the hero (photo, else largest sticker) gets
+    a zone, its riders travel with it, and the type is re-stacked beside or
+    below it.
+  - Stacking order is preserved, then collisions are resolved.
+  - The top-bar Resize menu uses the same function when the page has
+    content.
+- **Roast v2.** The rule-based roasts and one-click fixes show instantly.
+  Gemini adds three design-specific roasts when it arrives. The OpenAI call
+  is gone.

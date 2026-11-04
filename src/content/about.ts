@@ -15,7 +15,7 @@ export const ABOUT = {
   links: [
     { label: "LinkedIn", href: "https://www.linkedin.com/in/kartavyaapatel" },
     { label: "GitHub", href: "https://github.com/KASHITOp" },
-    { label: "Email", href: "mailto:hello@example.com" }, // placeholder: swap for your real address
+    { label: "Email", href: "mailto:kartavyaa099@gmail.com" }, // placeholder: swap for your real address
   ],
   stats: [
     { k: "Chai consumed", v: "classified" },

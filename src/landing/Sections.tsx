@@ -12,7 +12,7 @@ import type { Element, KiwiwDoc } from "../types";
 /* ------------------------------ ticker ------------------------------ */
 
 const LINES = [
-  "No kiwis were harmed", "Comic Sans is banned", "Chai-powered", "10 styles, 0 design degrees",
+  "No kiwis were harmed", "Comic Sans is banned", "Chai-powered", "11 styles, 0 design degrees", "268 stickers, 0 logos",
   "Nazar battu included", "Your poster, but louder", "Made in Bangalore, conceived at Surat airport",
   "Halftone is a personality", "Fonts with opinions", "Horn OK please",
 ];
@@ -116,7 +116,7 @@ export function RoastDemo() {
         <span className="mono rd-score">{stage === "juiced" ? "SCORE 96 · FRESHLY SQUEEZED" : `SCORE ${roast.score} · ${verdict(roast.score).toUpperCase()}`}</span>
       </div>
       <div className="rd-text">
-        <div className="mono eyebrow">[07] ROAST MY DESIGN</div>
+        <div className="mono eyebrow">[09] ROAST MY DESIGN</div>
         <h2 className="display sec-h2">We roast posters, not people.</h2>
         <ol className="rd-lines">
           {lines.map((l, i) => (

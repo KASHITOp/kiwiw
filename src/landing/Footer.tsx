@@ -18,7 +18,7 @@ export default function Footer() {
         <div className="ft-cta">
           <KiwiSlice R={120} detail={0.6} pad={12} className="ft-slice" />
           <div>
-            <div className="mono eyebrow">[09] LAST SLICE</div>
+            <div className="mono eyebrow">[11] LAST SLICE</div>
             <h2 className="display ft-h2">Cut it open.</h2>
             <p className="ft-sub">Your plain idea is in there somewhere. Bring it.</p>
             <Link to="/editor" className="k-btn" onClick={() => newDoc(1080, 1080)}>Open the editor →</Link>

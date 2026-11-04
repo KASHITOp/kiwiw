@@ -64,6 +64,7 @@ export function makeSticker(kind: string, docW: number, docH: number): NewEl {
     type: "sticker", kind, name: def.name,
     x: (docW - w) / 2, y: (docH - h) / 2, w, h, rotation: 0, opacity: 1,
     fill: def.colors.fill, accent: def.colors.accent, ink: def.colors.ink,
+    ...(def.border && def.border !== "none" ? { border: def.border } : {}),
   };
   return el as NewEl;
 }

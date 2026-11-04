@@ -364,3 +364,62 @@
 .ba .sec-head { margin-bottom: 0; }
 .ba-box { width: 100%; }
 @media (max-width: 860px) { .ba { grid-template-columns: 1fr; gap: 32px; } }
+
+/* ---------- Landing v5: DNA 11, sticker drawer, magic demos ---------- */
+.dna-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+@media (max-width: 1000px) { .dna-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .dna-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.dna-new { position: absolute; top: 10px; right: 10px; z-index: 2; padding: 4px 8px; border: 2px solid #050604; border-radius: 6px; background: #D8F27A; color: #0B0D08; font: 800 11px var(--mono, "JetBrains Mono"); transform: rotate(6deg); box-shadow: 2px 2px 0 #050604; }
+.dna-yours { display: flex; flex-direction: column; justify-content: center; gap: 10px; padding: 18px; border-radius: 14px; border: 2px dashed rgba(216, 242, 122, .45); color: var(--fg, #F2F5E6); text-decoration: none; min-height: 100%; }
+.dna-yours b { font-size: clamp(22px, 2vw, 30px); line-height: 1; letter-spacing: -0.03em; }
+.dna-yours span { font-size: 12px; color: #D8F27A; }
+.dna-yours:hover { background: rgba(216, 242, 122, .06); }
+
+.sd-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; flex-wrap: wrap; }
+.sd-count { display: flex; flex-direction: column; align-items: flex-end; padding: 16px 20px; border: 2px dashed #D8F27A; border-radius: 6px; transform: rotate(-3deg); margin-bottom: clamp(40px, 6vw, 72px); }
+.sd-count b { font-size: clamp(56px, 7vw, 96px); line-height: .85; color: #8BD630; letter-spacing: -0.05em; }
+.sd-count span { font-size: 12px; letter-spacing: .12em; color: #D8F27A; }
+.sd-box { position: relative; height: clamp(440px, 52vw, 620px); border-radius: 22px; background: #F4E7D7; background-image: radial-gradient(rgba(11,13,8,.08) 1.2px, transparent 1.2px); background-size: 22px 22px; overflow: hidden; touch-action: none; box-shadow: inset 0 0 0 3px #050604, 8px 8px 0 #050604; }
+.sd-piece { position: absolute; width: clamp(70px, 9vw, 130px); aspect-ratio: 1; transform: translate(-50%, -50%) rotate(var(--r)) scale(var(--s)); transition: left 700ms cubic-bezier(.2,1.3,.3,1), top 700ms cubic-bezier(.2,1.3,.3,1), transform 700ms cubic-bezier(.2,1.3,.3,1); cursor: grab; filter: drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff) drop-shadow(0 3px 0 #fff) drop-shadow(0 -3px 0 #fff) drop-shadow(0 6px 8px rgba(0,0,0,.25)); user-select: none; }
+.sd-piece:active { cursor: grabbing; transition: none; z-index: 5; }
+.sd-piece svg { pointer-events: none; }
+.sd-actions { position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%); display: flex; gap: 10px; z-index: 6; }
+.k-btn.ghost { background: #0B0D08; color: #F2F5E6; }
+@media (prefers-reduced-motion: reduce) { .sd-piece { transition: none; } }
+
+.mt-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+@media (max-width: 1000px) { .mt-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .mt-grid { grid-template-columns: 1fr; } }
+.mt-card { display: flex; flex-direction: column; gap: 14px; padding: 20px; border-radius: 18px; background: #12150E; border: 2px solid #050604; box-shadow: 6px 6px 0 #050604, inset 0 0 0 1px rgba(216,242,122,.12); min-height: 300px; color: var(--fg, #F2F5E6); text-decoration: none; }
+.mt-card header { display: flex; flex-direction: column; gap: 4px; }
+.mt-card header b { font-size: 26px; letter-spacing: -0.03em; line-height: 1; }
+.mt-card header span { font-size: 12px; color: #9AA28A; }
+.mt-card:nth-child(3n+2) { transform: rotate(.6deg); }
+.mt-card:nth-child(3n) { transform: rotate(-.5deg); }
+.mt-demo { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 10px; padding: 16px; border-radius: 12px; background: #F4E7D7; color: #0B0D08; overflow: hidden; }
+.mt-in { font-size: 12px; color: #5A4A30; }
+.mt-tone { align-self: flex-start; padding: 3px 8px; border: 2px solid #050604; border-radius: 6px; background: #D8F27A; font-size: 11px; font-weight: 800; box-shadow: 2px 2px 0 #050604; }
+.mt-out { margin: 0; font: 700 18px/1.25 "Inter Tight Variable", "Inter", sans-serif; animation: mt-in .35s cubic-bezier(.2,1.3,.4,1) both; }
+.mt-out.big { font-size: clamp(22px, 2.2vw, 30px); line-height: 1.1; color: #C8102E; }
+@keyframes mt-in { from { opacity: 0; transform: translateY(8px) rotate(-1deg); } }
+.mt-pal { flex-direction: row; align-items: center; gap: 14px; }
+.mt-thumb { position: relative; width: 100%; max-height: 190px; border-radius: 6px; overflow: hidden; outline: 2px solid #050604; animation: mt-in .4s both; }
+.mt-pal .mt-thumb { width: 42%; flex: none; }
+.mt-side { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.mt-sw { display: flex; border: 2px solid #050604; border-radius: 6px; overflow: hidden; }
+.mt-sw i { flex: 1; height: 28px; transition: background .4s; }
+.mt-name { font: 800 16px "Bricolage Grotesque Variable", sans-serif; }
+.mt-rs { align-items: center; }
+.mt-stage { height: 180px; width: 100%; display: grid; place-items: center; }
+.mt-rs .mt-thumb { height: auto; width: auto; max-width: 100%; max-height: 180px; }
+.mt-rs .mt-thumb[style*="1584"] { width: 100%; }
+.mt-rs .mt-thumb[style*="1280"] { width: 92%; }
+.mt-rs .mt-thumb[style*="1920"], .mt-rs .mt-thumb[style*="1350"] { height: 180px; }
+.mt-cap p { margin: 0; font-size: 13.5px; line-height: 1.45; }
+.mt-cap b { display: inline-block; margin-right: 6px; padding: 1px 6px; border-radius: 4px; background: #0B0D08; color: #F4E7D7; font: 800 10.5px "JetBrains Mono", monospace; }
+.mt-cap .mono { font-size: 12px; color: #1D3FD8; }
+.mt-cta { justify-content: center; border-style: dashed; border-color: rgba(216,242,122,.5); background: transparent; box-shadow: none; }
+.mt-cta b { font-size: 26px; line-height: 1.05; letter-spacing: -0.03em; }
+.mt-cta span { color: #D8F27A; font-size: 12px; }
+.mt-cta:hover { background: rgba(216,242,122,.05); }
+@media (max-width: 620px) { .sd-actions { bottom: 12px; gap: 6px; } .sd-actions .k-btn { white-space: nowrap; font-size: 14px; padding: 10px 14px; } .sd-piece { width: 64px; } }

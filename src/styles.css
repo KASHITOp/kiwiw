@@ -512,3 +512,127 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
 .up-drop span:last-child { font: 11px var(--font-mono); color: var(--muted); }
 .up-ic { width: 52px; height: 52px; display: grid; place-items: center; border-radius: 16px; background: var(--accent); color: #0B0D08; border: 2px solid #0B0D08; box-shadow: 4px 4px 0 #0B0D08; margin-bottom: 6px; }
 .up-note { text-align: center; }
+
+/* ---------- Sticker Library 2.0 panel (DESIGN.md §17) ---------- */
+.stk-count { font: 11px var(--font-mono); color: var(--muted); margin: -2px 0 10px; }
+.stk-count b { color: var(--accent); font-weight: 800; }
+.stamp-chip { display: inline-block; padding: 3px 7px 2px; border: 1.5px dashed currentColor; border-radius: 3px; color: var(--accent) !important; font: 800 9.5px var(--font-mono) !important; letter-spacing: 0.08em; transform: rotate(-2deg); background: rgba(139, 214, 48, 0.06); }
+.stk-joke { margin: -4px 0 10px; font: 11px var(--font-mono); color: var(--faint); }
+.stk-tools { display: flex; gap: 8px; align-items: center; margin: 0 0 16px; flex-wrap: wrap; }
+.seg { display: inline-flex; border: 2px solid #050604; border-radius: 10px; overflow: hidden; box-shadow: 2px 2px 0 #050604; background: var(--g-2); }
+.seg button { display: inline-flex; align-items: center; gap: 5px; height: 28px; padding: 0 9px; border: 0; background: transparent; color: var(--muted); font: 700 11px var(--font); cursor: pointer; }
+.seg button + button { border-left: 2px solid #050604; }
+.seg button.on { background: var(--accent); color: #0B0D08; }
+.seg i { width: 11px; height: 11px; border-radius: 50%; background: #F2479B; flex: none; }
+.seg i.bd-white { box-shadow: 0 0 0 2.5px #fff; }
+.seg i.bd-black { box-shadow: 0 0 0 2.5px #111; outline: 1px solid #555; }
+.stk-match { display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 10px; border: 2px solid #050604; border-radius: 10px; background: var(--g-2); color: var(--text); font: 700 11px var(--font); box-shadow: 2px 2px 0 #050604; cursor: pointer; transition: transform 80ms, box-shadow 80ms; }
+.stk-match:active, .chip.nb:active { transform: translate(2px, 2px); box-shadow: 0 0 0 #050604; }
+.stk-match.on { background: var(--accent); color: #0B0D08; }
+.stk-match:disabled { opacity: 0.45; cursor: not-allowed; }
+.stk-match .sw { display: inline-flex; gap: 2px; }
+.stk-match .sw i { width: 6px; height: 14px; border-radius: 2px; outline: 1px solid rgba(0,0,0,.4); }
+.chip.nb { height: 30px; padding: 0 12px; border: 2px solid #050604; background: var(--g-2); color: var(--text); font: 700 11.5px var(--font); box-shadow: 2px 2px 0 #050604; transition: transform 80ms, box-shadow 80ms, background 120ms; }
+.chip.nb:hover { background: var(--g-3, #2a2f22); color: var(--text); border-color: #050604; }
+.chip.nb.on { background: var(--accent); color: #0B0D08; border-color: #050604; }
+.chips.scroll:has(.chip.nb) { padding: 2px 16px 6px 2px; }
+.kiwi-mini { width: 64px; height: 64px; margin: 0 auto 10px; animation: kiwi-bob 2.4s ease-in-out infinite; }
+@keyframes kiwi-bob { 50% { transform: translateY(-4px) rotate(-4deg); } }
+@media (prefers-reduced-motion: reduce) { .kiwi-mini { animation: none; } }
+
+/* ---------- Editor chrome v3: personality (DESIGN.md §18) ---------- */
+.editor { --font: "Inter Tight Variable", "Inter", system-ui, sans-serif; --ink-hard: #050604; --paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .95 0 0 0 0 1 0 0 0 0 .85 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E"); }
+.editor .lp, .editor .side { background-color: #0E110B; background-image: var(--paper-grain); }
+
+/* section headers: display face + hand-drawn squiggle */
+.editor .side h4, .editor .lp h4, .stk-group h5, .pnl-h {
+  font-family: "Bricolage Grotesque Variable", var(--font); font-size: 15px; font-weight: 800; letter-spacing: -0.015em; text-transform: none; color: var(--text);
+  padding-bottom: 9px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='8' viewBox='0 0 64 8'%3E%3Cpath d='M1 5c5-4 8-4 13 0s8 4 13 0 8-4 13 0 8 4 13 0 7-3 10-1' fill='none' stroke='%238BD630' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat left bottom / 64px 8px;
+}
+.editor .side .sub-h, .editor .lp .sub-h { font-family: "Bricolage Grotesque Variable", var(--font); font-size: 14px; font-weight: 800; text-transform: none; letter-spacing: -0.01em; color: var(--muted); }
+
+/* counts as postage-stamp chips */
+.lp-head span { padding: 3px 7px 2px; border: 1.5px dashed var(--accent); border-radius: 3px; color: var(--accent) !important; font-weight: 800; transform: rotate(-2deg); background: rgba(139, 214, 48, 0.06); }
+
+/* neo-brutal chips everywhere in the editor */
+.editor .chips .chip { height: 30px; padding: 0 12px; border: 2px solid var(--ink-hard); background: var(--g-2); color: var(--text); font: 700 11.5px var(--font); letter-spacing: 0; box-shadow: 2px 2px 0 var(--ink-hard); transition: transform 80ms, box-shadow 80ms, background 120ms; }
+.editor .chips .chip:hover { background: #22281A; border-color: var(--ink-hard); }
+.editor .chips .chip:active { transform: translate(2px, 2px); box-shadow: 0 0 0 var(--ink-hard); }
+.editor .chips .chip.on { background: var(--accent); color: #0B0D08; }
+.editor .chips { padding: 2px 2px 4px; }
+
+/* template cards: the design IS the card */
+.tcard { background: transparent; border: 0; overflow: visible; --tilt: -1deg; transform: rotate(var(--tilt)); transition: transform 180ms cubic-bezier(.2,1.4,.4,1); }
+.tcard:nth-child(3n+2) { --tilt: 1deg; }
+.tcard:nth-child(3n) { --tilt: 0.5deg; }
+.tcard:hover, .tcard:focus-visible { transform: rotate(0) translateY(-3px); box-shadow: none; border: 0; }
+.tcard-frame { border-radius: 4px; outline: 2px solid var(--ink-hard); box-shadow: 4px 4px 0 var(--ink-hard); }
+.tcard:hover .tcard-frame { box-shadow: 6px 7px 0 var(--ink-hard); }
+.tcard.current .tcard-frame { outline-color: var(--accent); box-shadow: 4px 4px 0 var(--accent); }
+.tcard-frame .tpl-render { box-shadow: none; }
+/* peel-off sticker label */
+.tcard-label { left: 6px; right: auto; bottom: 8px; max-width: calc(100% - 12px); padding: 6px 9px 6px 8px; background: #FFF4DE; border: 2px solid var(--ink-hard); border-radius: 6px 6px 6px 0; box-shadow: 2px 2px 0 var(--ink-hard); transform: rotate(-3deg) translateY(10px) scale(.92); transform-origin: left bottom; opacity: 0; clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%); transition: opacity 0.15s, transform 0.22s cubic-bezier(.2,1.5,.4,1); }
+.tcard-label::after { content: ""; position: absolute; right: 0; top: 0; width: 10px; height: 10px; background: linear-gradient(225deg, transparent 50%, #E2D3B5 50%); }
+.tcard:hover .tcard-label, .tcard:focus-visible .tcard-label { opacity: 1; transform: rotate(-3deg); }
+.tcard-label b { color: #0B0D08 !important; font-family: "Bricolage Grotesque Variable", var(--font); font-weight: 800; font-size: 12.5px; }
+.tcard-label span { color: #5A4A30 !important; white-space: normal !important; font-family: var(--font) !important; font-size: 10.5px !important; line-height: 1.3; }
+.tcard.mine .tcard-label span { font-family: var(--font-mono) !important; }
+
+/* tooltips as sticker labels */
+.rail-btn[data-tip]::after { background: #FFF4DE; color: #0B0D08; border: 2px solid var(--ink-hard); border-radius: 6px; box-shadow: 2px 2px 0 var(--ink-hard); font: 700 11.5px var(--font); letter-spacing: 0; transform: translateY(-50%) rotate(-2deg); }
+.stk-tile::after { background: #FFF4DE; color: #0B0D08; border: 2px solid var(--ink-hard); box-shadow: 2px 2px 0 var(--ink-hard); font: 700 10.5px var(--font); transform: translate(-50%, 100%) rotate(-2deg); }
+
+/* top bar: Corporate <-> Unhinged as a hardware fader */
+.vibe { height: 36px; border: 2px solid var(--ink-hard); border-radius: 8px; background: linear-gradient(#1C2116, #12160D); box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 2px 2px 0 var(--ink-hard); }
+.vibe input[type="range"] { width: 132px; height: 8px; border-radius: 3px; background: repeating-linear-gradient(90deg, transparent 0 32px, rgba(242,245,230,.35) 32px 33px), linear-gradient(#050604, #1A1F13); box-shadow: inset 0 1px 2px #000; }
+.vibe input[type="range"]::-webkit-slider-thumb { width: 14px; height: 26px; border-radius: 3px; border: 2px solid var(--ink-hard); background: repeating-linear-gradient(#E6E9DD 0 2px, #9DA38F 2px 4px); box-shadow: 0 2px 0 var(--ink-hard), 0 0 0 1px rgba(255,255,255,.2); }
+.vibe input[type="range"]::-moz-range-thumb { width: 10px; height: 22px; border-radius: 3px; border: 2px solid var(--ink-hard); background: repeating-linear-gradient(#E6E9DD 0 2px, #9DA38F 2px 4px); }
+.vibe-end { font-weight: 700; color: var(--muted); }
+
+/* roast: flame flicker */
+.roast-btn .flame { transform-origin: 50% 90%; color: #FF7A5C; }
+.roast-btn:not(:disabled) .flame { animation: flame 1.6s ease-in-out infinite; }
+.roast-btn:hover .flame, .roast-btn.on .flame { animation-duration: .45s; color: #FF3B1F; }
+@keyframes flame { 0%, 100% { transform: scale(1) rotate(-3deg); } 25% { transform: scale(1.08, .94) rotate(2deg); } 50% { transform: scale(.95, 1.1) rotate(-1deg); } 75% { transform: scale(1.05) rotate(3deg); } }
+
+/* export: a rubber stamp */
+.stamp-btn { border: 2px solid var(--ink-hard) !important; box-shadow: inset 0 0 0 2px var(--accent), inset 0 0 0 3.5px rgba(5,6,4,.55), 3px 3px 0 var(--ink-hard) !important; text-transform: uppercase; letter-spacing: .06em; font-weight: 800; transform: rotate(-1.5deg); transition: transform 90ms, box-shadow 90ms; }
+.stamp-btn:hover { transform: rotate(0); }
+.stamp-btn:active { transform: translate(3px, 3px) rotate(0); box-shadow: inset 0 0 0 2px var(--accent), inset 0 0 0 3.5px rgba(5,6,4,.55), 0 0 0 var(--ink-hard) !important; }
+
+/* every empty / loading state: kiwi + joke */
+.editor .empty::before { content: ""; display: block; width: 58px; height: 58px; margin: 0 auto 10px; background: url("/kiwi-mini.svg") center / contain no-repeat; animation: kiwi-bob 2.4s ease-in-out infinite; }
+.editor .empty.loading::before { display: none; }
+.empty.loading { color: var(--muted); font-family: var(--font-mono); font-size: 12px; }
+@media (prefers-reduced-motion: reduce) { .roast-btn .flame, .editor .empty::before { animation: none !important; } .tcard { transform: none; } }
+.tcard-label b { white-space: normal !important; overflow: visible !important; }
+
+/* ---------- Magic tools v3 (DESIGN.md §19) ---------- */
+.mg-tones { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
+.mg-tone { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 9px 10px; border: 2px solid #050604; border-radius: 10px; background: var(--g-2); color: var(--text); box-shadow: 2px 2px 0 #050604; text-align: left; cursor: pointer; transition: transform 80ms, box-shadow 80ms, background 120ms; }
+.mg-tone b { font: 800 13px "Bricolage Grotesque Variable", var(--font); }
+.mg-tone span { font: 10.5px var(--font-mono); color: var(--faint); }
+.mg-tone:hover:not(:disabled) { background: #22281A; }
+.mg-tone:active { transform: translate(2px, 2px); box-shadow: none; }
+.mg-tone:disabled { opacity: .5; cursor: wait; }
+.mg-brew { display: flex; align-items: center; gap: 8px; margin: 10px 0 0; font: 12px var(--font-mono); color: var(--accent); }
+.mg-done { margin: 10px 0 0; font: 11px var(--font-mono); color: var(--muted); }
+.mg-via { display: inline-block; margin-left: 4px; padding: 2px 6px; border-radius: 4px; border: 1.5px dashed var(--faint); font: 800 9.5px var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--faint); }
+.mg-via.ai { border-color: var(--accent); color: var(--accent); }
+.mg-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 12px; }
+.mg-caps { display: grid; gap: 10px; margin-top: 12px; }
+.mg-cap { padding: 10px; border: 2px solid #050604; border-radius: 10px; background: #FFF4DE; color: #0B0D08; box-shadow: 2px 2px 0 #050604; }
+.mg-cap b { display: block; font: 800 12px "Bricolage Grotesque Variable", var(--font); margin-bottom: 4px; }
+.mg-cap p { margin: 0 0 8px; font-size: 12.5px; line-height: 1.45; white-space: pre-line; }
+.mg-cap p.mono { font: 11px var(--font-mono); color: #3A2E10; }
+.mg-cap .btn { background: #0B0D08; color: #FFF4DE; border-color: #0B0D08; }
+.mg-pal { margin-top: 12px; font-size: 13px; }
+.mg-pal b { font-family: "Bricolage Grotesque Variable", var(--font); font-weight: 800; }
+.mg-pal .sw { display: flex; margin-top: 8px; border: 2px solid #050604; border-radius: 8px; overflow: hidden; box-shadow: 2px 2px 0 #050604; }
+.mg-pal .sw i { flex: 1; height: 34px; }
+.mg-sizes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+.mg-size { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; padding: 8px; border: 2px solid #050604; border-radius: 10px; background: var(--g-2); color: var(--text); box-shadow: 2px 2px 0 #050604; cursor: pointer; text-align: left; transition: transform 120ms; }
+.mg-size:hover { transform: rotate(-1.5deg) translateY(-2px); }
+.mg-size-art { position: relative; width: 100%; max-height: 120px; display: block; overflow: hidden; border-radius: 4px; outline: 1.5px solid #050604; }
+.mg-size b { font: 800 12px "Bricolage Grotesque Variable", var(--font); }
+.mg-size span:last-child { font: 10px var(--font-mono); color: var(--faint); }

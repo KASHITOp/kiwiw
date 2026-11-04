@@ -5,17 +5,19 @@ import { DEFAULT_IDEA, RECIPES, RECIPE_ORDER, ensureJuiceFonts, juiceRecipe, typ
 import Thumb from "../editor/Thumb";
 
 const SWATCH: Record<RecipeKey, string[]> = {
-  nazar: ["#F2479B", "#FFD23F", "#1D3FD8", "#B3122E"], tapri: ["#D62828", "#0F7C7A", "#F7931E", "#FFF3D6"],
+  nazar: ["#F2479B", "#FFD23F", "#1D3FD8", "#B3122E"], tapri: ["#D62828", "#FFF3D6", "#F7931E", "#0F7C7A"],
   stadium: ["#D7191C", "#F2E8D5", "#111111"], brutal: ["#FF2E1F", "#1F3BFF", "#0A0A0A", "#F4F1EA"],
   swiss: ["#E30613", "#EFEDE6", "#141414"], trippy: ["#FF4FA3", "#FFC72C", "#6B3FD8", "#3FA9FF"],
   neo: ["#FFE14D", "#111111", "#FF6FB5", "#B6F23A"], pixel: ["#120B2E", "#FF3EA5", "#FFD400", "#5CFF5C"],
   sticker: ["#2443FF", "#C6F432", "#FF7AC6", "#FFFFFF"], glossy: ["#1C1C1E", "#F7F3EC", "#FFE58A", "#FFC2D1"],
+  quotes: ["#E8402A", "#F4E6D0", "#1D3FD8", "#E9B23A"],
 };
 const FACE: Record<RecipeKey, { font: string; text: string }> = {
   nazar: { font: "Rozha One", text: "नज़र" }, tapri: { font: "Yatra One", text: "टपरी" }, stadium: { font: "Anton", text: "STADIUM" },
   brutal: { font: "Archivo Black", text: "GRID." }, swiss: { font: "Archivo Black", text: "SW—" }, trippy: { font: "Shrikhand", text: "Trippy" },
   neo: { font: "Archivo Black", text: "POP!" }, pixel: { font: "Press Start 2P", text: "8BIT" }, sticker: { font: "Bagel Fat One", text: "BOMB" },
   glossy: { font: "Bagel Fat One", text: "Gloss" },
+  quotes: { font: "Big Shoulders Display Variable", text: "LOUD" },
 };
 
 export default function DnaWall() {
@@ -29,8 +31,8 @@ export default function DnaWall() {
       <section id="dna" className="sec dna">
         <div className="dna-top">
           <div className="sec-head">
-            <div className="mono eyebrow">[03] STYLE DNA · 10 RECIPES, 30 LAYOUTS</div>
-            <h2 className="display sec-h2">Same line. Ten personalities.</h2>
+            <div className="mono eyebrow">[03] STYLE DNA · 11 RECIPES, 36 LAYOUTS</div>
+            <h2 className="display sec-h2">Same line. Eleven personalities.</h2>
             <p className="sec-sub">Every card below is your line, juiced live in that recipe. Type something boring. We dare you.</p>
             <input className="dna-inp" value={line} maxLength={60} onChange={(e) => setLine(e.target.value)} aria-label="Your line for the Style DNA wall" />
           </div>
@@ -39,6 +41,7 @@ export default function DnaWall() {
         <div className="dna-grid">
           {RECIPE_ORDER.map((r, i) => (
             <div key={r} className="dna-card" tabIndex={0}>
+              {r === "quotes" && <span className="dna-new">NEW · TYPE ONLY</span>}
               <div className="dna-poster"><Thumb doc={results[r].doc} /></div>
               <div className="dna-tag" style={{ background: SWATCH[r][0], color: SWATCH[r][1] }}>
                 <span className="mono dna-no">{String(i + 1).padStart(2, "0")}</span>
@@ -47,6 +50,10 @@ export default function DnaWall() {
               </div>
             </div>
           ))}
+          <a href="#top" className="dna-yours" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
+            <b className="display">Recipe 12 is your line.</b>
+            <span className="mono">type it in the hero → 6 posters</span>
+          </a>
         </div>
       </section>
       <BeforeAfter line={line.trim() || DEFAULT_IDEA} ready={ready} />
@@ -66,7 +73,7 @@ function Spinner({ results }: { results: Record<string, ReturnType<typeof juiceR
   return (
     <div className="dna-spin" aria-hidden="true">
       <div className="dna-spin-card" key={r}><Thumb doc={results[r].doc} /></div>
-      <span className="mono dna-spin-tag">{RECIPES[r].name.toUpperCase()} · {String(i + 1).padStart(2, "0")}/10</span>
+      <span className="mono dna-spin-tag">{RECIPES[r].name.toUpperCase()} · {String(i + 1).padStart(2, "0")}/{RECIPE_ORDER.length}</span>
     </div>
   );
 }

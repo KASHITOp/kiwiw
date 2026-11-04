@@ -10,14 +10,21 @@ export default function ElementContent({ el }: { el: Element }) {
   const gid = "g" + useId().replace(/[^a-zA-Z0-9]/g, "");
   const inner = <Content el={el} />;
   const grain = el.grain ?? 0;
-  if (!el.frame && !el.cutout && grain <= 0) return inner;
-  const filter = [grain > 0 ? `url(#${gid})` : "", cutoutFilter(el.cutout)].filter(Boolean).join(" ");
+  const cut = el.cutout ?? stickerBorder(el);
+  if (!el.frame && !cut && grain <= 0) return inner;
+  const filter = [grain > 0 ? `url(#${gid})` : "", cutoutFilter(cut)].filter(Boolean).join(" ");
   return (
     <div style={{ position: "relative", width: "100%", height: "100%", filter: filter || undefined }}>
       {grain > 0 && <GrainDefs id={gid} amount={grain} />}
       {el.frame ? <Framed f={el.frame} w={el.w} h={el.h} id={el.id}>{inner}</Framed> : inner}
     </div>
   );
+}
+
+/** Sticker Library 2.0 die-cut border, sized to the sticker. */
+function stickerBorder(el: Element) {
+  if (el.type !== "sticker" || !el.border || el.border === "none") return null;
+  return { color: el.border === "white" ? "#FFFFFF" : "#111111", width: Math.max(3, Math.round(Math.min(el.w, el.h) * 0.028)) };
 }
 
 function Content({ el }: { el: Element }) {
@@ -53,7 +60,10 @@ function effectStyle(el: TextElement): React.CSSProperties {
     s.WebkitTextStroke = `${el.outline.width}px ${el.outline.color}`;
     s.paintOrder = "stroke fill";
   }
-  if (el.shadow) s.textShadow = `${el.shadow.x}px ${el.shadow.y}px 0 ${el.shadow.color}`;
+  const sh: string[] = [];
+  if (el.shadow) sh.push(`${el.shadow.x}px ${el.shadow.y}px 0 ${el.shadow.color}`);
+  if (el.bleed) sh.push(`0 0 ${(el.fontSize * 0.018).toFixed(1)}px ${el.bleed}`, `0 0 ${(el.fontSize * 0.05).toFixed(1)}px ${el.bleed}66`);
+  if (sh.length) s.textShadow = sh.join(", ");
   return s;
 }
 
@@ -72,8 +82,9 @@ function textStyle(el: TextElement): React.CSSProperties {
 }
 
 function TextContent({ el }: { el: TextElement }) {
+  const st = el.stretch && el.stretch !== 1 ? { transform: `scaleY(${el.stretch})`, transformOrigin: "top center", height: `${100 / el.stretch}%` } : undefined;
   return (
-    <div style={textStyle(el)}>
+    <div style={{ ...textStyle(el), ...st }}>
       {/* block wrapper keeps the highlight span inline, so it breaks per line */}
       <div>
         {el.highlight ? (
