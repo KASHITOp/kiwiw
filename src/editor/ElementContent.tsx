@@ -10,14 +10,21 @@ export default function ElementContent({ el }: { el: Element }) {
   const gid = "g" + useId().replace(/[^a-zA-Z0-9]/g, "");
   const inner = <Content el={el} />;
   const grain = el.grain ?? 0;
-  if (!el.frame && !el.cutout && grain <= 0) return inner;
-  const filter = [grain > 0 ? `url(#${gid})` : "", cutoutFilter(el.cutout)].filter(Boolean).join(" ");
+  const cut = el.cutout ?? stickerBorder(el);
+  if (!el.frame && !cut && grain <= 0) return inner;
+  const filter = [grain > 0 ? `url(#${gid})` : "", cutoutFilter(cut)].filter(Boolean).join(" ");
   return (
     <div style={{ position: "relative", width: "100%", height: "100%", filter: filter || undefined }}>
       {grain > 0 && <GrainDefs id={gid} amount={grain} />}
       {el.frame ? <Framed f={el.frame} w={el.w} h={el.h} id={el.id}>{inner}</Framed> : inner}
     </div>
   );
+}
+
+/** Sticker Library 2.0 die-cut border, sized to the sticker. */
+function stickerBorder(el: Element) {
+  if (el.type !== "sticker" || !el.border || el.border === "none") return null;
+  return { color: el.border === "white" ? "#FFFFFF" : "#111111", width: Math.max(3, Math.round(Math.min(el.w, el.h) * 0.028)) };
 }
 
 function Content({ el }: { el: Element }) {

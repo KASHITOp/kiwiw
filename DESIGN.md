@@ -279,3 +279,43 @@ Flat is the enemy. Every effect is data on the element (so it saves, undoes, exp
 **Panel:** with an element selected, the right panel shows an **Effects** gallery grouped as above. Every tile is a **live preview of the selected element** with that effect applied (not an icon). Clicking a tile toggles the effect, and its controls (sliders, colours) appear under the gallery. Active tiles get the lime ring.
 
 **Collision check (§16):** anything above a text element in z-order (stickers, filled shapes, or text under 35% of its size) must not cover that text's measured ink box. `src/dna/collide.ts` nudges the element up to 30% of the page in 16 directions, or shrinks it to 45% towards its far corner. It runs on every Juice result and every hero at freeze time. Deliberate contact (the Swiss walker, timeline digits) is marked `allowOverlap`. `/dev/kit?view=collide` lists raw collisions.
+
+## 17 — Sticker Library 2.0
+
+The aesthetic mixes a coquette/Y2K scrapbook with desi pop: crimson, pink,
+cream, silver chrome and yellow-black signboards, all with white die-cut
+borders.
+
+- **Sets.** There are 9 new categories on top of the classics:
+  - Coquette, Y2K Shiny, Frames & Paper.
+  - Type: ransom letters A–Z plus phrases.
+  - Desi Pop, Internet Brain, Stadium.
+  - Pets & Chaos: Pexels cat cutouts, line art, pixel pets.
+  - Kiwi Moods: 12 moods.
+  - Total: **268 stickers** (`src/stickers/v2/*`).
+- **Builder.** `S(kind, name, category, tags, [fill, accent, ink], Art, opts)`
+  lives in `v2/kit.tsx`. Shared paths: `HEART`, `sparkle()`, lips, `Gloss`,
+  `Chrome`, `Dots`, and `T` for SVG text.
+- **Border.** `StickerElement.border` is `white`, `black` or `none`. It renders
+  as stacked drop-shadows (`cutoutFilter`), so it hugs the real silhouette and
+  survives export. 2.0 stickers default to white; flat badges, paper and
+  stamps default to none.
+- **Match design.** `docPalette(doc)` picks the loudest colour, a contrasting
+  second and the darkest ink from the page. It powers the panel toggle and the
+  "Match my design's colours" action in Properties.
+- **Panel.** It has:
+  - a count line ("268 stickers · 0 logos");
+  - neo-brutal category pills;
+  - a border segmented control;
+  - a Match design toggle with swatches;
+  - postage-stamp count chips ("25 ORIGINALS");
+  - a one-line joke per set;
+  - wobble on hover;
+  - click to add, or drag onto the page.
+- **Rules.**
+  - No logos, brands, celebrities, characters, film titles or lyrics.
+  - Every phrase is our own.
+  - Photo stickers come only from Pexels/Unsplash and are credited in
+    LICENSES.md.
+  - Text inside a sticker must fit its shape at 160px tile size; check it
+    with `/dev/kit?view=stickers&cat=…`.

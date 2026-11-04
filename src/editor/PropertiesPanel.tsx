@@ -1,3 +1,4 @@
+import { docPalette } from "../stickers/recolor";
 import { useState } from "react";
 import { AlignLeft, AlignCenter, AlignRight, Italic, Underline, Type, Square, Circle, FlipHorizontal2 } from "lucide-react";
 import { useEditor } from "../store";
@@ -230,6 +231,17 @@ function ShapeProps({ el, up }: { el: ShapeElement; up: (p: Partial<ShapeElement
 
 const SLOT_LABEL: Record<ColorSlot, string> = { fill: "Fill", accent: "Accent", ink: "Ink" };
 
+function MatchDesign({ el, up }: { el: StickerElement; up: (p: Partial<StickerElement>) => void }) {
+  const doc = useEditor((s) => s.doc);
+  const p = docPalette({ ...doc, elements: doc.elements.filter((e) => e.id !== el.id) });
+  if (!p) return null;
+  return (
+    <button className="quick-action" onClick={() => up({ fill: p[0], accent: p[1], ink: p[2] })}>
+      <span className="qi" style={{ display: "flex", gap: 2 }}>{p.map((c, i) => <i key={i} style={{ width: 6, height: 16, borderRadius: 2, background: c }} />)}</span> Match my design's colours
+    </button>
+  );
+}
+
 function StickerProps({ el, up }: { el: StickerElement; up: (p: Partial<StickerElement>) => void }) {
   const def = STICKER_MAP[el.kind];
   return (
@@ -238,6 +250,12 @@ function StickerProps({ el, up }: { el: StickerElement; up: (p: Partial<StickerE
         <ColorPopover key={slot} label={SLOT_LABEL[slot]} value={el[slot]} onChange={(c) => up({ [slot]: c } as Partial<StickerElement>)} />
       ))}
       {def && !def.uses.length && <div className="fx-note">This one's pure texture. Change its opacity instead.</div>}
+      <div className="seg" role="group" aria-label="Sticker border" style={{ margin: "4px 0 10px" }}>
+        {(["white", "none", "black"] as const).map((b) => (
+          <button key={b} className={(el.border ?? "none") === b ? "on" : ""} onClick={() => up({ border: b === "none" ? undefined : b })}><i className={"bd-" + b} />{b === "none" ? "None" : b === "white" ? "White" : "Black"}</button>
+        ))}
+      </div>
+      {def?.uses.length ? <MatchDesign el={el} up={up} /> : null}
       <button className={"quick-action" + (el.flipX ? " on" : "")} onClick={() => up({ flipX: !el.flipX })}>
         <span className="qi"><FlipHorizontal2 size={16} /></span> {el.flipX ? "Flipped" : "Flip horizontally"}
       </button>

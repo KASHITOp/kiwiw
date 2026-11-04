@@ -41,6 +41,30 @@ function CollideReport() {
   return rows ? <pre id="collide">{[`${rows.length} collisions`, ...rows].join(String.fromCharCode(10))}</pre> : null;
 }
 
+/** ?view=stickers&cat=Coquette: one category as it renders on the canvas (border included). */
+function StickerSheet({ cat }: { cat: string }) {
+  const [ready, setReady] = useState(false);
+  useEffect(() => { document.fonts.ready.then(() => setTimeout(() => setReady(true), 300)); }, []);
+  const list = STICKERS.filter((d) => d.category === cat);
+  return (
+    <div id={ready ? "sheet-ready" : undefined} style={{ background: "#2A2A2A", padding: 24, display: "grid", gridTemplateColumns: "repeat(6, 190px)", gap: 14, width: 6 * 190 + 5 * 14 + 48 }}>
+      {list.map((d) => {
+        const el = { ...(makeSticker(d.kind, 190, 190) as Element), id: "s" } as Element;
+        const k = 160 / Math.max(el.w, el.h);
+        const w = el.w * k, h = el.h * k;
+        return (
+          <div key={d.kind} style={{ fontFamily: "JetBrains Mono", fontSize: 10, color: "#ddd" }}>
+            <div style={{ width: 190, height: 190, borderRadius: 8, background: "#F4E7D7", position: "relative" }}>
+              <div style={{ position: "absolute", left: (190 - w) / 2, top: (190 - h) / 2, width: w, height: h }}><ElementContent el={{ ...el, w, h } as Element} /></div>
+            </div>
+            <div style={{ marginTop: 4, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{d.name}</div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 /** ?view=og: the 1200x630 social card, built from real juiced posters. */
 function OgCard() {
   const [docs, setDocs] = useState<KiwiwDoc[] | null>(null);
@@ -164,6 +188,7 @@ export default function DevKit() {
   }
   if (params.get("view") === "fx") return <FxView />;
   if (params.get("view") === "og") return <OgCard />;
+  if (params.get("view") === "stickers") return <StickerSheet cat={params.get("cat") ?? "Coquette"} />;
   if (params.get("dump") === "heroes") return <HeroDump />;
   if (params.get("view") === "collide") return <CollideReport />;
   if (params.get("view") === "templates") {

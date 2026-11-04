@@ -106,6 +106,8 @@ export interface StickerElement extends ElementBase {
   accent: string;
   ink: string;
   flipX?: boolean;
+  /** Die-cut sticker border (Sticker Library 2.0). */
+  border?: "white" | "black" | "none";
 }
 
 export type Element = TextElement | ShapeElement | ImageElement | StickerElement;
