@@ -1,3 +1,4 @@
+import type { UserPhoto } from "../juice/photo";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import KiwiSlice from "../brand/KiwiSlice";
@@ -12,7 +13,7 @@ const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
 const easeOut = (t: number) => 1 - (1 - t) ** 3;
 const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
 
-export default function Hero({ onJuice }: { onJuice: (text: string) => void }) {
+export default function Hero({ onJuice }: { onJuice: (text: string, photo?: UserPhoto) => void }) {
   const desktop = useMedia("(min-width: 900px)");
   const reduced = useMedia("(prefers-reduced-motion: reduce)");
   const fine = useMedia("(pointer: fine)");

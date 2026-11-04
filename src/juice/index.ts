@@ -3,6 +3,7 @@
 // has shown, so Re-juice always brings a new composition: different recipe,
 // layout grammar, photo and copy angle. No API key needed; with an OpenAI key
 // the copy is rewritten in each recipe's tone first.
+import { tuneToPhoto, PHOTO_LINES, type UserPhoto } from "./photo";
 import type { KiwiwDoc } from "../types";
 import { keys } from "../ai/provider";
 import { parseIdea, hash } from "./parse";
@@ -45,9 +46,13 @@ export interface JuiceSession {
   angle: Partial<Record<RecipeKey, number>>;
   batch: number;
   ai?: Partial<Record<RecipeKey, { head?: string; sub?: string }>>;
+  /** Juice from a photo: the user's photo replaces the stock one, accents follow its colours. */
+  photo?: UserPhoto;
 }
 
-export const newSession = (text: string): JuiceSession => ({ text, used: new Set(), shown: 0, angle: {}, batch: 0 });
+export const newSession = (text: string, photo?: UserPhoto): JuiceSession => ({
+  text: text.trim() || (photo ? PHOTO_LINES[Math.floor(Math.random() * PHOTO_LINES.length)] : text), used: new Set(), shown: 0, angle: {}, batch: 0, photo,
+});
 
 const combos = (r: RecipeKey) => LAYOUTS[r].length;
 const usedFor = (s: JuiceSession, r: RecipeKey) => LAYOUTS[r].filter((_, i) => s.used.has(`${r}:${i}`)).length;
@@ -75,7 +80,9 @@ function render(s: JuiceSession, r: RecipeKey, layout: number, angle: number, n:
   const idea = parseIdea(s.text.trim() || DEFAULT_IDEA);
   const copy = { ...writeCopy(r, idea, angle), ...(s.ai?.[r] ?? {}) };
   const seed = hash(idea.raw) + n * 7;
-  const raw = LAYOUTS[r][layout]({ c: copy, photo: photoFor(idea.raw, n + hash(idea.raw)), photo2: photoFor(idea.raw, n + hash(idea.raw) + 1), seed });
+  const ph = s.photo ?? photoFor(idea.raw, n + hash(idea.raw)), ph2 = s.photo ?? photoFor(idea.raw, n + hash(idea.raw) + 1);
+  const raw0 = LAYOUTS[r][layout]({ c: copy, photo: ph, photo2: ph2, seed });
+  const raw = s.photo ? tuneToPhoto(raw0, s.photo.palette) : raw0;
   const doc = typeof document === "undefined" ? raw : resolveCollisions(raw).doc;
   const meta = RECIPES[r];
   return { style: r, name: meta.name, vibe: meta.vibe, joke: meta.jokes[(angle + layout) % meta.jokes.length], layout, copy, doc, angle, n };
@@ -91,6 +98,12 @@ export function juiceBatch(s: JuiceSession): JuiceResult[] {
   // the default line opens with the curated six; any other line rotates the deck
   const rot = (s.batch * 6 + (s.text.trim().toLowerCase() === DEFAULT_IDEA ? 0 : hash(s.text.toLowerCase()))) % RECIPE_ORDER.length;
   const order = [...RECIPE_ORDER.slice(rot), ...RECIPE_ORDER.slice(0, rot)];
+  // a photo: six photo recipes, each with its own photo effect (Loud Quotes has no photo)
+  if (s.photo) {
+    const pick: RecipeKey[] = order.filter((r) => r !== "quotes").sort((a, b) => usedFor(s, a) - usedFor(s, b)).slice(0, 6);
+    s.batch++;
+    return order.filter((r) => pick.includes(r)).map((r) => build(s, r));
+  }
   // a statement ("jugaad is a lifestyle") gets Loud Quotes twice, up front
   if (isQuoteLike(parseIdea(s.text.trim() || DEFAULT_IDEA))) {
     const rest: RecipeKey[] = order.filter((r) => r !== "quotes").sort((a, b) => usedFor(s, a) - usedFor(s, b)).slice(0, 4);
@@ -104,7 +117,7 @@ export function juiceBatch(s: JuiceSession): JuiceResult[] {
 
 /** Replace one card with a recipe that isn't on screen yet. */
 export function rejuiceOne(s: JuiceSession, onScreen: RecipeKey[]): JuiceResult {
-  const free = RECIPE_ORDER.filter((r) => !onScreen.includes(r));
+  const free = RECIPE_ORDER.filter((r) => !onScreen.includes(r) && !(s.photo && r === "quotes"));
   const r = [...free].sort((a, b) => usedFor(s, a) - usedFor(s, b))[0] ?? onScreen[0];
   return build(s, r);
 }
@@ -128,15 +141,15 @@ export async function ensureJuiceFonts() {
 }
 
 /** Async entry: loads fonts, optionally asks AI for copy, then juices. */
-export async function juiceWithAI(text: string, variant = 0, session?: JuiceSession): Promise<{ results: JuiceResult[]; ai: boolean; session: JuiceSession; upgrade: Promise<JuiceResult[] | null> }> {
+export async function juiceWithAI(text: string, variant = 0, session?: JuiceSession, photo?: UserPhoto): Promise<{ results: JuiceResult[]; ai: boolean; session: JuiceSession; upgrade: Promise<JuiceResult[] | null> }> {
   await ensureJuiceFonts();
-  const s = session ?? newSession(text);
+  const s = session ?? newSession(text, photo);
   if (!session) for (let v = 0; v < variant; v++) juiceBatch(s);
   const results = juiceBatch(s);
   // Posters show now with the built-in copy; AI copy (Gemini via our server
   // function, then an OpenAI dev key) swaps in when it arrives. Never blocks.
   const upgrade = s.ai ? Promise.resolve(null) : (async () => {
-    const g = await geminiCopy(text);
+    const g = await geminiCopy(s.text);
     if (g) s.ai = g;
     else if (keys.openai) { try { s.ai = await aiCopy(text); } catch { /* built-in copy is funny enough */ } }
     return s.ai ? withAICopy(s, results) : null;

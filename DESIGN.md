@@ -440,3 +440,14 @@ when it is away. A slim page strip under the canvas picks, adds, duplicates,
 reorders and deletes slides; deleting the last slide leaves carousel mode.
 Exports: one PDF (JPEG pages, about 0.9 MB for 7 slides) or a ZIP of PNGs.
 Pages render offscreen at full size with the same element renderer.
+
+## 23 — Juice from a photo
+
+An "Or drop a photo" zone in the Juice panel and an "or drop a photo 📷"
+link in the hero card. The photo is downscaled to 1200px JPEG, and 5
+dominant colours come from a 48×48 k-means. Six photo recipes (never Loud
+Quotes) use it in place of stock photos, each with its own photo effect.
+The recipe's loudest colours are re-hued to the photo's, with lightness
+kept so contrast holds. The line is optional; when empty, a witty line is
+picked ("main character moment", "no caption needed", …). Gemini copy still
+swaps in later if it is quick.

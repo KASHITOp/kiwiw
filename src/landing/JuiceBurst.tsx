@@ -1,3 +1,4 @@
+import type { UserPhoto } from "../juice/photo";
 // Landing hero demo, inline (no overlay): the line typed in the hero card
 // lands here, a kiwi splits, and six posters fly out of the cut like seeds
 // into a fan. Same Juice It 2.0 session engine and per-card actions.
@@ -9,7 +10,7 @@ import KiwiSlice from "../brand/KiwiSlice";
 import Thumb from "../editor/Thumb";
 import { juiceWithAI, juiceBatch, rejuiceOne, moreLikeThis, type JuiceResult, type JuiceSession } from "../juice";
 
-export default function JuiceBurst({ text, nonce }: { text: string; nonce: number }) {
+export default function JuiceBurst({ text, nonce, photo }: { text: string; nonce: number; photo?: UserPhoto }) {
   const navigate = useNavigate();
   const loadDoc = useEditor((s) => s.loadDoc);
   const [results, setResults] = useState<JuiceResult[] | null>(null);
@@ -24,14 +25,14 @@ export default function JuiceBurst({ text, nonce }: { text: string; nonce: numbe
     if (!nonce) return;
     let live = true;
     secRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    juiceWithAI(text).then((r) => {
+    juiceWithAI(text, 0, undefined, photo).then((r) => {
       if (!live) return;
       session.current = r.session; setResults(r.results); setAi(r.ai); setBatch((b) => b + 1);
       // AI copy swaps in place, unless the user already re-juiced
       r.upgrade.then((u) => { if (live && u) { setResults((cur) => (cur === r.results ? u : cur)); setAi(true); } });
     });
     return () => { live = false; };
-  }, [text, nonce]);
+  }, [text, nonce, photo]);
 
   // the burst: kiwi splits, cards fly from the cut to their fan slots
   useLayoutEffect(() => {
@@ -69,7 +70,7 @@ export default function JuiceBurst({ text, nonce }: { text: string; nonce: numbe
       <div className="jb-head">
         <div>
           <div className="mono eyebrow">JUICE IT · 6 RECIPES {ai && "· AI COPY"}</div>
-          <h2 className="display jb-title">“{text}”, but juicy.</h2>
+          <h2 className="display jb-title">{photo && !text ? "Your photo, but juicy." : <>“{session.current?.text ?? text}”, but juicy.</>}</h2>
         </div>
         <button className="k-btn sm" onClick={again} disabled={!results}><RefreshCw size={15} /> Re-juice all</button>
       </div>
